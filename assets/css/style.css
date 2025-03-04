@@ -110,9 +110,10 @@ body {
 .main-container { 
     display: flex ;
     flex-wrap: wrap;
-    justify-content: center ;
+    justify-content: space-around;
     align-items: center;
 flex-direction: row;
+
 }
 
 
@@ -142,10 +143,24 @@ flex-direction: row;
 }
 .Nom { 
     display: flex;
+    color: aliceblue;
 }
 .Prix { 
     display: flex;
+    color: #c0c0c0;
 }
-.Ajouter  { 
+.Ajouter  {
     display: flex;
+    padding: 20px;
+    background-color: #116530;
+    border-radius: 20px;
+    border: #d4af37;
+    box-shadow: 5px 1px 5px #1a1a1a;
+  }
+.ensemble { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    
 }
