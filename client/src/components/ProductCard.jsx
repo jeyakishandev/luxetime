@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
 import { Button, Card } from './ui'
@@ -11,6 +12,7 @@ const ProductCardContainer = styled(Card)`
   position: relative;
   overflow: hidden;
   transition: all ${props => props.theme.transitions.base};
+  cursor: pointer;
   
   &:hover {
     transform: translateY(-8px);
@@ -22,6 +24,13 @@ const ProductCardContainer = styled(Card)`
       transform: none;
     }
   }
+`
+
+const ProductLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
 `
 
 const ImageContainer = styled.div`
@@ -218,7 +227,10 @@ const ProductCard = ({
   const { isAuthenticated } = useAuth()
   const [isHovered, setIsHovered] = useState(false)
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
     if (!isAuthenticated) {
       // Rediriger vers la page de connexion
       return
@@ -231,13 +243,17 @@ const ProductCard = ({
     }
   }
 
-  const handleViewDetails = () => {
+  const handleViewDetails = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
     if (onViewDetails) {
       onViewDetails(product)
     }
   }
 
-  const handleAddToWishlist = () => {
+  const handleAddToWishlist = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
     if (onAddToWishlist) {
       onAddToWishlist(product)
     }
@@ -279,69 +295,72 @@ const ProductCard = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <ImageContainer>
-        {getBadgeType() && (
-          <Badge type={getBadgeType()}>
-            {getBadgeText()}
-          </Badge>
-        )}
-        
-        <ProductImage
-          src={product.images?.[0]?.url || '/placeholder-watch.jpg'}
-          alt={product.nom}
-          loading="lazy"
-        />
-        
-        <ImageOverlay
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-        >
-          <ActionButtons>
-            <ActionButton
-              onClick={handleViewDetails}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <FiEye size={18} />
-            </ActionButton>
-            
-            <ActionButton
-              onClick={handleAddToWishlist}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <FiHeart size={18} />
-            </ActionButton>
-          </ActionButtons>
-        </ImageOverlay>
-      </ImageContainer>
-
-      <ProductInfo>
-        <ProductBrand>{product.marque}</ProductBrand>
-        <ProductTitle>{product.nom}</ProductTitle>
-        <ProductDescription>{product.description}</ProductDescription>
-        
-        <PriceContainer>
-          <CurrentPrice>{formatPrice(getCurrentPrice())}</CurrentPrice>
-          {getOriginalPrice() && (
-            <OriginalPrice>{formatPrice(getOriginalPrice())}</OriginalPrice>
+      <ProductLink to={`/products/${product.id}`}>
+        <ImageContainer>
+          {getBadgeType() && (
+            <Badge type={getBadgeType()}>
+              {getBadgeText()}
+            </Badge>
           )}
-        </PriceContainer>
-        
-        <StockInfo>
-          <StockIndicator stock={product.stock} />
-          <span>{getStockStatus()}</span>
-        </StockInfo>
-        
-        <AddToCartButton
-          onClick={handleAddToCart}
-          disabled={product.stock === 0 || isAddingToCart}
-          isLoading={isAddingToCart}
-          fullWidth
-        >
-          {product.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
-        </AddToCartButton>
-      </ProductInfo>
+          
+          <ProductImage
+            src={product.images?.[0]?.url || '/placeholder-watch.jpg'}
+            alt={product.nom}
+            loading="lazy"
+          />
+          
+          <ImageOverlay
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovered ? 1 : 0 }}
+          >
+            <ActionButtons>
+              <ActionButton
+                onClick={handleViewDetails}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FiEye size={18} />
+              </ActionButton>
+              
+              <ActionButton
+                onClick={handleAddToWishlist}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FiHeart size={18} />
+              </ActionButton>
+            </ActionButtons>
+          </ImageOverlay>
+        </ImageContainer>
+
+        <ProductInfo>
+          <ProductBrand>{product.marque}</ProductBrand>
+          <ProductTitle>{product.nom}</ProductTitle>
+          <ProductDescription>{product.description}</ProductDescription>
+          
+          <PriceContainer>
+            <CurrentPrice>{formatPrice(getCurrentPrice())}</CurrentPrice>
+            {getOriginalPrice() && (
+              <OriginalPrice>{formatPrice(getOriginalPrice())}</OriginalPrice>
+            )}
+          </PriceContainer>
+          
+          <StockInfo>
+            <StockIndicator stock={product.stock} />
+            <span>{getStockStatus()}</span>
+          </StockInfo>
+        </ProductInfo>
+      </ProductLink>
+      
+      <AddToCartButton
+        onClick={handleAddToCart}
+        disabled={product.stock === 0 || isAddingToCart}
+        isLoading={isAddingToCart}
+        fullWidth
+        style={{ marginTop: '1rem' }}
+      >
+        {product.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
+      </AddToCartButton>
     </ProductCardContainer>
   )
 }
