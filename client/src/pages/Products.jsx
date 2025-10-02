@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { useProducts } from '../hooks/useProducts'
-import { Button, Card, PageLoading } from '../components/ui'
+import { Button, Card } from '../components/ui'
 import { FiShoppingCart, FiHeart, FiFilter } from 'react-icons/fi'
+import axios from 'axios'
 
 const ProductsContainer = styled.div`
   min-height: 100vh;
@@ -152,7 +152,22 @@ const WishlistButton = styled(Button)`
   justify-content: center;
 `
 
+const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 4rem 0;
+  color: ${props => props.theme.colors.gray[400]};
+`
+
+const ErrorMessage = styled.div`
+  text-align: center;
+  padding: 4rem 0;
+  color: ${props => props.theme.colors.error};
+`
+
 const Products = () => {
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [filters, setFilters] = useState({
     category: '',
     minPrice: '',
@@ -162,8 +177,37 @@ const Products = () => {
     limit: 12,
   })
 
-  const { data: productsData, isLoading, isError } = useProducts(filters)
-  const products = productsData?.data || []
+  useEffect(() => {
+    fetchProducts()
+  }, [filters])
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true)
+      const response = await axios.get('http://localhost:5000/api/products', {
+        params: {
+          page: filters.page,
+          limit: filters.limit,
+          categorie: filters.category,
+          prixMin: filters.minPrice || 0,
+          prixMax: filters.maxPrice || 999999,
+          search: filters.search
+        }
+      })
+      
+      if (response.data.success) {
+        setProducts(response.data.data.products || [])
+        setError(null)
+      } else {
+        setError('Erreur lors du chargement des produits')
+      }
+    } catch (err) {
+      console.error('Erreur API:', err)
+      setError('Erreur de connexion à l\'API')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
@@ -180,26 +224,30 @@ const Products = () => {
     }).format(price)
   }
 
-  if (isLoading) {
+  if (loading) {
     return (
       <ProductsContainer>
         <Container>
-          <PageLoading text="Chargement des produits..." />
+          <LoadingMessage>
+            <h3>Chargement des produits...</h3>
+            <p>Veuillez patienter...</p>
+          </LoadingMessage>
         </Container>
       </ProductsContainer>
     )
   }
 
-  if (isError) {
+  if (error) {
     return (
       <ProductsContainer>
         <Container>
-          <PageHeader>
-            <PageTitle>Nos Collections</PageTitle>
-            <PageSubtitle>
-              Erreur lors du chargement des produits. Veuillez réessayer.
-            </PageSubtitle>
-          </PageHeader>
+          <ErrorMessage>
+            <h3>Erreur</h3>
+            <p>{error}</p>
+            <Button onClick={fetchProducts} style={{ marginTop: '1rem' }}>
+              Réessayer
+            </Button>
+          </ErrorMessage>
         </Container>
       </ProductsContainer>
     )
