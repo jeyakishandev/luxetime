@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Button, Card } from '../components/ui'
-import { FiShoppingCart, FiHeart } from 'react-icons/fi'
+import { useProducts } from '../hooks/useProducts'
+import { Button, Card, PageLoading } from '../components/ui'
+import { FiShoppingCart, FiHeart, FiFilter } from 'react-icons/fi'
 
 const ProductsContainer = styled.div`
   min-height: 100vh;
@@ -39,6 +40,25 @@ const PageSubtitle = styled.p`
   color: ${props => props.theme.colors.gray[400]};
   max-width: 600px;
   margin: 0 auto;
+`
+
+const FiltersContainer = styled.div`
+  display: flex;
+  gap: ${props => props.theme.spacing[4]};
+  margin-bottom: ${props => props.theme.spacing[8]};
+  flex-wrap: wrap;
+  justify-content: center;
+  
+  ${props => props.theme.media.mobile} {
+    flex-direction: column;
+    align-items: center;
+  }
+`
+
+const FilterButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]};
 `
 
 const ProductsGrid = styled.div`
@@ -92,11 +112,21 @@ const ProductBrand = styled.p`
   margin-bottom: ${props => props.theme.spacing[3]};
 `
 
-const ProductPrice = styled.p`
+const ProductPrice = styled.div`
+  margin-bottom: ${props => props.theme.spacing[4]};
+`
+
+const CurrentPrice = styled.span`
   font-size: ${props => props.theme.fontSizes.xl};
   font-weight: ${props => props.theme.fontWeights.bold};
   color: ${props => props.theme.colors.primary};
-  margin-bottom: ${props => props.theme.spacing[4]};
+`
+
+const OriginalPrice = styled.span`
+  font-size: ${props => props.theme.fontSizes.lg};
+  color: ${props => props.theme.colors.gray[500]};
+  text-decoration: line-through;
+  margin-left: ${props => props.theme.spacing[2]};
 `
 
 const ProductActions = styled.div`
@@ -122,53 +152,59 @@ const WishlistButton = styled(Button)`
   justify-content: center;
 `
 
-// Données statiques des montres
-const staticProducts = [
-  {
-    id: 1,
-    name: "Luxetime Classic",
-    brand: "Luxetime",
-    price: 1299,
-    image: "Montre Classique"
-  },
-  {
-    id: 2,
-    name: "Luxetime Sport",
-    brand: "Luxetime",
-    price: 899,
-    image: "Montre Sport"
-  },
-  {
-    id: 3,
-    name: "Luxetime Elegance",
-    brand: "Luxetime",
-    price: 1599,
-    image: "Montre Élégance"
-  },
-  {
-    id: 4,
-    name: "Luxetime Heritage",
-    brand: "Luxetime",
-    price: 2199,
-    image: "Montre Heritage"
-  },
-  {
-    id: 5,
-    name: "Luxetime Modern",
-    brand: "Luxetime",
-    price: 999,
-    image: "Montre Moderne"
-  },
-  {
-    id: 6,
-    name: "Luxetime Premium",
-    brand: "Luxetime",
-    price: 2999,
-    image: "Montre Premium"
-  }
-]
-
 const Products = () => {
+  const [filters, setFilters] = useState({
+    category: '',
+    minPrice: '',
+    maxPrice: '',
+    search: '',
+    page: 1,
+    limit: 12,
+  })
+
+  const { data: productsData, isLoading, isError } = useProducts(filters)
+  const products = productsData?.data || []
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: value,
+      page: 1
+    }))
+  }
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(price)
+  }
+
+  if (isLoading) {
+    return (
+      <ProductsContainer>
+        <Container>
+          <PageLoading text="Chargement des produits..." />
+        </Container>
+      </ProductsContainer>
+    )
+  }
+
+  if (isError) {
+    return (
+      <ProductsContainer>
+        <Container>
+          <PageHeader>
+            <PageTitle>Nos Collections</PageTitle>
+            <PageSubtitle>
+              Erreur lors du chargement des produits. Veuillez réessayer.
+            </PageSubtitle>
+          </PageHeader>
+        </Container>
+      </ProductsContainer>
+    )
+  }
+
   return (
     <ProductsContainer>
       <Container>
@@ -179,28 +215,80 @@ const Products = () => {
           </PageSubtitle>
         </PageHeader>
 
+        <FiltersContainer>
+          <FilterButton
+            variant={filters.category === '' ? 'primary' : 'outline'}
+            onClick={() => handleFilterChange('category', '')}
+          >
+            <FiFilter size={16} />
+            Toutes
+          </FilterButton>
+          <FilterButton
+            variant={filters.category === 'HOMME' ? 'primary' : 'outline'}
+            onClick={() => handleFilterChange('category', 'HOMME')}
+          >
+            Homme
+          </FilterButton>
+          <FilterButton
+            variant={filters.category === 'FEMME' ? 'primary' : 'outline'}
+            onClick={() => handleFilterChange('category', 'FEMME')}
+          >
+            Femme
+          </FilterButton>
+          <FilterButton
+            variant={filters.category === 'SPORT' ? 'primary' : 'outline'}
+            onClick={() => handleFilterChange('category', 'SPORT')}
+          >
+            Sport
+          </FilterButton>
+          <FilterButton
+            variant={filters.category === 'VINTAGE' ? 'primary' : 'outline'}
+            onClick={() => handleFilterChange('category', 'VINTAGE')}
+          >
+            Vintage
+          </FilterButton>
+        </FiltersContainer>
+
         <ProductsGrid>
-          {staticProducts.map((product) => (
-            <ProductCard key={product.id}>
-              <ProductImage>
-                {product.image}
-              </ProductImage>
-              
-              <ProductName>{product.name}</ProductName>
-              <ProductBrand>{product.brand}</ProductBrand>
-              <ProductPrice>{product.price}€</ProductPrice>
-              
-              <ProductActions>
-                <ActionButton size="sm">
-                  <FiShoppingCart size={16} />
-                  Ajouter
-                </ActionButton>
-                <WishlistButton variant="outline" size="sm">
-                  <FiHeart size={16} />
-                </WishlistButton>
-              </ProductActions>
-            </ProductCard>
-          ))}
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ProductCard key={product.id}>
+                <ProductImage>
+                  {product.nom}
+                </ProductImage>
+                
+                <ProductName>{product.nom}</ProductName>
+                <ProductBrand>{product.marque}</ProductBrand>
+                
+                <ProductPrice>
+                  <CurrentPrice>{formatPrice(product.prix)}</CurrentPrice>
+                  {product.prixPromo && product.prixPromo > 0 && (
+                    <OriginalPrice>{formatPrice(product.prix)}</OriginalPrice>
+                  )}
+                </ProductPrice>
+                
+                <ProductActions>
+                  <ActionButton size="sm">
+                    <FiShoppingCart size={16} />
+                    Ajouter
+                  </ActionButton>
+                  <WishlistButton variant="outline" size="sm">
+                    <FiHeart size={16} />
+                  </WishlistButton>
+                </ProductActions>
+              </ProductCard>
+            ))
+          ) : (
+            <div style={{ 
+              gridColumn: '1 / -1', 
+              textAlign: 'center', 
+              padding: '4rem 0',
+              color: '#9ca3af'
+            }}>
+              <h3>Aucun produit trouvé</h3>
+              <p>Essayez de modifier vos filtres de recherche.</p>
+            </div>
+          )}
         </ProductsGrid>
       </Container>
     </ProductsContainer>
