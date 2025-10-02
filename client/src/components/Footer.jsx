@@ -8,11 +8,7 @@ import {
   FiInstagram, 
   FiMail, 
   FiPhone, 
-  FiMapPin,
-  FiAward,
-  FiShield,
-  FiTruck,
-  FiClock
+  FiMapPin
 } from 'react-icons/fi'
 
 const FooterContainer = styled.footer`
@@ -180,69 +176,6 @@ const SocialLink = styled(motion.a)`
   }
 `
 
-const AdvantagesSection = styled(motion.div)`
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: ${props => props.theme.borderRadius.xl};
-  padding: ${props => props.theme.spacing[8]};
-  margin-bottom: ${props => props.theme.spacing[12]};
-  backdrop-filter: blur(20px);
-`
-
-const AdvantagesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: ${props => props.theme.spacing[6]};
-`
-
-const AdvantageCard = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing[4]};
-  padding: ${props => props.theme.spacing[4]};
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${props => props.theme.borderRadius.lg};
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(212, 175, 55, 0.3);
-    transform: translateY(-2px);
-  }
-`
-
-const AdvantageIcon = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
-  color: ${props => props.theme.colors.black};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: ${props => props.theme.fontSizes.lg};
-  flex-shrink: 0;
-`
-
-const AdvantageContent = styled.div`
-  flex: 1;
-`
-
-const AdvantageTitle = styled.h4`
-  font-size: ${props => props.theme.fontSizes.md};
-  font-weight: ${props => props.theme.fontWeights.semibold};
-  color: ${props => props.theme.colors.white};
-  margin: 0 0 ${props => props.theme.spacing[1]} 0;
-`
-
-const AdvantageDescription = styled.p`
-  font-size: ${props => props.theme.fontSizes.sm};
-  color: ${props => props.theme.colors.gray[300]};
-  margin: 0;
-  line-height: 1.5;
-`
 
 const FooterBottom = styled.div`
   border-top: 1px solid rgba(212, 175, 55, 0.2);
@@ -290,97 +223,6 @@ const Footer = () => {
   return (
     <FooterContainer>
       <FooterContent>
-        <AdvantagesSection
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <motion.h3
-            style={{
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-              background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              textAlign: 'center',
-              margin: '0 0 2rem 0'
-            }}
-          >
-            Pourquoi choisir Luxetime ?
-          </motion.h3>
-          
-          <AdvantagesGrid>
-            <AdvantageCard
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <AdvantageIcon>
-                <FiAward size={20} />
-              </AdvantageIcon>
-              <AdvantageContent>
-                <AdvantageTitle>Qualité Premium</AdvantageTitle>
-                <AdvantageDescription>
-                  Matériaux de haute qualité et savoir-faire artisanal
-                </AdvantageDescription>
-              </AdvantageContent>
-            </AdvantageCard>
-            
-            <AdvantageCard
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <AdvantageIcon>
-                <FiShield size={20} />
-              </AdvantageIcon>
-              <AdvantageContent>
-                <AdvantageTitle>Garantie 2 ans</AdvantageTitle>
-                <AdvantageDescription>
-                  Couverture complète pour votre tranquillité
-                </AdvantageDescription>
-              </AdvantageContent>
-            </AdvantageCard>
-            
-            <AdvantageCard
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <AdvantageIcon>
-                <FiTruck size={20} />
-              </AdvantageIcon>
-              <AdvantageContent>
-                <AdvantageTitle>Livraison gratuite</AdvantageTitle>
-                <AdvantageDescription>
-                  Partout en France sous 24-48h
-                </AdvantageDescription>
-              </AdvantageContent>
-            </AdvantageCard>
-            
-            <AdvantageCard
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <AdvantageIcon>
-                <FiClock size={20} />
-              </AdvantageIcon>
-              <AdvantageContent>
-                <AdvantageTitle>Service 24/7</AdvantageTitle>
-                <AdvantageDescription>
-                  Support client disponible à tout moment
-                </AdvantageDescription>
-              </AdvantageContent>
-            </AdvantageCard>
-          </AdvantagesGrid>
-        </AdvantagesSection>
 
         <FooterGrid>
           <FooterSection>
