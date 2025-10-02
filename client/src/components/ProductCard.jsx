@@ -31,6 +31,7 @@ const ProductLink = styled(Link)`
   color: inherit;
   display: block;
   height: 100%;
+  cursor: pointer;
 `
 
 const ImageContainer = styled.div`
@@ -295,7 +296,10 @@ const ProductCard = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <ProductLink to={`/products/${product.id}`}>
+      <ProductLink 
+        to={`/products/${product.id}`}
+        onClick={() => console.log('Navigation vers:', `/products/${product.id}`)}
+      >
         <ImageContainer>
           {getBadgeType() && (
             <Badge type={getBadgeType()}>
