@@ -657,9 +657,13 @@ const Products = () => {
                   <ProductBrand>{product.marque}</ProductBrand>
                   
                   <ProductPrice>
-                    <CurrentPrice>{formatPrice(product.prix)}</CurrentPrice>
-                    {product.prixPromo && product.prixPromo > 0 && (
-                      <OriginalPrice>{formatPrice(product.prix)}</OriginalPrice>
+                    {product.prixPromo && product.prixPromo > 0 ? (
+                      <>
+                        <CurrentPrice>{formatPrice(product.prixPromo)}</CurrentPrice>
+                        <OriginalPrice>{formatPrice(product.prix)}</OriginalPrice>
+                      </>
+                    ) : (
+                      <CurrentPrice>{formatPrice(product.prix)}</CurrentPrice>
                     )}
                   </ProductPrice>
                   
