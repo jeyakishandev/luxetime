@@ -1,6 +1,30 @@
 const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcryptjs')
 
 const prisma = new PrismaClient()
+
+// Utilisateur de test
+const testUser = {
+  nom: "Dupont",
+  prenom: "Jean",
+  email: "test@luxetime.fr",
+  motDePasse: "password123",
+  telephone: "0123456789",
+  dateNaissance: new Date('1990-01-15'),
+  adresse: {
+    rue: "123 Avenue des Champs-Élysées",
+    codePostal: "75008",
+    ville: "Paris",
+    pays: "France"
+  },
+  role: "CLIENT",
+  estActif: true,
+  preferences: {
+    newsletter: true,
+    notifications: true,
+    langue: "fr"
+  }
+}
 
 const products = [
   {
@@ -145,11 +169,37 @@ async function main() {
     try {
       await prisma.avis.deleteMany()
       await prisma.produit.deleteMany()
+      await prisma.utilisateur.deleteMany()
     } catch (error) {
       console.log('⚠️ Tables non trouvées, création des données...')
     }
     
+    // Créer l'utilisateur de test
+    console.log('👤 Création de l\'utilisateur de test...')
+    const hashedPassword = await bcrypt.hash(testUser.motDePasse, 10)
+    
+    const user = await prisma.utilisateur.create({
+      data: {
+        nom: testUser.nom,
+        prenom: testUser.prenom,
+        email: testUser.email,
+        motDePasse: hashedPassword,
+        telephone: testUser.telephone,
+        dateNaissance: testUser.dateNaissance,
+        adresse: testUser.adresse,
+        role: testUser.role,
+        estActif: testUser.estActif,
+        preferences: testUser.preferences
+      }
+    })
+    
+    console.log(`✅ Utilisateur créé: ${user.email}`)
+    console.log('🔑 Identifiants de test:')
+    console.log(`   Email: ${testUser.email}`)
+    console.log(`   Mot de passe: ${testUser.motDePasse}`)
+    
     // Créer les produits
+    console.log('📦 Création des produits...')
     for (const product of products) {
       await prisma.produit.create({
         data: product
@@ -158,6 +208,11 @@ async function main() {
     
     console.log('✅ Seeding terminé !')
     console.log(`📦 ${products.length} produits créés`)
+    console.log('👤 1 utilisateur de test créé')
+    console.log('')
+    console.log('🚀 Vous pouvez maintenant vous connecter avec:')
+    console.log(`   Email: ${testUser.email}`)
+    console.log(`   Mot de passe: ${testUser.motDePasse}`)
   } catch (error) {
     console.error('❌ Erreur lors du seeding:', error)
     throw error
