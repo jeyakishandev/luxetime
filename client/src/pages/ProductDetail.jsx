@@ -602,14 +602,62 @@ const FeatureDescription = styled.p`
   line-height: 1.5;
 `
 
-// Mapping des images pour chaque produit
+// Mapping des images pour chaque produit avec galeries complètes
 const productImages = {
-  1: '/assets/images/analog-watch-1845547_1280.jpg',
-  2: '/assets/images/analog-watch-1869928_1280.jpg',
-  3: '/assets/images/rolex-2171960_1280.jpg',
-  4: '/assets/images/rolex-2171961_1280.jpg',
-  5: '/assets/images/clock-1224379_1280.jpg',
-  6: '/assets/images/watch-5772317_1280.jpg'
+  1: {
+    main: '/assets/images/analog-watch-1845547_1280.jpg',
+    gallery: [
+      '/assets/images/analog-watch-1845547_1280.jpg',
+      '/assets/images/analog-watch-1869928_1280.jpg',
+      '/assets/images/rolex-2171960_1280.jpg',
+      '/assets/images/watch-5772317_1280.jpg'
+    ]
+  },
+  2: {
+    main: '/assets/images/analog-watch-1869928_1280.jpg',
+    gallery: [
+      '/assets/images/analog-watch-1869928_1280.jpg',
+      '/assets/images/analog-watch-1845547_1280.jpg',
+      '/assets/images/rolex-2171961_1280.jpg',
+      '/assets/images/clock-1224379_1280.jpg'
+    ]
+  },
+  3: {
+    main: '/assets/images/rolex-2171960_1280.jpg',
+    gallery: [
+      '/assets/images/rolex-2171960_1280.jpg',
+      '/assets/images/rolex-2171961_1280.jpg',
+      '/assets/images/analog-watch-1845547_1280.jpg',
+      '/assets/images/watch-5772317_1280.jpg'
+    ]
+  },
+  4: {
+    main: '/assets/images/rolex-2171961_1280.jpg',
+    gallery: [
+      '/assets/images/rolex-2171961_1280.jpg',
+      '/assets/images/rolex-2171960_1280.jpg',
+      '/assets/images/analog-watch-1869928_1280.jpg',
+      '/assets/images/clock-1224379_1280.jpg'
+    ]
+  },
+  5: {
+    main: '/assets/images/clock-1224379_1280.jpg',
+    gallery: [
+      '/assets/images/clock-1224379_1280.jpg',
+      '/assets/images/analog-watch-1869928_1280.jpg',
+      '/assets/images/rolex-2171961_1280.jpg',
+      '/assets/images/watch-5772317_1280.jpg'
+    ]
+  },
+  6: {
+    main: '/assets/images/watch-5772317_1280.jpg',
+    gallery: [
+      '/assets/images/watch-5772317_1280.jpg',
+      '/assets/images/analog-watch-1845547_1280.jpg',
+      '/assets/images/rolex-2171960_1280.jpg',
+      '/assets/images/clock-1224379_1280.jpg'
+    ]
+  }
 }
 
 const ProductDetail = () => {
@@ -684,6 +732,8 @@ const ProductDetail = () => {
   // Données fictives détaillées pour chaque produit
   const productDetails = {
     1: {
+      name: "Luxetime Classic",
+      description: "Une montre intemporelle qui incarne l'élégance classique. Fabriquée en Suisse avec des matériaux d'exception, elle allie tradition horlogère et modernité.",
       movement: "Mécanique automatique Swiss Made",
       case: "Acier inoxydable 316L brossé",
       dial: "Émail grand feu avec index appliqués",
@@ -696,9 +746,14 @@ const ProductDetail = () => {
       weight: "85g",
       warranty: "2 ans internationale",
       origin: "Suisse",
-      features: ["Chronomètre certifié", "Réserve de marche", "Date", "Luminescence Super-LumiNova"]
+      features: ["Chronomètre certifié", "Réserve de marche", "Date", "Luminescence Super-LumiNova"],
+      story: "Inspirée des montres de gousset du XIXe siècle, la Luxetime Classic perpétue l'art horloger traditionnel avec une finition exceptionnelle.",
+      materials: ["Acier inoxydable 316L", "Sapphire", "Cuir alligator italien", "Or rose 18k"],
+      certifications: ["Chronomètre COSC", "Swiss Made", "ISO 3159"]
     },
     2: {
+      name: "Luxetime Sport",
+      description: "Conçue pour les aventuriers et les sportifs, cette montre allie robustesse et performance. Résistante à l'eau jusqu'à 200m, elle vous accompagne dans tous vos défis.",
       movement: "Quartz haute précision",
       case: "Titane grade 5",
       dial: "Mat noir avec index lumineux",
@@ -711,9 +766,14 @@ const ProductDetail = () => {
       weight: "95g",
       warranty: "3 ans internationale",
       origin: "Japon",
-      features: ["Chronographe", "Tachymètre", "Résistance aux chocs", "Luminescence Super-LumiNova"]
+      features: ["Chronographe", "Tachymètre", "Résistance aux chocs", "Luminescence Super-LumiNova"],
+      story: "Née de la collaboration avec des athlètes professionnels, la Luxetime Sport repousse les limites de la résistance horlogère.",
+      materials: ["Titane grade 5", "Sapphire anti-reflet", "Caoutchouc haute performance", "Acier inoxydable"],
+      certifications: ["ISO 6425", "MIL-STD-810G", "JIS B 7021"]
     },
     3: {
+      name: "Luxetime Elegance",
+      description: "L'incarnation du luxe horloger. En or rose 18k avec finitions manuelles exceptionnelles, cette montre est un véritable bijou d'artisanat.",
       movement: "Mécanique manuelle Swiss Made",
       case: "Or rose 18k",
       dial: "Émail blanc avec guillochage",
@@ -725,9 +785,14 @@ const ProductDetail = () => {
       weight: "65g",
       warranty: "2 ans internationale",
       origin: "Suisse",
-      features: ["Finitions manuelles", "Aiguilles feuille", "Sapphire", "Boucle déployante"]
+      features: ["Finitions manuelles", "Aiguilles feuille", "Sapphire", "Boucle déployante"],
+      story: "Chaque pièce est façonnée à la main par nos maîtres horlogers, perpétuant un savoir-faire ancestral.",
+      materials: ["Or rose 18k", "Émail grand feu", "Sapphire", "Satin de soie"],
+      certifications: ["Swiss Made", "Poinçon de Genève", "Fleurier Quality Foundation"]
     },
     4: {
+      name: "Luxetime Heritage",
+      description: "Un hommage aux montres vintage des années 60. Cette édition limitée capture l'essence de l'horlogerie d'époque avec une touche moderne.",
       movement: "Mécanique automatique vintage",
       case: "Acier inoxydable brossé",
       dial: "Mat avec index vintage",
@@ -740,9 +805,14 @@ const ProductDetail = () => {
       weight: "78g",
       warranty: "2 ans internationale",
       origin: "Suisse",
-      features: ["Style vintage", "Luminescence vintage", "Crown vintage", "Édition limitée"]
+      features: ["Style vintage", "Luminescence vintage", "Crown vintage", "Édition limitée"],
+      story: "Inspirée des chronographes des années 60, cette montre rend hommage à l'âge d'or de l'horlogerie.",
+      materials: ["Acier inoxydable 316L", "Cuir vieilli", "Sapphire", "Laiton"],
+      certifications: ["Swiss Made", "Édition limitée", "Certificat d'authenticité"]
     },
     5: {
+      name: "Luxetime Modern",
+      description: "L'avenir de l'horlogerie durable. Fabriquée avec des matériaux recyclés et alimentée par l'énergie solaire, elle allie innovation et respect de l'environnement.",
       movement: "Quartz solaire",
       case: "Fibre de carbone recyclée",
       dial: "Mat avec index écologiques",
@@ -755,9 +825,14 @@ const ProductDetail = () => {
       weight: "72g",
       warranty: "2 ans internationale",
       origin: "Allemagne",
-      features: ["Écologique", "Recharge solaire", "Matériaux recyclés", "Certification éco"]
+      features: ["Écologique", "Recharge solaire", "Matériaux recyclés", "Certification éco"],
+      story: "Pionnière de l'horlogerie verte, cette montre prouve que luxe et durabilité peuvent coexister.",
+      materials: ["Fibre de carbone recyclée", "Sapphire recyclé", "Caoutchouc recyclé", "Acier recyclé"],
+      certifications: ["ISO 14001", "Certification éco", "Cradle to Cradle", "Carbon Neutral"]
     },
     6: {
+      name: "Luxetime Premium",
+      description: "Le summum de l'art horloger. En platine 950 avec complications exceptionnelles, cette montre est réservée aux connaisseurs les plus exigeants.",
       movement: "Mécanique automatique avec réserve de marche",
       case: "Platine 950",
       dial: "Émail grand feu avec complications",
@@ -770,7 +845,10 @@ const ProductDetail = () => {
       weight: "92g",
       warranty: "3 ans internationale",
       origin: "Suisse",
-      features: ["Complications", "Tourbillon", "Réserve de marche", "Finitions exceptionnelles"]
+      features: ["Complications", "Tourbillon", "Réserve de marche", "Finitions exceptionnelles"],
+      story: "Chaque composant est fabriqué à la main avec une précision millimétrique, créant une œuvre d'art mécanique unique.",
+      materials: ["Platine 950", "Émail grand feu", "Alligator exotique", "Or blanc 18k"],
+      certifications: ["Poinçon de Genève", "Fleurier Quality Foundation", "Swiss Made", "Certificat de chronomètre"]
     }
   }
 
@@ -796,7 +874,7 @@ const ProductDetail = () => {
               transition={{ duration: 0.6 }}
             >
               <ProductImage
-                src={productImages[productData.id] || productImages[1]}
+                src={productImages[productData.id]?.gallery[selectedImage] || productImages[1]?.main}
                 alt={productData.nom}
               />
               <ImageOverlay>
@@ -810,13 +888,13 @@ const ProductDetail = () => {
             </MainImageContainer>
 
             <ThumbnailGrid>
-              {[1, 2, 3, 4].map((index) => (
+              {(productImages[productData.id]?.gallery || productImages[1]?.gallery).map((image, index) => (
                 <ThumbnailImage
                   key={index}
-                  src={productImages[productData.id] || productImages[1]}
-                  alt={`${productData.nom} - Vue ${index}`}
-                  active={selectedImage === index - 1}
-                  onClick={() => setSelectedImage(index - 1)}
+                  src={image}
+                  alt={`${productData.nom} - Vue ${index + 1}`}
+                  active={selectedImage === index}
+                  onClick={() => setSelectedImage(index)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 />
@@ -1081,6 +1159,95 @@ const ProductDetail = () => {
             </SpecsList>
           </DetailsCard>
         </ProductDetails>
+
+        {/* Section Histoire du produit */}
+        <DetailsCard
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+          style={{ marginTop: '4rem' }}
+        >
+          <DetailsTitle>
+            <FiClock size={24} />
+            L'histoire de {details.name}
+          </DetailsTitle>
+          <motion.p
+            style={{
+              color: '#d1d5db',
+              fontSize: '16px',
+              lineHeight: '1.8',
+              margin: '0 0 1.5rem 0'
+            }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            {details.story}
+          </motion.p>
+          <motion.p
+            style={{
+              color: '#9ca3af',
+              fontSize: '14px',
+              lineHeight: '1.6',
+              margin: '0'
+            }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            {details.description}
+          </motion.p>
+        </DetailsCard>
+
+        {/* Section Matériaux et Certifications */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '2rem' }}>
+          <DetailsCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <DetailsTitle>
+              <FiAward size={24} />
+              Matériaux d'exception
+            </DetailsTitle>
+            <SpecsList>
+              {details.materials.map((material, index) => (
+                <SpecItem key={index}>
+                  <SpecLabel>
+                    <FiCheck size={16} style={{ marginRight: '8px', color: '#22c55e' }} />
+                    {material}
+                  </SpecLabel>
+                </SpecItem>
+              ))}
+            </SpecsList>
+          </DetailsCard>
+
+          <DetailsCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <DetailsTitle>
+              <FiShield size={24} />
+              Certifications
+            </DetailsTitle>
+            <SpecsList>
+              {details.certifications.map((cert, index) => (
+                <SpecItem key={index}>
+                  <SpecLabel>
+                    <FiAward size={16} style={{ marginRight: '8px', color: '#d4af37' }} />
+                    {cert}
+                  </SpecLabel>
+                </SpecItem>
+              ))}
+            </SpecsList>
+          </DetailsCard>
+        </div>
 
         <FeaturesGrid>
           <FeatureCard
