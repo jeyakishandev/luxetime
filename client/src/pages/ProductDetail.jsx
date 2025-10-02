@@ -836,7 +836,7 @@ const ProductDetail = () => {
     )
   }
 
-  const productData = product.data
+  const productData = product.data.data || product.data
   
   // Debug des données
   console.log('🔍 ProductData:', productData)
