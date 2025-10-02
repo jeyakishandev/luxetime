@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { 
   FiFacebook, 
@@ -7,20 +8,40 @@ import {
   FiInstagram, 
   FiMail, 
   FiPhone, 
-  FiMapPin 
+  FiMapPin,
+  FiAward,
+  FiShield,
+  FiTruck,
+  FiClock
 } from 'react-icons/fi'
 
 const FooterContainer = styled.footer`
-  background: ${props => props.theme.colors.gray[900]};
-  border-top: 1px solid ${props => props.theme.colors.gray[700]};
-  padding: ${props => props.theme.spacing[8]} 0 ${props => props.theme.spacing[4]};
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  padding: ${props => props.theme.spacing[12]} 0 ${props => props.theme.spacing[6]};
   margin-top: auto;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
 `
 
 const FooterContent = styled.div`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 ${props => props.theme.spacing[4]};
+  position: relative;
+  z-index: 1;
   
   ${props => props.theme.media.mobile} {
     padding: 0 ${props => props.theme.spacing[3]};
@@ -45,11 +66,15 @@ const FooterSection = styled.div`
   gap: ${props => props.theme.spacing[4]};
 `
 
-const FooterTitle = styled.h3`
-  font-size: ${props => props.theme.fontSizes.lg};
-  font-weight: ${props => props.theme.fontWeights.semibold};
-  color: ${props => props.theme.colors.white};
-  margin: 0;
+const FooterTitle = styled(motion.h3)`
+  font-size: ${props => props.theme.fontSizes.xl};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 ${props => props.theme.spacing[4]} 0;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 `
 
 const FooterLinks = styled.div`
@@ -58,14 +83,33 @@ const FooterLinks = styled.div`
   gap: ${props => props.theme.spacing[2]};
 `
 
-const FooterLink = styled(Link)`
-  color: ${props => props.theme.colors.gray[400]};
+const FooterLink = styled(motion(Link))`
+  color: ${props => props.theme.colors.gray[300]};
   text-decoration: none;
   font-size: ${props => props.theme.fontSizes.sm};
-  transition: color ${props => props.theme.transitions.base};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  transition: all ${props => props.theme.transitions.base};
+  padding: ${props => props.theme.spacing[1]} 0;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, ${props => props.theme.colors.primary}, #f4d03f);
+    transition: width 0.3s ease;
+  }
   
   &:hover {
     color: ${props => props.theme.colors.primary};
+    transform: translateX(4px);
+    
+    &::before {
+      width: 100%;
+    }
   }
 `
 
@@ -88,28 +132,121 @@ const SocialLinks = styled.div`
   gap: ${props => props.theme.spacing[3]};
 `
 
-const SocialLink = styled.a`
-  width: 40px;
-  height: 40px;
+const SocialLink = styled(motion.a)`
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: ${props => props.theme.colors.gray[800]};
-  color: ${props => props.theme.colors.gray[400]};
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: ${props => props.theme.colors.gray[300]};
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: all ${props => props.theme.transitions.base};
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
   
   &:hover {
-    background: ${props => props.theme.colors.primary};
-    color: ${props => props.theme.colors.black};
+    border-color: ${props => props.theme.colors.primary};
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+    
+    &::before {
+      opacity: 1;
+    }
+    
+    & > * {
+      color: ${props => props.theme.colors.black};
+    }
+  }
+`
+
+const AdvantagesSection = styled(motion.div)`
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: ${props => props.theme.borderRadius.xl};
+  padding: ${props => props.theme.spacing[8]};
+  margin-bottom: ${props => props.theme.spacing[12]};
+  backdrop-filter: blur(20px);
+`
+
+const AdvantagesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: ${props => props.theme.spacing[6]};
+`
+
+const AdvantageCard = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[4]};
+  padding: ${props => props.theme.spacing[4]};
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
     transform: translateY(-2px);
   }
 `
 
+const AdvantageIcon = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
+  color: ${props => props.theme.colors.black};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${props => props.theme.fontSizes.lg};
+  flex-shrink: 0;
+`
+
+const AdvantageContent = styled.div`
+  flex: 1;
+`
+
+const AdvantageTitle = styled.h4`
+  font-size: ${props => props.theme.fontSizes.md};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  color: ${props => props.theme.colors.white};
+  margin: 0 0 ${props => props.theme.spacing[1]} 0;
+`
+
+const AdvantageDescription = styled.p`
+  font-size: ${props => props.theme.fontSizes.sm};
+  color: ${props => props.theme.colors.gray[300]};
+  margin: 0;
+  line-height: 1.5;
+`
+
 const FooterBottom = styled.div`
-  border-top: 1px solid ${props => props.theme.colors.gray[700]};
-  padding-top: ${props => props.theme.spacing[4]};
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  padding-top: ${props => props.theme.spacing[6]};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -153,48 +290,229 @@ const Footer = () => {
   return (
     <FooterContainer>
       <FooterContent>
+        <AdvantagesSection
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <motion.h3
+            style={{
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textAlign: 'center',
+              margin: '0 0 2rem 0'
+            }}
+          >
+            Pourquoi choisir Luxetime ?
+          </motion.h3>
+          
+          <AdvantagesGrid>
+            <AdvantageCard
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <AdvantageIcon>
+                <FiAward size={20} />
+              </AdvantageIcon>
+              <AdvantageContent>
+                <AdvantageTitle>Qualité Premium</AdvantageTitle>
+                <AdvantageDescription>
+                  Matériaux de haute qualité et savoir-faire artisanal
+                </AdvantageDescription>
+              </AdvantageContent>
+            </AdvantageCard>
+            
+            <AdvantageCard
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <AdvantageIcon>
+                <FiShield size={20} />
+              </AdvantageIcon>
+              <AdvantageContent>
+                <AdvantageTitle>Garantie 2 ans</AdvantageTitle>
+                <AdvantageDescription>
+                  Couverture complète pour votre tranquillité
+                </AdvantageDescription>
+              </AdvantageContent>
+            </AdvantageCard>
+            
+            <AdvantageCard
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <AdvantageIcon>
+                <FiTruck size={20} />
+              </AdvantageIcon>
+              <AdvantageContent>
+                <AdvantageTitle>Livraison gratuite</AdvantageTitle>
+                <AdvantageDescription>
+                  Partout en France sous 24-48h
+                </AdvantageDescription>
+              </AdvantageContent>
+            </AdvantageCard>
+            
+            <AdvantageCard
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              whileHover={{ scale: 1.02 }}
+            >
+              <AdvantageIcon>
+                <FiClock size={20} />
+              </AdvantageIcon>
+              <AdvantageContent>
+                <AdvantageTitle>Service 24/7</AdvantageTitle>
+                <AdvantageDescription>
+                  Support client disponible à tout moment
+                </AdvantageDescription>
+              </AdvantageContent>
+            </AdvantageCard>
+          </AdvantagesGrid>
+        </AdvantagesSection>
+
         <FooterGrid>
           <FooterSection>
-            <FooterTitle>Luxetime</FooterTitle>
-            <p style={{ color: '#9ca3af', fontSize: '14px', lineHeight: '1.6', margin: 0 }}>
+            <FooterTitle
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              Luxetime
+            </FooterTitle>
+            <motion.p 
+              style={{ color: '#d1d5db', fontSize: '14px', lineHeight: '1.6', margin: '0 0 1.5rem 0' }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
               Découvrez notre collection exclusive de montres de luxe. 
               Élégance et précision horlogère depuis 1952.
-            </p>
+            </motion.p>
             <SocialLinks>
-              <SocialLink href="#" aria-label="Facebook">
+              <SocialLink 
+                href="#" 
+                aria-label="Facebook"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <FiFacebook size={18} />
               </SocialLink>
-              <SocialLink href="#" aria-label="Twitter">
+              <SocialLink 
+                href="#" 
+                aria-label="Twitter"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <FiTwitter size={18} />
               </SocialLink>
-              <SocialLink href="#" aria-label="Instagram">
+              <SocialLink 
+                href="#" 
+                aria-label="Instagram"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <FiInstagram size={18} />
               </SocialLink>
             </SocialLinks>
           </FooterSection>
 
           <FooterSection>
-            <FooterTitle>Navigation</FooterTitle>
+            <FooterTitle
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              Navigation
+            </FooterTitle>
             <FooterLinks>
-              <FooterLink to="/">Accueil</FooterLink>
-              <FooterLink to="/products">Montres</FooterLink>
-              <FooterLink to="/about">À propos</FooterLink>
-              <FooterLink to="/contact">Contact</FooterLink>
+              <FooterLink 
+                to="/"
+                whileHover={{ x: 4 }}
+              >
+                Accueil
+              </FooterLink>
+              <FooterLink 
+                to="/products"
+                whileHover={{ x: 4 }}
+              >
+                Montres
+              </FooterLink>
+              <FooterLink 
+                to="/about"
+                whileHover={{ x: 4 }}
+              >
+                À propos
+              </FooterLink>
+              <FooterLink 
+                to="/contact"
+                whileHover={{ x: 4 }}
+              >
+                Contact
+              </FooterLink>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
-            <FooterTitle>Mon compte</FooterTitle>
+            <FooterTitle
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              Mon compte
+            </FooterTitle>
             <FooterLinks>
-              <FooterLink to="/login">Connexion</FooterLink>
-              <FooterLink to="/register">Inscription</FooterLink>
-              <FooterLink to="/profile">Mon profil</FooterLink>
-              <FooterLink to="/orders">Mes commandes</FooterLink>
+              <FooterLink 
+                to="/login"
+                whileHover={{ x: 4 }}
+              >
+                Connexion
+              </FooterLink>
+              <FooterLink 
+                to="/register"
+                whileHover={{ x: 4 }}
+              >
+                Inscription
+              </FooterLink>
+              <FooterLink 
+                to="/profile"
+                whileHover={{ x: 4 }}
+              >
+                Mon profil
+              </FooterLink>
+              <FooterLink 
+                to="/orders"
+                whileHover={{ x: 4 }}
+              >
+                Mes commandes
+              </FooterLink>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
-            <FooterTitle>Contact</FooterTitle>
+            <FooterTitle
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              Contact
+            </FooterTitle>
             <ContactInfo>
               <ContactItem>
                 <FiMapPin size={16} />
