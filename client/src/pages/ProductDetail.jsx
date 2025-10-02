@@ -780,6 +780,11 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isWishlisted, setIsWishlisted] = useState(false)
+  
+  // Reset selectedImage when product changes
+  React.useEffect(() => {
+    setSelectedImage(0)
+  }, [product?.data?.id])
 
   const handleAddToCart = () => {
     if (product?.data) {
@@ -833,6 +838,10 @@ const ProductDetail = () => {
 
   const productData = product.data
   
+  // Debug des données
+  console.log('🔍 ProductData:', productData)
+  console.log('💰 Prix:', productData.prix, 'PrixPromo:', productData.prixPromo)
+  
   // Prix dynamiques
   const currentPrice = productData.prixPromo && productData.prixPromo > 0 
     ? productData.prixPromo 
@@ -841,6 +850,8 @@ const ProductDetail = () => {
     ? productData.prix 
     : null
   const discount = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0
+  
+  console.log('💵 CurrentPrice:', currentPrice, 'OriginalPrice:', originalPrice)
   
   // Images dynamiques - utiliser les vraies images du produit ou fallback
   const productImagesData = productData.images && productData.images.length > 0 
@@ -1125,13 +1136,13 @@ const ProductDetail = () => {
               <RatingSection>
                 <StarsContainer>
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} filled={star <= Math.round(productData.noteMoyenne)}>
+                    <Star key={star} filled={star <= Math.round(productData.noteMoyenne || 4.5)}>
                       <FiStar />
                     </Star>
                   ))}
                 </StarsContainer>
                 <RatingText>
-                  {productData.noteMoyenne}/5 ({productData.nombreAvis} avis)
+                  {productData.noteMoyenne?.toFixed(1) || '4.5'}/5 ({productData.nombreAvis || reviews.length} avis)
                 </RatingText>
               </RatingSection>
             </PriceSection>
@@ -1317,7 +1328,7 @@ const ProductDetail = () => {
         >
           <DetailsTitle>
             <FiClock size={24} />
-            L'histoire de {details.name}
+            L'histoire de {productData.nom}
           </DetailsTitle>
           <motion.p
             style={{
