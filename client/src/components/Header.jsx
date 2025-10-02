@@ -329,7 +329,7 @@ const Header = () => {
     <HeaderContainer>
       <HeaderContent>
         <Logo to="/">
-          <LogoImage src="/logo.png" alt="Luxetime" />
+          <LogoImage src="/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png" alt="Luxetime" />
           Luxetime
         </Logo>
 
