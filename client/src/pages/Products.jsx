@@ -188,15 +188,30 @@ const Products = () => {
       
       console.log('🔄 Chargement des produits...')
       
+      // Préparer les paramètres de requête
+      const queryParams = {
+        page: filters.page,
+        limit: filters.limit
+      }
+      
+      // Ajouter les filtres seulement s'ils ont des valeurs
+      if (filters.category) {
+        queryParams.categorie = filters.category
+      }
+      if (filters.minPrice && filters.minPrice > 0) {
+        queryParams.prixMin = filters.minPrice
+      }
+      if (filters.maxPrice && filters.maxPrice < 999999) {
+        queryParams.prixMax = filters.maxPrice
+      }
+      if (filters.search) {
+        queryParams.search = filters.search
+      }
+      
+      console.log('📤 Paramètres envoyés:', queryParams)
+      
       const response = await axios.get('http://localhost:5000/api/products', {
-        params: {
-          page: filters.page,
-          limit: filters.limit,
-          categorie: filters.category,
-          prixMin: filters.minPrice || 0,
-          prixMax: filters.maxPrice || 999999,
-          search: filters.search
-        },
+        params: queryParams,
         timeout: 10000
       })
       
