@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button, Card, LoadingSpinner } from '../components/ui'
+import { Button, Card } from '../components/ui'
 import { FiShoppingCart, FiHeart, FiFilter, FiStar, FiEye, FiTrendingUp, FiAward, FiClock } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
