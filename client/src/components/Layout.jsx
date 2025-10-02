@@ -1,5 +1,4 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
 import styled from 'styled-components'
 import Header from './Header'
 import Footer from './Footer'
@@ -19,12 +18,12 @@ const MainContent = styled.main`
   }
 `
 
-const Layout = () => {
+const Layout = ({ children }) => {
   return (
     <LayoutContainer>
       <Header />
       <MainContent>
-        <Outlet />
+        {children}
       </MainContent>
       <Footer />
     </LayoutContainer>
