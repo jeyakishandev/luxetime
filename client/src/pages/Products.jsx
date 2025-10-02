@@ -184,6 +184,10 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true)
+      setError(null)
+      
+      console.log('🔄 Chargement des produits...')
+      
       const response = await axios.get('http://localhost:5000/api/products', {
         params: {
           page: filters.page,
@@ -192,18 +196,28 @@ const Products = () => {
           prixMin: filters.minPrice || 0,
           prixMax: filters.maxPrice || 999999,
           search: filters.search
-        }
+        },
+        timeout: 10000
       })
+      
+      console.log('✅ Réponse API:', response.data)
       
       if (response.data.success) {
         setProducts(response.data.data.products || [])
         setError(null)
+        console.log('📦 Produits chargés:', response.data.data.products.length)
       } else {
         setError('Erreur lors du chargement des produits')
       }
     } catch (err) {
-      console.error('Erreur API:', err)
-      setError('Erreur de connexion à l\'API')
+      console.error('❌ Erreur API:', err)
+      if (err.code === 'ECONNREFUSED') {
+        setError('Serveur non disponible. Vérifiez que le backend est démarré.')
+      } else if (err.code === 'NETWORK_ERROR') {
+        setError('Erreur réseau. Vérifiez votre connexion.')
+      } else {
+        setError(`Erreur de connexion à l'API: ${err.message}`)
+      }
     } finally {
       setLoading(false)
     }
@@ -261,6 +275,13 @@ const Products = () => {
           <PageSubtitle>
             Découvrez notre sélection de montres de luxe, alliant tradition horlogère et innovation moderne
           </PageSubtitle>
+          <Button 
+            onClick={fetchProducts} 
+            style={{ marginTop: '1rem' }}
+            variant="outline"
+          >
+            🔄 Recharger les produits
+          </Button>
         </PageHeader>
 
         <FiltersContainer>
