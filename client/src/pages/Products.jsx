@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button, Card, PageLoading } from '../components/ui'
 import { FiShoppingCart, FiHeart, FiFilter, FiStar, FiEye, FiTrendingUp, FiAward, FiClock } from 'react-icons/fi'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const ProductsContainer = styled.div`
@@ -415,6 +415,7 @@ const productImages = {
 }
 
 const Products = () => {
+  const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -626,6 +627,10 @@ const Products = () => {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   whileHover={{ y: -8 }}
                   layout
+                  onClick={() => {
+                    console.log('🖱️ Clic sur produit:', product.id)
+                    navigate(`/products/${product.id}`)
+                  }}
                 >
                   <ProductImage bgImage={productImages[product.id]}>
                     {product.nom}

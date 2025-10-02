@@ -353,6 +353,19 @@ const ProductCard = ({
             <StockIndicator stock={product.stock} />
             <span>{getStockStatus()}</span>
           </StockInfo>
+          
+          {/* Bouton de test pour la navigation */}
+          <div style={{ 
+            marginTop: '1rem', 
+            padding: '0.5rem', 
+            background: 'rgba(212, 175, 55, 0.1)', 
+            borderRadius: '8px',
+            textAlign: 'center',
+            fontSize: '0.8rem',
+            color: '#d4af37'
+          }}>
+            Cliquez ici pour voir les détails
+          </div>
         </ProductInfo>
       </ProductLink>
       
