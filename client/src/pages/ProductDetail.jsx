@@ -1,15 +1,50 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useProduct } from '../hooks/useProducts'
 import { useCart } from '../contexts/CartContext'
 import { Button, Card, PageLoading } from '../components/ui'
 import { formatPrice } from '../utils/format'
-import { FiStar, FiTruck, FiShield, FiHeart } from 'react-icons/fi'
+import { 
+  FiStar, 
+  FiTruck, 
+  FiShield, 
+  FiHeart, 
+  FiArrowLeft,
+  FiClock,
+  FiAward,
+  FiCheck,
+  FiMinus,
+  FiPlus,
+  FiShare2,
+  FiEye,
+  FiZap,
+  FiDroplet,
+  FiSun,
+  FiMoon,
+  FiTrendingUp,
+  FiUsers,
+  FiGift
+} from 'react-icons/fi'
 
 const ProductDetailContainer = styled.div`
   min-height: 100vh;
-  padding: ${props => props.theme.spacing[8]} 0;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
   
   ${props => props.theme.media.mobile} {
     padding: ${props => props.theme.spacing[6]} 0;
@@ -17,93 +52,352 @@ const ProductDetailContainer = styled.div`
 `
 
 const Container = styled.div`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 ${props => props.theme.spacing[4]};
+  position: relative;
+  z-index: 1;
   
   ${props => props.theme.media.mobile} {
     padding: 0 ${props => props.theme.spacing[3]};
   }
 `
 
-const ProductGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${props => props.theme.spacing[8]};
-  margin-bottom: ${props => props.theme.spacing[12]};
+const BackButton = styled(motion.button)`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]};
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.full};
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[5]};
+  color: ${props => props.theme.colors.gray[300]};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  margin-bottom: ${props => props.theme.spacing[8]};
   
-  ${props => props.theme.media.mobile} {
-    grid-template-columns: 1fr;
-    gap: ${props => props.theme.spacing[6]};
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: ${props => props.theme.colors.primary};
+    color: ${props => props.theme.colors.primary};
+    transform: translateX(-4px);
   }
 `
 
-const ImageContainer = styled.div`
+const ProductGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${props => props.theme.spacing[12]};
+  margin-bottom: ${props => props.theme.spacing[16]};
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[8]};
+  }
+`
+
+const ImageSection = styled.div`
+  position: relative;
+`
+
+const MainImageContainer = styled(motion.div)`
   position: relative;
   border-radius: ${props => props.theme.borderRadius.xl};
   overflow: hidden;
-  background: ${props => props.theme.colors.gray[800]};
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  margin-bottom: ${props => props.theme.spacing[6]};
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
 `
 
 const ProductImage = styled.img`
   width: 100%;
-  height: 500px;
+  height: 600px;
   object-fit: cover;
+  transition: transform 0.4s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
   
   ${props => props.theme.media.mobile} {
-    height: 300px;
+    height: 400px;
+  }
+`
+
+const ImageOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  ${MainImageContainer}:hover & {
+    opacity: 1;
+  }
+`
+
+const ZoomButton = styled(motion.button)`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
+  color: ${props => props.theme.colors.black};
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: ${props => props.theme.fontSizes.lg};
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+  }
+`
+
+const ThumbnailGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const ThumbnailImage = styled(motion.img)`
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: ${props => props.theme.borderRadius.lg};
+  cursor: pointer;
+  border: 2px solid ${props => props.active ? props.theme.colors.primary : 'transparent'};
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.primary};
+    transform: scale(1.05);
   }
 `
 
 const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
+  gap: ${props => props.theme.spacing[6]};
+`
+
+const ProductHeader = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: ${props => props.theme.spacing[4]};
 `
 
-const ProductBrand = styled.p`
-  font-size: ${props => props.theme.fontSizes.sm};
-  color: ${props => props.theme.colors.primary};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-`
-
-const ProductTitle = styled.h1`
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: ${props => props.theme.fontWeights.bold};
-  color: ${props => props.theme.colors.white};
-  margin: 0;
-  line-height: 1.2;
-`
-
-const ProductPrice = styled.div`
+const ProductBrand = styled(motion.div)`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[3]};
-  margin: ${props => props.theme.spacing[4]} 0;
+  gap: ${props => props.theme.spacing[2]};
+  color: ${props => props.theme.colors.primary};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  
+  &::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, ${props => props.theme.colors.primary}, transparent);
+  }
+  
+  &::after {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, ${props => props.theme.colors.primary}, transparent);
+  }
 `
 
-const CurrentPrice = styled.span`
-  font-size: ${props => props.theme.fontSizes['2xl']};
+const ProductTitle = styled(motion.h1)`
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: ${props => props.theme.fontWeights.bold};
-  color: ${props => props.theme.colors.primary};
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  line-height: 1.2;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+`
+
+const ProductSubtitle = styled(motion.p)`
+  font-size: ${props => props.theme.fontSizes.lg};
+  color: ${props => props.theme.colors.gray[300]};
+  margin: 0;
+  line-height: 1.6;
+  font-weight: ${props => props.theme.fontWeights.medium};
+`
+
+const ProductBadges = styled.div`
+  display: flex;
+  gap: ${props => props.theme.spacing[3]};
+  flex-wrap: wrap;
+`
+
+const Badge = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[1]};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[4]};
+  background: ${props => props.variant === 'new' 
+    ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1))'
+    : props.variant === 'popular'
+    ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1))'
+    : 'linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1))'};
+  border: 1px solid ${props => props.variant === 'new' 
+    ? 'rgba(34, 197, 94, 0.3)'
+    : props.variant === 'popular'
+    ? 'rgba(239, 68, 68, 0.3)'
+    : 'rgba(212, 175, 55, 0.3)'};
+  border-radius: ${props => props.theme.borderRadius.full};
+  color: ${props => props.variant === 'new' ? '#22c55e' : props.variant === 'popular' ? '#ef4444' : props.theme.colors.primary};
+  font-size: ${props => props.theme.fontSizes.xs};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`
+
+const PriceSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[4]};
+`
+
+const PriceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[4]};
+`
+
+const CurrentPrice = styled(motion.span)`
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: ${props => props.theme.fontWeights.bold};
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 `
 
 const OriginalPrice = styled.span`
-  font-size: ${props => props.theme.fontSizes.lg};
+  font-size: ${props => props.theme.fontSizes.xl};
   color: ${props => props.theme.colors.gray[500]};
   text-decoration: line-through;
+  opacity: 0.7;
 `
 
-const ProductDescription = styled.p`
-  font-size: ${props => props.theme.fontSizes.base};
+const DiscountBadge = styled(motion.div)`
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: ${props => props.theme.spacing[1]} ${props => props.theme.spacing[3]};
+  border-radius: ${props => props.theme.borderRadius.full};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`
+
+const RatingSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const StarsContainer = styled.div`
+  display: flex;
+  gap: ${props => props.theme.spacing[1]};
+`
+
+const Star = styled.div`
+  color: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+  font-size: ${props => props.theme.fontSizes.lg};
+`
+
+const RatingText = styled.span`
   color: ${props => props.theme.colors.gray[300]};
-  line-height: 1.6;
-  margin: 0;
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
 `
 
-const ProductActions = styled.div`
+const QuantitySection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const QuantityLabel = styled.label`
+  color: ${props => props.theme.colors.gray[300]};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+`
+
+const QuantityControls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const QuantityButton = styled(motion.button)`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: ${props => props.theme.colors.gray[300]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: ${props => props.theme.colors.primary};
+    color: ${props => props.theme.colors.primary};
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`
+
+const QuantityInput = styled.input`
+  width: 80px;
+  height: 40px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  color: ${props => props.theme.colors.white};
+  font-size: ${props => props.theme.fontSizes.md};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  backdrop-filter: blur(10px);
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  }
+`
+
+const ActionButtons = styled.div`
   display: flex;
   gap: ${props => props.theme.spacing[4]};
   margin-top: ${props => props.theme.spacing[6]};
@@ -113,45 +407,189 @@ const ProductActions = styled.div`
   }
 `
 
-const AddToCartButton = styled(Button)`
+const AddToCartButton = styled(motion.button)`
   flex: 1;
-`
-
-const WishlistButton = styled(Button)`
-  width: 50px;
-  height: 50px;
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: ${props => props.theme.spacing[2]};
+  padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[6]};
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.full};
+  color: ${props => props.theme.colors.black};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  font-size: ${props => props.theme.fontSizes.lg};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
 `
 
-const ProductFeatures = styled.div`
+const WishlistButton = styled(motion.button)`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: ${props => props.theme.colors.gray[300]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    transform: scale(1.1);
+  }
+`
+
+const ShareButton = styled(motion.button)`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: ${props => props.theme.colors.gray[300]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  
+  &:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    transform: scale(1.1);
+  }
+`
+
+const ProductDetails = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${props => props.theme.spacing[8]};
+  margin-top: ${props => props.theme.spacing[16]};
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[6]};
+  }
+`
+
+const DetailsCard = styled(motion.div)`
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.xl};
+  padding: ${props => props.theme.spacing[8]};
+  backdrop-filter: blur(20px);
+`
+
+const DetailsTitle = styled.h3`
+  font-size: ${props => props.theme.fontSizes.xl};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  color: ${props => props.theme.colors.white};
+  margin-bottom: ${props => props.theme.spacing[6]};
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const SpecsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[4]};
+`
+
+const SpecItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${props => props.theme.spacing[3]} 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+`
+
+const SpecLabel = styled.span`
+  color: ${props => props.theme.colors.gray[400]};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+`
+
+const SpecValue = styled.span`
+  color: ${props => props.theme.colors.white};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+`
+
+const FeaturesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${props => props.theme.spacing[4]};
-  margin-top: ${props => props.theme.spacing[8]};
+  gap: ${props => props.theme.spacing[6]};
+  margin-top: ${props => props.theme.spacing[16]};
 `
 
-const FeatureCard = styled(Card)`
+const FeatureCard = styled(motion.div)`
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.xl};
+  padding: ${props => props.theme.spacing[6]};
   text-align: center;
-  padding: ${props => props.theme.spacing[4]};
+  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-4px);
+  }
 `
 
 const FeatureIcon = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: ${props => props.theme.colors.primary};
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
   color: ${props => props.theme.colors.black};
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto ${props => props.theme.spacing[3]};
+  margin: 0 auto ${props => props.theme.spacing[4]};
+  font-size: ${props => props.theme.fontSizes.xl};
 `
 
-const FeatureTitle = styled.h3`
-  font-size: ${props => props.theme.fontSizes.base};
+const FeatureTitle = styled.h4`
+  font-size: ${props => props.theme.fontSizes.lg};
   font-weight: ${props => props.theme.fontWeights.semibold};
   color: ${props => props.theme.colors.white};
   margin-bottom: ${props => props.theme.spacing[2]};
@@ -159,19 +597,45 @@ const FeatureTitle = styled.h3`
 
 const FeatureDescription = styled.p`
   font-size: ${props => props.theme.fontSizes.sm};
-  color: ${props => props.theme.colors.gray[400]};
+  color: ${props => props.theme.colors.gray[300]};
   margin: 0;
+  line-height: 1.5;
 `
+
+// Mapping des images pour chaque produit
+const productImages = {
+  1: '/assets/images/analog-watch-1845547_1280.jpg',
+  2: '/assets/images/analog-watch-1869928_1280.jpg',
+  3: '/assets/images/rolex-2171960_1280.jpg',
+  4: '/assets/images/rolex-2171961_1280.jpg',
+  5: '/assets/images/clock-1224379_1280.jpg',
+  6: '/assets/images/watch-5772317_1280.jpg'
+}
 
 const ProductDetail = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { data: product, isLoading } = useProduct(id)
   const { addToCart, isAddingToCart } = useCart()
+  
+  const [selectedImage, setSelectedImage] = useState(0)
+  const [quantity, setQuantity] = useState(1)
+  const [isWishlisted, setIsWishlisted] = useState(false)
 
   const handleAddToCart = () => {
     if (product?.data) {
-      addToCart({ produitId: product.data.id, quantite: 1 })
+      addToCart({ produitId: product.data.id, quantite: quantity })
     }
+  }
+
+  const handleQuantityChange = (newQuantity) => {
+    if (newQuantity >= 1 && newQuantity <= (product?.data?.stock || 10)) {
+      setQuantity(newQuantity)
+    }
+  }
+
+  const toggleWishlist = () => {
+    setIsWishlisted(!isWishlisted)
   }
 
   if (isLoading) {
@@ -188,10 +652,21 @@ const ProductDetail = () => {
     return (
       <ProductDetailContainer>
         <Container>
-          <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-            <h1>Produit non trouvé</h1>
-            <p>Ce produit n'existe pas ou a été supprimé.</p>
-          </div>
+          <motion.div 
+            style={{ textAlign: 'center', padding: '4rem 0' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 style={{ color: '#ef4444', marginBottom: '1rem' }}>Produit non trouvé</h1>
+            <p style={{ color: '#9ca3af' }}>Ce produit n'existe pas ou a été supprimé.</p>
+            <Button 
+              onClick={() => navigate('/products')}
+              style={{ marginTop: '2rem' }}
+            >
+              Retour aux produits
+            </Button>
+          </motion.div>
         </Container>
       </ProductDetailContainer>
     )
@@ -204,81 +679,474 @@ const ProductDetail = () => {
   const originalPrice = productData.prixPromo && productData.prixPromo > 0 
     ? productData.prix 
     : null
+  const discount = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0
+
+  // Données fictives détaillées pour chaque produit
+  const productDetails = {
+    1: {
+      movement: "Mécanique automatique Swiss Made",
+      case: "Acier inoxydable 316L brossé",
+      dial: "Émail grand feu avec index appliqués",
+      strap: "Cuir alligator italien noir",
+      waterResistance: "5 ATM (50m)",
+      powerReserve: "42 heures",
+      frequency: "28,800 vibrations/heure",
+      jewels: "25 rubis",
+      thickness: "12.5mm",
+      weight: "85g",
+      warranty: "2 ans internationale",
+      origin: "Suisse",
+      features: ["Chronomètre certifié", "Réserve de marche", "Date", "Luminescence Super-LumiNova"]
+    },
+    2: {
+      movement: "Quartz haute précision",
+      case: "Titane grade 5",
+      dial: "Mat noir avec index lumineux",
+      strap: "Caoutchouc sport perforé",
+      waterResistance: "20 ATM (200m)",
+      powerReserve: "3 ans",
+      frequency: "32,768 Hz",
+      jewels: "0",
+      thickness: "14.2mm",
+      weight: "95g",
+      warranty: "3 ans internationale",
+      origin: "Japon",
+      features: ["Chronographe", "Tachymètre", "Résistance aux chocs", "Luminescence Super-LumiNova"]
+    },
+    3: {
+      movement: "Mécanique manuelle Swiss Made",
+      case: "Or rose 18k",
+      dial: "Émail blanc avec guillochage",
+      strap: "Satin noir",
+      waterResistance: "3 ATM (30m)",
+      frequency: "18,000 vibrations/heure",
+      jewels: "17 rubis",
+      thickness: "8.5mm",
+      weight: "65g",
+      warranty: "2 ans internationale",
+      origin: "Suisse",
+      features: ["Finitions manuelles", "Aiguilles feuille", "Sapphire", "Boucle déployante"]
+    },
+    4: {
+      movement: "Mécanique automatique vintage",
+      case: "Acier inoxydable brossé",
+      dial: "Mat avec index vintage",
+      strap: "Cuir vintage vieilli",
+      waterResistance: "5 ATM (50m)",
+      powerReserve: "38 heures",
+      frequency: "21,600 vibrations/heure",
+      jewels: "21 rubis",
+      thickness: "11.8mm",
+      weight: "78g",
+      warranty: "2 ans internationale",
+      origin: "Suisse",
+      features: ["Style vintage", "Luminescence vintage", "Crown vintage", "Édition limitée"]
+    },
+    5: {
+      movement: "Quartz solaire",
+      case: "Fibre de carbone recyclée",
+      dial: "Mat avec index écologiques",
+      strap: "Caoutchouc recyclé",
+      waterResistance: "10 ATM (100m)",
+      powerReserve: "6 mois",
+      frequency: "32,768 Hz",
+      jewels: "0",
+      thickness: "10.5mm",
+      weight: "72g",
+      warranty: "2 ans internationale",
+      origin: "Allemagne",
+      features: ["Écologique", "Recharge solaire", "Matériaux recyclés", "Certification éco"]
+    },
+    6: {
+      movement: "Mécanique automatique avec réserve de marche",
+      case: "Platine 950",
+      dial: "Émail grand feu avec complications",
+      strap: "Alligator noir",
+      waterResistance: "5 ATM (50m)",
+      powerReserve: "72 heures",
+      frequency: "28,800 vibrations/heure",
+      jewels: "31 rubis",
+      thickness: "13.8mm",
+      weight: "92g",
+      warranty: "3 ans internationale",
+      origin: "Suisse",
+      features: ["Complications", "Tourbillon", "Réserve de marche", "Finitions exceptionnelles"]
+    }
+  }
+
+  const details = productDetails[productData.id] || productDetails[1]
 
   return (
     <ProductDetailContainer>
       <Container>
+        <BackButton
+          onClick={() => navigate(-1)}
+          whileHover={{ x: -4 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FiArrowLeft size={18} />
+          Retour
+        </BackButton>
+
         <ProductGrid>
-          <ImageContainer>
-            <ProductImage
-              src={productData.images?.[0]?.url || '/placeholder-watch.jpg'}
-              alt={productData.nom}
-            />
-          </ImageContainer>
+          <ImageSection>
+            <MainImageContainer
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <ProductImage
+                src={productImages[productData.id] || productImages[1]}
+                alt={productData.nom}
+              />
+              <ImageOverlay>
+                <ZoomButton
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <FiEye size={24} />
+                </ZoomButton>
+              </ImageOverlay>
+            </MainImageContainer>
+
+            <ThumbnailGrid>
+              {[1, 2, 3, 4].map((index) => (
+                <ThumbnailImage
+                  key={index}
+                  src={productImages[productData.id] || productImages[1]}
+                  alt={`${productData.nom} - Vue ${index}`}
+                  active={selectedImage === index - 1}
+                  onClick={() => setSelectedImage(index - 1)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                />
+              ))}
+            </ThumbnailGrid>
+          </ImageSection>
 
           <ProductInfo>
-            <ProductBrand>{productData.marque}</ProductBrand>
-            <ProductTitle>{productData.nom}</ProductTitle>
-            
-            <ProductPrice>
-              <CurrentPrice>{formatPrice(currentPrice)}</CurrentPrice>
-              {originalPrice && (
-                <OriginalPrice>{formatPrice(originalPrice)}</OriginalPrice>
-              )}
-            </ProductPrice>
+            <ProductHeader>
+              <ProductBrand
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                {productData.marque}
+              </ProductBrand>
+              
+              <ProductTitle
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                {productData.nom}
+              </ProductTitle>
+              
+              <ProductSubtitle
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                {productData.description}
+              </ProductSubtitle>
 
-            <ProductDescription>
-              {productData.description}
-            </ProductDescription>
+              <ProductBadges
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                {productData.estNouveau && (
+                  <Badge variant="new">
+                    <FiStar size={12} />
+                    Nouveau
+                  </Badge>
+                )}
+                {productData.noteMoyenne >= 4.5 && (
+                  <Badge variant="popular">
+                    <FiTrendingUp size={12} />
+                    Populaire
+                  </Badge>
+                )}
+                {productData.noteMoyenne >= 4.8 && (
+                  <Badge>
+                    <FiAward size={12} />
+                    Premium
+                  </Badge>
+                )}
+              </ProductBadges>
+            </ProductHeader>
 
-            <ProductActions>
+            <PriceSection
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <PriceContainer>
+                <CurrentPrice>{formatPrice(currentPrice)}</CurrentPrice>
+                {originalPrice && (
+                  <>
+                    <OriginalPrice>{formatPrice(originalPrice)}</OriginalPrice>
+                    <DiscountBadge
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.3, delay: 0.7 }}
+                    >
+                      -{discount}%
+                    </DiscountBadge>
+                  </>
+                )}
+              </PriceContainer>
+
+              <RatingSection>
+                <StarsContainer>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} filled={star <= Math.round(productData.noteMoyenne)}>
+                      <FiStar />
+                    </Star>
+                  ))}
+                </StarsContainer>
+                <RatingText>
+                  {productData.noteMoyenne}/5 ({productData.nombreAvis} avis)
+                </RatingText>
+              </RatingSection>
+            </PriceSection>
+
+            <QuantitySection
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <QuantityLabel>Quantité</QuantityLabel>
+              <QuantityControls>
+                <QuantityButton
+                  onClick={() => handleQuantityChange(quantity - 1)}
+                  disabled={quantity <= 1}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FiMinus size={16} />
+                </QuantityButton>
+                <QuantityInput
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                  min="1"
+                  max={productData.stock}
+                />
+                <QuantityButton
+                  onClick={() => handleQuantityChange(quantity + 1)}
+                  disabled={quantity >= productData.stock}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FiPlus size={16} />
+                </QuantityButton>
+              </QuantityControls>
+            </QuantitySection>
+
+            <ActionButtons
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+            >
               <AddToCartButton
                 onClick={handleAddToCart}
                 disabled={productData.stock === 0 || isAddingToCart}
-                isLoading={isAddingToCart}
-                size="lg"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {productData.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
+                {isAddingToCart ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    >
+                      <FiClock size={20} />
+                    </motion.div>
+                    Ajout en cours...
+                  </>
+                ) : productData.stock === 0 ? (
+                  <>
+                    <FiCheck size={20} />
+                    Rupture de stock
+                  </>
+                ) : (
+                  <>
+                    <FiPlus size={20} />
+                    Ajouter au panier
+                  </>
+                )}
               </AddToCartButton>
               
-              <WishlistButton variant="outline" size="lg">
-                <FiHeart size={20} />
+              <WishlistButton
+                onClick={toggleWishlist}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FiHeart size={20} fill={isWishlisted ? '#ef4444' : 'none'} />
               </WishlistButton>
-            </ProductActions>
+              
+              <ShareButton
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <FiShare2 size={20} />
+              </ShareButton>
+            </ActionButtons>
           </ProductInfo>
         </ProductGrid>
 
-        <ProductFeatures>
-          <FeatureCard>
+        <ProductDetails>
+          <DetailsCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <DetailsTitle>
+              <FiZap size={24} />
+              Spécifications techniques
+            </DetailsTitle>
+            <SpecsList>
+              <SpecItem>
+                <SpecLabel>Mouvement</SpecLabel>
+                <SpecValue>{details.movement}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Boîtier</SpecLabel>
+                <SpecValue>{details.case}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Cadran</SpecLabel>
+                <SpecValue>{details.dial}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Bracelet</SpecLabel>
+                <SpecValue>{details.strap}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Étanchéité</SpecLabel>
+                <SpecValue>{details.waterResistance}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Réserve de marche</SpecLabel>
+                <SpecValue>{details.powerReserve}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Fréquence</SpecLabel>
+                <SpecValue>{details.frequency}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Rubis</SpecLabel>
+                <SpecValue>{details.jewels}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Épaisseur</SpecLabel>
+                <SpecValue>{details.thickness}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Poids</SpecLabel>
+                <SpecValue>{details.weight}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Garantie</SpecLabel>
+                <SpecValue>{details.warranty}</SpecValue>
+              </SpecItem>
+              <SpecItem>
+                <SpecLabel>Origine</SpecLabel>
+                <SpecValue>{details.origin}</SpecValue>
+              </SpecItem>
+            </SpecsList>
+          </DetailsCard>
+
+          <DetailsCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <DetailsTitle>
+              <FiAward size={24} />
+              Caractéristiques
+            </DetailsTitle>
+            <SpecsList>
+              {details.features.map((feature, index) => (
+                <SpecItem key={index}>
+                  <SpecLabel>
+                    <FiCheck size={16} style={{ marginRight: '8px', color: '#22c55e' }} />
+                    {feature}
+                  </SpecLabel>
+                </SpecItem>
+              ))}
+            </SpecsList>
+          </DetailsCard>
+        </ProductDetails>
+
+        <FeaturesGrid>
+          <FeatureCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -8 }}
+          >
             <FeatureIcon>
               <FiTruck size={24} />
             </FeatureIcon>
             <FeatureTitle>Livraison gratuite</FeatureTitle>
             <FeatureDescription>
-              Livraison gratuite en France métropolitaine
+              Livraison gratuite en France métropolitaine sous 24-48h
             </FeatureDescription>
           </FeatureCard>
 
-          <FeatureCard>
+          <FeatureCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -8 }}
+          >
             <FeatureIcon>
               <FiShield size={24} />
             </FeatureIcon>
             <FeatureTitle>Garantie 2 ans</FeatureTitle>
             <FeatureDescription>
-              Garantie constructeur incluse
+              Garantie constructeur incluse avec service après-vente
             </FeatureDescription>
           </FeatureCard>
 
-          <FeatureCard>
+          <FeatureCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -8 }}
+          >
             <FeatureIcon>
               <FiStar size={24} />
             </FeatureIcon>
             <FeatureTitle>Qualité premium</FeatureTitle>
             <FeatureDescription>
-              Matériaux d'exception sélectionnés
+              Matériaux d'exception et savoir-faire artisanal
             </FeatureDescription>
           </FeatureCard>
-        </ProductFeatures>
+
+          <FeatureCard
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -8 }}
+          >
+            <FeatureIcon>
+              <FiUsers size={24} />
+            </FeatureIcon>
+            <FeatureTitle>Service client</FeatureTitle>
+            <FeatureDescription>
+              Support client disponible 7j/7 pour vous accompagner
+            </FeatureDescription>
+          </FeatureCard>
+        </FeaturesGrid>
       </Container>
     </ProductDetailContainer>
   )
