@@ -95,6 +95,27 @@ const ProductImage = styled.div`
   margin-bottom: ${props => props.theme.spacing[4]};
   color: ${props => props.theme.colors.gray[400]};
   font-size: ${props => props.theme.fontSizes.lg};
+  background-image: url(${props => props.bgImage});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: ${props => props.theme.borderRadius.lg};
+  }
+  
+  & > * {
+    position: relative;
+    z-index: 1;
+  }
 `
 
 const ProductName = styled.h3`
@@ -163,6 +184,16 @@ const ErrorMessage = styled.div`
   padding: 4rem 0;
   color: ${props => props.theme.colors.error};
 `
+
+// Mapping des images pour chaque produit
+const productImages = {
+  1: '/assets/images/analog-watch-1845547_1280.jpg', // Luxetime Classic
+  2: '/assets/images/analog-watch-1869928_1280.jpg', // Luxetime Sport
+  3: '/assets/images/rolex-2171960_1280.jpg', // Luxetime Elegance
+  4: '/assets/images/rolex-2171961_1280.jpg', // Luxetime Heritage
+  5: '/assets/images/clock-1224379_1280.jpg', // Luxetime Modern
+  6: '/assets/images/watch-5772317_1280.jpg' // Luxetime Premium
+}
 
 const Products = () => {
   const [products, setProducts] = useState([])
@@ -337,7 +368,7 @@ const Products = () => {
           {products.length > 0 ? (
             products.map((product) => (
               <ProductCard key={product.id}>
-                <ProductImage>
+                <ProductImage bgImage={productImages[product.id]}>
                   {product.nom}
                 </ProductImage>
                 
