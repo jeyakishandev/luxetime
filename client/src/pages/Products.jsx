@@ -432,16 +432,17 @@ const Products = () => {
     limit: 12,
   })
 
+  console.log('🔍 Products component rendering, loading:', loading, 'products:', products.length)
+
   useEffect(() => {
     fetchProducts()
   }, [filters])
 
   const fetchProducts = async () => {
     try {
+      console.log('🔄 Début du chargement des produits...')
       setLoading(true)
       setError(null)
-      
-      console.log('🔄 Chargement des produits...')
       
       // Préparer les paramètres de requête
       const queryParams = {
