@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button, Card } from '../components/ui'
+import { Button, Card, PageLoading } from '../components/ui'
 import { FiShoppingCart, FiHeart, FiFilter, FiStar, FiEye, FiTrendingUp, FiAward, FiClock } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
@@ -397,11 +397,6 @@ const WishlistButton = styled(motion.button)`
   }
 `
 
-const LoadingMessage = styled.div`
-  text-align: center;
-  padding: 4rem 0;
-  color: ${props => props.theme.colors.gray[400]};
-`
 
 const ErrorMessage = styled.div`
   text-align: center;
@@ -513,10 +508,7 @@ const Products = () => {
     return (
       <ProductsContainer>
         <Container>
-          <LoadingMessage>
-            <h3>Chargement des produits...</h3>
-            <p>Veuillez patienter...</p>
-          </LoadingMessage>
+          <PageLoading text="Chargement des produits..." />
         </Container>
       </ProductsContainer>
     )
