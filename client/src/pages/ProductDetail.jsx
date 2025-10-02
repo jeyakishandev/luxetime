@@ -602,6 +602,117 @@ const FeatureDescription = styled.p`
   line-height: 1.5;
 `
 
+const ReviewsSection = styled(motion.div)`
+  margin-top: ${props => props.theme.spacing[16]};
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.xl};
+  padding: ${props => props.theme.spacing[8]};
+  backdrop-filter: blur(20px);
+`
+
+const ReviewsHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: ${props => props.theme.spacing[6]};
+  
+  ${props => props.theme.media.mobile} {
+    flex-direction: column;
+    gap: ${props => props.theme.spacing[4]};
+    align-items: flex-start;
+  }
+`
+
+const ReviewsTitle = styled.h3`
+  font-size: ${props => props.theme.fontSizes.xl};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  color: ${props => props.theme.colors.white};
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const ReviewsStats = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[4]};
+`
+
+const AverageRating = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[2]};
+`
+
+const RatingNumber = styled.span`
+  font-size: ${props => props.theme.fontSizes['2xl']};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  color: ${props => props.theme.colors.primary};
+`
+
+const ReviewsCount = styled.span`
+  color: ${props => props.theme.colors.gray[400]};
+  font-size: ${props => props.theme.fontSizes.sm};
+`
+
+const ReviewsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: ${props => props.theme.spacing[4]};
+`
+
+const ReviewCard = styled(motion.div)`
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: ${props => props.theme.spacing[4]};
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-2px);
+  }
+`
+
+const ReviewHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: ${props => props.theme.spacing[3]};
+`
+
+const ReviewerName = styled.span`
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  color: ${props => props.theme.colors.white};
+  font-size: ${props => props.theme.fontSizes.sm};
+`
+
+const ReviewDate = styled.span`
+  color: ${props => props.theme.colors.gray[500]};
+  font-size: ${props => props.theme.fontSizes.xs};
+`
+
+const ReviewRating = styled.div`
+  display: flex;
+  gap: ${props => props.theme.spacing[1]};
+  margin-bottom: ${props => props.theme.spacing[2]};
+`
+
+const ReviewStar = styled.div`
+  color: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+  font-size: ${props => props.theme.fontSizes.sm};
+`
+
+const ReviewComment = styled.p`
+  color: ${props => props.theme.colors.gray[300]};
+  font-size: ${props => props.theme.fontSizes.sm};
+  line-height: 1.5;
+  margin: 0;
+`
+
 // Mapping des images pour chaque produit avec galeries complètes
 const productImages = {
   1: {
@@ -721,6 +832,8 @@ const ProductDetail = () => {
   }
 
   const productData = product.data
+  
+  // Prix dynamiques
   const currentPrice = productData.prixPromo && productData.prixPromo > 0 
     ? productData.prixPromo 
     : productData.prix
@@ -728,6 +841,40 @@ const ProductDetail = () => {
     ? productData.prix 
     : null
   const discount = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0
+  
+  // Images dynamiques - utiliser les vraies images du produit ou fallback
+  const productImagesData = productData.images && productData.images.length > 0 
+    ? productData.images.map(img => img.url)
+    : (productImages[productData.id]?.gallery || productImages[1]?.gallery)
+  
+  // Avis dynamiques - générer des avis réalistes basés sur les données
+  const generateReviews = (productId, noteMoyenne, nombreAvis) => {
+    const reviews = []
+    const names = ['Jean-Pierre', 'Marie-Claire', 'Antoine', 'Sophie', 'Pierre', 'Isabelle', 'Michel', 'Catherine']
+    const comments = [
+      'Excellente qualité, finition impeccable !',
+      'Très satisfait de mon achat, je recommande.',
+      'Montre magnifique, conforme à mes attentes.',
+      'Service client au top, livraison rapide.',
+      'Un vrai bijou, je ne regrette pas mon choix.',
+      'Qualité exceptionnelle pour ce prix.',
+      'Parfait pour les occasions spéciales.',
+      'Design élégant et intemporel.'
+    ]
+    
+    for (let i = 0; i < Math.min(nombreAvis, 8); i++) {
+      reviews.push({
+        id: i + 1,
+        name: names[i % names.length],
+        rating: Math.floor(Math.random() * 2) + Math.floor(noteMoyenne), // Entre noteMoyenne et noteMoyenne+1
+        comment: comments[i % comments.length],
+        date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR')
+      })
+    }
+    return reviews
+  }
+  
+  const reviews = generateReviews(productData.id, productData.noteMoyenne || 4.5, productData.nombreAvis || 5)
 
   // Données fictives détaillées pour chaque produit
   const productDetails = {
@@ -874,7 +1021,7 @@ const ProductDetail = () => {
               transition={{ duration: 0.6 }}
             >
               <ProductImage
-                src={productImages[productData.id]?.gallery[selectedImage] || productImages[1]?.main}
+                src={productImagesData[selectedImage] || productImagesData[0]}
                 alt={productData.nom}
               />
               <ImageOverlay>
@@ -888,7 +1035,7 @@ const ProductDetail = () => {
             </MainImageContainer>
 
             <ThumbnailGrid>
-              {(productImages[productData.id]?.gallery || productImages[1]?.gallery).map((image, index) => (
+              {productImagesData.map((image, index) => (
                 <ThumbnailImage
                   key={index}
                   src={image}
@@ -925,7 +1072,7 @@ const ProductDetail = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                {productData.description}
+                {details.description || productData.description}
               </ProductSubtitle>
 
               <ProductBadges
@@ -1314,6 +1461,62 @@ const ProductDetail = () => {
             </FeatureDescription>
           </FeatureCard>
         </FeaturesGrid>
+
+        {/* Section Avis clients */}
+        <ReviewsSection
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <ReviewsHeader>
+            <ReviewsTitle>
+              <FiStar size={24} />
+              Avis clients
+            </ReviewsTitle>
+            <ReviewsStats>
+              <AverageRating>
+                <RatingNumber>{productData.noteMoyenne?.toFixed(1) || '4.5'}</RatingNumber>
+                <StarsContainer>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} filled={star <= Math.round(productData.noteMoyenne || 4.5)}>
+                      <FiStar />
+                    </Star>
+                  ))}
+                </StarsContainer>
+              </AverageRating>
+              <ReviewsCount>
+                {productData.nombreAvis || reviews.length} avis
+              </ReviewsCount>
+            </ReviewsStats>
+          </ReviewsHeader>
+
+          <ReviewsGrid>
+            {reviews.map((review, index) => (
+              <ReviewCard
+                key={review.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -4 }}
+              >
+                <ReviewHeader>
+                  <ReviewerName>{review.name}</ReviewerName>
+                  <ReviewDate>{review.date}</ReviewDate>
+                </ReviewHeader>
+                <ReviewRating>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <ReviewStar key={star} filled={star <= review.rating}>
+                      <FiStar />
+                    </ReviewStar>
+                  ))}
+                </ReviewRating>
+                <ReviewComment>{review.comment}</ReviewComment>
+              </ReviewCard>
+            ))}
+          </ReviewsGrid>
+        </ReviewsSection>
       </Container>
     </ProductDetailContainer>
   )
