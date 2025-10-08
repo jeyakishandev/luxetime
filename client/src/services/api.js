@@ -67,6 +67,14 @@ export const authAPI = {
   changePassword: (currentPassword, newPassword) => 
     api.put('/auth/change-password', { currentPassword, newPassword }),
   
+  // Mot de passe oublié
+  forgotPassword: (email) => 
+    api.post('/auth/forgot-password', { email }),
+  
+  // Réinitialiser le mot de passe
+  resetPassword: (token, newPassword) => 
+    api.post('/auth/reset-password', { token, newPassword }),
+  
   // Supprimer le compte
   deleteAccount: (password) => 
     api.delete('/auth/account', { data: { password } })

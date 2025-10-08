@@ -429,6 +429,27 @@ const Login = () => {
               {isLoading ? 'Connexion...' : 'Se connecter'}
             </LoginButton>
 
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              style={{ textAlign: 'center', marginTop: '1rem' }}
+            >
+              <Link
+                to="/forgot-password"
+                style={{
+                  color: '#9ca3af',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  transition: 'color 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.target.style.color = '#d4af37'}
+                onMouseLeave={(e) => e.target.style.color = '#9ca3af'}
+              >
+                Mot de passe oublié ?
+              </Link>
+            </motion.div>
+
             <Divider>
               <DividerText>ou</DividerText>
             </Divider>

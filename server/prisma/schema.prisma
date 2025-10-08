@@ -25,6 +25,10 @@ model User {
   adresseCodePostal String?
   adressePays    String?
   
+  // Reset password
+  resetPasswordToken    String?
+  resetPasswordExpires  DateTime?
+  
   // Relations
   panier     PanierItem[]
   commandes  Commande[]

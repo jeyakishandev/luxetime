@@ -101,6 +101,43 @@ class AuthController {
     }
   }
 
+  // Mot de passe oublié
+  static async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+      const result = await AuthService.forgotPassword(email);
+      
+      res.json({
+        success: true,
+        message: result.message,
+        resetToken: result.resetToken // Pour les tests uniquement
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
+  // Réinitialiser le mot de passe
+  static async resetPassword(req, res) {
+    try {
+      const { token, newPassword } = req.body;
+      const result = await AuthService.resetPassword(token, newPassword);
+      
+      res.json({
+        success: true,
+        message: result.message
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
   // Supprimer le compte
   static async deleteAccount(req, res) {
     try {

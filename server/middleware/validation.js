@@ -180,10 +180,49 @@ const validateCreateOrder = [
   handleValidationErrors
 ];
 
+// Validation pour mot de passe oublié
+const validateForgotPassword = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Email invalide'),
+  handleValidationErrors
+];
+
+// Validation pour réinitialisation de mot de passe
+const validateResetPassword = [
+  body('token')
+    .trim()
+    .isLength({ min: 64, max: 64 })
+    .withMessage('Token invalide'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('Le mot de passe doit contenir au moins 6 caractères')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre'),
+  handleValidationErrors
+];
+
+// Validation pour changement de mot de passe
+const validateChangePassword = [
+  body('currentPassword')
+    .notEmpty()
+    .withMessage('Le mot de passe actuel est requis'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('Le nouveau mot de passe doit contenir au moins 6 caractères')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Le nouveau mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre'),
+  handleValidationErrors
+];
+
 module.exports = {
   handleValidationErrors,
   validateRegister,
   validateLogin,
+  validateForgotPassword,
+  validateResetPassword,
+  validateChangePassword,
   validateCreateProduct,
   validateUpdateProduct,
   validateSearchParams,
