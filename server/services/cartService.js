@@ -43,7 +43,7 @@ class CartService {
     try {
       // Vérifier que le produit existe et est disponible
       const produit = await prisma.produit.findUnique({
-        where: { id: produitId }
+        where: { id: parseInt(produitId) }
       });
 
       if (!produit) {
@@ -63,7 +63,7 @@ class CartService {
         where: {
           userId_produitId: {
             userId,
-            produitId
+            produitId: parseInt(produitId)
           }
         }
       });
@@ -80,7 +80,7 @@ class CartService {
           where: {
             userId_produitId: {
               userId,
-              produitId
+              produitId: parseInt(produitId)
             }
           },
           data: { quantite: newQuantite },
@@ -139,7 +139,7 @@ class CartService {
 
       // Vérifier que le produit existe
       const produit = await prisma.produit.findUnique({
-        where: { id: produitId }
+        where: { id: parseInt(produitId) }
       });
 
       if (!produit) {
@@ -155,7 +155,7 @@ class CartService {
         where: {
           userId_produitId: {
             userId,
-            produitId
+            produitId: parseInt(produitId)
           }
         }
       });
@@ -168,7 +168,7 @@ class CartService {
         where: {
           userId_produitId: {
             userId,
-            produitId
+            produitId: parseInt(produitId)
           }
         },
         data: { quantite },
@@ -200,7 +200,7 @@ class CartService {
         where: {
           userId_produitId: {
             userId,
-            produitId
+            produitId: parseInt(produitId)
           }
         }
       });

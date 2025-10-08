@@ -20,15 +20,25 @@ const CartItemContainer = styled(Card)`
 `
 
 const ImageContainer = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   border-radius: ${props => props.theme.borderRadius.lg};
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  transition: all ${props => props.theme.transitions.base};
+  
+  &:hover {
+    transform: scale(1.05);
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.2);
+  }
   
   ${props => props.theme.media.mobile} {
     width: 100%;
-    height: 200px;
+    height: 250px;
   }
 `
 
@@ -36,6 +46,11 @@ const ProductImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform ${props => props.theme.transitions.base};
+  
+  ${ImageContainer}:hover & {
+    transform: scale(1.1);
+  }
 `
 
 const ProductInfo = styled.div`
@@ -69,6 +84,34 @@ const ProductReference = styled.p`
   font-size: ${props => props.theme.fontSizes.xs};
   color: ${props => props.theme.colors.gray[500]};
   margin: 0;
+`
+
+const ProductBadges = styled.div`
+  display: flex;
+  gap: ${props => props.theme.spacing[2]};
+  flex-wrap: wrap;
+  margin-top: ${props => props.theme.spacing[2]};
+`
+
+const Badge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[1]};
+  padding: ${props => props.theme.spacing[1]} ${props => props.theme.spacing[2]};
+  border-radius: ${props => props.theme.borderRadius.full};
+  font-size: ${props => props.theme.fontSizes.xs};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  background: ${props => {
+    if (props.variant === 'promo') return 'linear-gradient(135deg, #dc2626, #ef4444)'
+    if (props.variant === 'new') return 'linear-gradient(135deg, #d4af37, #f4d03f)'
+    return 'rgba(212, 175, 55, 0.1)'
+  }};
+  color: ${props => props.variant === 'promo' || props.variant === 'new' ? '#fff' : props.theme.colors.primary};
+  border: 1px solid ${props => {
+    if (props.variant === 'promo') return 'rgba(220, 38, 38, 0.3)'
+    if (props.variant === 'new') return 'rgba(212, 175, 55, 0.3)'
+    return 'rgba(212, 175, 55, 0.2)'
+  }};
 `
 
 const PriceContainer = styled.div`
@@ -279,6 +322,20 @@ const CartItem = ({ item, onUpdate, onRemove }) => {
           <ProductBrand>{item.produit.marque}</ProductBrand>
           <ProductName>{item.produit.nom}</ProductName>
           <ProductReference>Réf: {item.produit.reference}</ProductReference>
+          
+          <ProductBadges>
+            {item.produit.estNouveau && (
+              <Badge variant="new">✨ Nouveau</Badge>
+            )}
+            {item.produit.prixPromo && item.produit.prixPromo > 0 && (
+              <Badge variant="promo">
+                🔥 -{Math.round(((item.produit.prix - item.produit.prixPromo) / item.produit.prix) * 100)}%
+              </Badge>
+            )}
+            {item.produit.categorie && (
+              <Badge>{item.produit.categorie}</Badge>
+            )}
+          </ProductBadges>
           
           <PriceContainer>
             <CurrentPrice>{formatPrice(getCurrentPrice())}</CurrentPrice>

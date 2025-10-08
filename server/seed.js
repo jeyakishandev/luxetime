@@ -8,7 +8,7 @@ const testUser = {
   nom: "Dupont",
   prenom: "Jean",
   email: "test@luxetime.fr",
-  motDePasse: "password123",
+  motDePasse: "Luxetime2024!",
   telephone: "0123456789",
   dateNaissance: new Date('1990-01-15'),
   adresse: {
@@ -47,7 +47,16 @@ const products = [
     estNouveau: true,
     noteMoyenne: 4.8,
     nombreAvis: 24,
-    vues: 156
+    vues: 156,
+    images: {
+      create: [
+        {
+          url: "/assets/images/analog-watch-1845547_1280.jpg",
+          alt: "Luxetime Classic",
+          estPrincipale: true
+        }
+      ]
+    }
   },
   {
     nom: "Luxetime Sport",
@@ -69,7 +78,16 @@ const products = [
     estNouveau: false,
     noteMoyenne: 4.6,
     nombreAvis: 18,
-    vues: 203
+    vues: 203,
+    images: {
+      create: [
+        {
+          url: "/assets/images/analog-watch-1869928_1280.jpg",
+          alt: "Luxetime Sport",
+          estPrincipale: true
+        }
+      ]
+    }
   },
   {
     nom: "Luxetime Elegance",
@@ -91,7 +109,16 @@ const products = [
     estNouveau: true,
     noteMoyenne: 4.9,
     nombreAvis: 12,
-    vues: 89
+    vues: 89,
+    images: {
+      create: [
+        {
+          url: "/assets/images/clock-1224379_1280.jpg",
+          alt: "Luxetime Elegance",
+          estPrincipale: true
+        }
+      ]
+    }
   },
   {
     nom: "Luxetime Heritage",
@@ -113,7 +140,16 @@ const products = [
     estNouveau: false,
     noteMoyenne: 5.0,
     nombreAvis: 8,
-    vues: 67
+    vues: 67,
+    images: {
+      create: [
+        {
+          url: "/assets/images/analog-watch-1845547_1280.jpg",
+          alt: "Luxetime Heritage",
+          estPrincipale: true
+        }
+      ]
+    }
   },
   {
     nom: "Luxetime Modern",
@@ -135,7 +171,16 @@ const products = [
     estNouveau: true,
     noteMoyenne: 4.7,
     nombreAvis: 15,
-    vues: 134
+    vues: 134,
+    images: {
+      create: [
+        {
+          url: "/assets/images/analog-watch-1869928_1280.jpg",
+          alt: "Luxetime Modern",
+          estPrincipale: true
+        }
+      ]
+    }
   },
   {
     nom: "Luxetime Premium",
@@ -157,7 +202,16 @@ const products = [
     estNouveau: false,
     noteMoyenne: 5.0,
     nombreAvis: 6,
-    vues: 45
+    vues: 45,
+    images: {
+      create: [
+        {
+          url: "/assets/images/clock-1224379_1280.jpg",
+          alt: "Luxetime Premium",
+          estPrincipale: true
+        }
+      ]
+    }
   }
 ]
 
@@ -169,7 +223,7 @@ async function main() {
     try {
       await prisma.avis.deleteMany()
       await prisma.produit.deleteMany()
-      await prisma.utilisateur.deleteMany()
+      await prisma.user.deleteMany()
     } catch (error) {
       console.log('⚠️ Tables non trouvées, création des données...')
     }
@@ -178,18 +232,18 @@ async function main() {
     console.log('👤 Création de l\'utilisateur de test...')
     const hashedPassword = await bcrypt.hash(testUser.motDePasse, 10)
     
-    const user = await prisma.utilisateur.create({
+    const user = await prisma.user.create({
       data: {
         nom: testUser.nom,
         prenom: testUser.prenom,
         email: testUser.email,
         motDePasse: hashedPassword,
         telephone: testUser.telephone,
-        dateNaissance: testUser.dateNaissance,
-        adresse: testUser.adresse,
-        role: testUser.role,
-        estActif: testUser.estActif,
-        preferences: testUser.preferences
+        adresseRue: testUser.adresse.rue,
+        adresseVille: testUser.adresse.ville,
+        adresseCodePostal: testUser.adresse.codePostal,
+        adressePays: testUser.adresse.pays,
+        role: testUser.role
       }
     })
     

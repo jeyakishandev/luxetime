@@ -632,7 +632,7 @@ const Products = () => {
                     navigate(`/products/${product.id}`)
                   }}
                 >
-                  <ProductImage bgImage={productImages[product.id]}>
+                  <ProductImage bgImage={product.images?.[0]?.url || '/assets/images/analog-watch-1845547_1280.jpg'}>
                     {product.nom}
                   </ProductImage>
                   

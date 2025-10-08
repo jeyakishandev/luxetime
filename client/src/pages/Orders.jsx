@@ -1,16 +1,26 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useUserOrders } from '../hooks/useOrders'
-import { Card, PageLoading } from '../components/ui'
-import { formatPrice, formatDate } from '../utils/format'
-import { FiPackage, FiTruck, FiCheckCircle } from 'react-icons/fi'
+import { motion } from 'framer-motion'
+import { Card } from '../components/ui'
+import { FiPackage, FiClock, FiCheckCircle, FiTruck } from 'react-icons/fi'
 
 const OrdersContainer = styled.div`
   min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  position: relative;
+  overflow: hidden;
   padding: ${props => props.theme.spacing[8]} 0;
   
-  ${props => props.theme.media.mobile} {
-    padding: ${props => props.theme.spacing[6]} 0;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+    pointer-events: none;
   }
 `
 
@@ -18,287 +28,85 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 ${props => props.theme.spacing[4]};
-  
-  ${props => props.theme.media.mobile} {
-    padding: 0 ${props => props.theme.spacing[3]};
-  }
+  position: relative;
+  z-index: 1;
 `
 
-const PageHeader = styled.div`
-  margin-bottom: ${props => props.theme.spacing[8]};
+const Title = styled(motion.h1)`
+  font-size: ${props => props.theme.fontSizes['3xl']};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-align: center;
+  margin-bottom: ${props => props.theme.spacing[8]};
 `
 
-const PageTitle = styled.h1`
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: ${props => props.theme.fontWeights.bold};
-  color: ${props => props.theme.colors.white};
-  margin-bottom: ${props => props.theme.spacing[4]};
-`
-
-const OrdersList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${props => props.theme.spacing[4]};
-`
-
-const OrderCard = styled(Card)`
-  padding: ${props => props.theme.spacing[6]};
-`
-
-const OrderHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: ${props => props.theme.spacing[4]};
-  
-  ${props => props.theme.media.mobile} {
-    flex-direction: column;
-    gap: ${props => props.theme.spacing[3]};
-  }
-`
-
-const OrderInfo = styled.div`
-  flex: 1;
-`
-
-const OrderNumber = styled.h3`
-  font-size: ${props => props.theme.fontSizes.lg};
-  font-weight: ${props => props.theme.fontWeights.semibold};
-  color: ${props => props.theme.colors.white};
-  margin: 0 0 ${props => props.theme.spacing[1]} 0;
-`
-
-const OrderDate = styled.p`
-  color: ${props => props.theme.colors.gray[400]};
-  font-size: ${props => props.theme.fontSizes.sm};
-  margin: 0;
-`
-
-const OrderStatus = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing[2]};
-  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
-  border-radius: ${props => props.theme.borderRadius.md};
-  background: ${props => {
-    switch (props.status) {
-      case 'LIVREE': return props.theme.colors.success
-      case 'EXPEDIEE': return props.theme.colors.info
-      case 'EN_PREPARATION': return props.theme.colors.warning
-      case 'CONFIRMEE': return props.theme.colors.primary
-      case 'EN_ATTENTE': return props.theme.colors.gray[600]
-      case 'ANNULEE': return props.theme.colors.error
-      default: return props.theme.colors.gray[600]
-    }
-  }};
-  color: ${props => props.theme.colors.white};
-  font-size: ${props => props.theme.fontSizes.sm};
-  font-weight: ${props => props.theme.fontWeights.medium};
-`
-
-const OrderTotal = styled.div`
-  text-align: right;
-  
-  ${props => props.theme.media.mobile} {
-    text-align: left;
-  }
-`
-
-const TotalLabel = styled.p`
-  color: ${props => props.theme.colors.gray[400]};
-  font-size: ${props => props.theme.fontSizes.sm};
-  margin: 0 0 ${props => props.theme.spacing[1]} 0;
-`
-
-const TotalValue = styled.p`
-  font-size: ${props => props.theme.fontSizes.xl};
-  font-weight: ${props => props.theme.fontWeights.bold};
-  color: ${props => props.theme.colors.primary};
-  margin: 0;
-`
-
-const OrderItems = styled.div`
-  margin-top: ${props => props.theme.spacing[4]};
-  padding-top: ${props => props.theme.spacing[4]};
-  border-top: 1px solid ${props => props.theme.colors.gray[700]};
-`
-
-const OrderItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing[3]};
-  margin-bottom: ${props => props.theme.spacing[3]};
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-`
-
-const ItemImage = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: ${props => props.theme.borderRadius.md};
-  object-fit: cover;
-`
-
-const ItemInfo = styled.div`
-  flex: 1;
-`
-
-const ItemName = styled.p`
-  font-size: ${props => props.theme.fontSizes.base};
-  font-weight: ${props => props.theme.fontWeights.medium};
-  color: ${props => props.theme.colors.white};
-  margin: 0 0 ${props => props.theme.spacing[1]} 0;
-`
-
-const ItemDetails = styled.p`
-  font-size: ${props => props.theme.fontSizes.sm};
-  color: ${props => props.theme.colors.gray[400]};
-  margin: 0;
-`
-
-const ItemPrice = styled.p`
-  font-size: ${props => props.theme.fontSizes.base};
-  font-weight: ${props => props.theme.fontWeights.semibold};
-  color: ${props => props.theme.colors.primary};
-  margin: 0;
-`
-
-const EmptyOrders = styled.div`
+const EmptyState = styled(motion.div)`
   text-align: center;
   padding: ${props => props.theme.spacing[12]} 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.xl};
+  backdrop-filter: blur(20px);
 `
 
 const EmptyIcon = styled.div`
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: ${props => props.theme.colors.gray[800]};
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto ${props => props.theme.spacing[6]};
-  color: ${props => props.theme.colors.gray[400]};
+  color: ${props => props.theme.colors.black};
+  font-size: ${props => props.theme.fontSizes['3xl']};
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
 `
 
 const EmptyTitle = styled.h2`
-  font-size: ${props => props.theme.fontSizes.xl};
+  font-size: ${props => props.theme.fontSizes['2xl']};
   color: ${props => props.theme.colors.white};
   margin-bottom: ${props => props.theme.spacing[3]};
+  font-weight: ${props => props.theme.fontWeights.bold};
 `
 
 const EmptyText = styled.p`
-  color: ${props => props.theme.colors.gray[400]};
+  color: ${props => props.theme.colors.gray[300]};
   margin-bottom: ${props => props.theme.spacing[6]};
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
 `
 
 const Orders = () => {
-  const { data: ordersData, isLoading } = useUserOrders()
-
-  if (isLoading) {
-    return (
-      <OrdersContainer>
-        <Container>
-          <PageLoading text="Chargement de vos commandes..." />
-        </Container>
-      </OrdersContainer>
-    )
-  }
-
-  const orders = ordersData?.data?.commandes || []
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'LIVREE': return <FiCheckCircle size={16} />
-      case 'EXPEDIEE': return <FiTruck size={16} />
-      case 'EN_PREPARATION': return <FiPackage size={16} />
-      default: return <FiPackage size={16} />
-    }
-  }
-
-  const getStatusLabel = (status) => {
-    const labels = {
-      'EN_ATTENTE': 'En attente',
-      'CONFIRMEE': 'Confirmée',
-      'EN_PREPARATION': 'En préparation',
-      'EXPEDIEE': 'Expédiée',
-      'LIVREE': 'Livrée',
-      'ANNULEE': 'Annulée'
-    }
-    return labels[status] || status
-  }
-
-  if (orders.length === 0) {
-    return (
-      <OrdersContainer>
-        <Container>
-          <PageHeader>
-            <PageTitle>Mes Commandes</PageTitle>
-          </PageHeader>
-          
-          <EmptyOrders>
-            <EmptyIcon>
-              <FiPackage size={48} />
-            </EmptyIcon>
-            <EmptyTitle>Aucune commande</EmptyTitle>
-            <EmptyText>
-              Vous n'avez pas encore passé de commande. Découvrez notre collection de montres de luxe.
-            </EmptyText>
-          </EmptyOrders>
-        </Container>
-      </OrdersContainer>
-    )
-  }
-
   return (
     <OrdersContainer>
       <Container>
-        <PageHeader>
-          <PageTitle>Mes Commandes</PageTitle>
-        </PageHeader>
+        <Title
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          Mes Commandes
+        </Title>
 
-        <OrdersList>
-          {orders.map((order) => (
-            <OrderCard key={order.id}>
-              <OrderHeader>
-                <OrderInfo>
-                  <OrderNumber>Commande #{order.numero}</OrderNumber>
-                  <OrderDate>Passée le {formatDate(order.createdAt)}</OrderDate>
-                </OrderInfo>
-                
-                <OrderStatus status={order.statut}>
-                  {getStatusIcon(order.statut)}
-                  {getStatusLabel(order.statut)}
-                </OrderStatus>
-                
-                <OrderTotal>
-                  <TotalLabel>Total</TotalLabel>
-                  <TotalValue>{formatPrice(order.total)}</TotalValue>
-                </OrderTotal>
-              </OrderHeader>
-
-              <OrderItems>
-                {order.items?.map((item, index) => (
-                  <OrderItem key={index}>
-                    <ItemImage
-                      src={item.produit?.images?.[0]?.url || '/placeholder-watch.jpg'}
-                      alt={item.nomProduit}
-                    />
-                    <ItemInfo>
-                      <ItemName>{item.nomProduit}</ItemName>
-                      <ItemDetails>
-                        Quantité: {item.quantite} • Prix unitaire: {formatPrice(item.prixUnitaire)}
-                      </ItemDetails>
-                    </ItemInfo>
-                    <ItemPrice>{formatPrice(item.prixUnitaire * item.quantite)}</ItemPrice>
-                  </OrderItem>
-                ))}
-              </OrderItems>
-            </OrderCard>
-          ))}
-        </OrdersList>
+        <EmptyState
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <EmptyIcon>
+            <FiPackage size={48} />
+          </EmptyIcon>
+          <EmptyTitle>Aucune commande</EmptyTitle>
+          <EmptyText>
+            Vous n'avez pas encore passé de commande. Découvrez notre collection de montres de luxe et passez votre première commande !
+          </EmptyText>
+        </EmptyState>
       </Container>
     </OrdersContainer>
   )

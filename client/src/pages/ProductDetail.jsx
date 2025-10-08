@@ -784,11 +784,19 @@ const ProductDetail = () => {
   // Reset selectedImage when product changes
   React.useEffect(() => {
     setSelectedImage(0)
-  }, [product?.data?.id])
+  }, [product?.data?.data?.id])
 
   const handleAddToCart = () => {
-    if (product?.data) {
-      addToCart({ produitId: product.data.id, quantite: quantity })
+    console.log('🛒 ProductDetail - Product:', product)
+    console.log('🛒 ProductDetail - Product.data:', product?.data)
+    console.log('🛒 ProductDetail - Product.data.data:', product?.data?.data)
+    console.log('🛒 ProductDetail - Product.data.data.id:', product?.data?.data?.id)
+    console.log('🛒 ProductDetail - Quantity:', quantity)
+    
+    if (product?.data?.data) {
+      addToCart({ produitId: product.data.data.id, quantite: quantity })
+    } else {
+      console.log('❌ ProductDetail - Pas de données produit')
     }
   }
 

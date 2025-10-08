@@ -112,42 +112,56 @@ export const CartProvider = ({ children }) => {
   const queryClient = useQueryClient()
 
   // Récupérer le panier
-  const { data: cartData, isLoading: isLoadingCart } = useQuery(
+  const { data: cartData, isLoading: isLoadingCart, refetch: refetchCart } = useQuery(
     ['cart'],
-    () => cartAPI.getCart(),
+    () => {
+      console.log('🛒 CartContext - Récupération du panier...')
+      return cartAPI.getCart()
+    },
     {
       enabled: isAuthenticated,
-      onSuccess: (data) => {
-        if (data.success) {
-          dispatch({
-            type: cartActions.SET_CART,
-            payload: data.data
-          })
-        }
-      },
-      onError: (error) => {
-        dispatch({
-          type: cartActions.SET_ERROR,
-          payload: error.message
-        })
-      }
+      refetchOnWindowFocus: false,
+      refetchInterval: false
     }
   )
+
+  // Traiter les données du panier
+  useEffect(() => {
+    if (cartData) {
+      console.log('🛒 CartContext - Données reçues:', cartData)
+      console.log('🛒 CartContext - cartData.data:', cartData.data)
+      console.log('🛒 CartContext - cartData.data.success:', cartData.data?.success)
+      console.log('🛒 CartContext - cartData.data.data:', cartData.data?.data)
+      if (cartData.data?.success) {
+        console.log('🛒 CartContext - Dispatch SET_CART avec:', cartData.data.data)
+        dispatch({
+          type: cartActions.SET_CART,
+          payload: cartData.data.data
+        })
+      } else {
+        console.log('🛒 CartContext - data.success est false!')
+      }
+    }
+  }, [cartData])
 
   // Ajouter au panier
   const addToCart = useMutation(
     async ({ produitId, quantite = 1 }) => {
+      console.log('🛒 Ajout au panier:', { produitId, quantite })
+      console.log('🛒 Types:', { produitId: typeof produitId, quantite: typeof quantite })
       const response = await cartAPI.addToCart(produitId, quantite)
+      console.log('🛒 Réponse API:', response.data)
       return response.data
     },
     {
-      onSuccess: (data) => {
-        if (data.success) {
-          // Rafraîchir le panier
-          queryClient.invalidateQueries(['cart'])
-          toast.success('Produit ajouté au panier !')
-        }
-      },
+        onSuccess: (data) => {
+          if (data.success) {
+            // Rafraîchir le panier immédiatement
+            queryClient.invalidateQueries(['cart'])
+            refetchCart() // Forcer le refetch immédiat
+            toast.success('Produit ajouté au panier !')
+          }
+        },
       onError: (error) => {
         const message = error.response?.data?.message || 'Erreur lors de l\'ajout au panier'
         toast.error(message)
@@ -158,17 +172,22 @@ export const CartProvider = ({ children }) => {
   // Mettre à jour la quantité
   const updateQuantity = useMutation(
     async ({ produitId, quantite }) => {
+      console.log('🔄 Mise à jour quantité:', { produitId, quantite })
       const response = await cartAPI.updateCartItem(produitId, quantite)
+      console.log('🔄 Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
+        console.log('✅ Succès updateQuantity:', data)
         if (data.success) {
           queryClient.invalidateQueries(['cart'])
+          refetchCart() // Forcer le refetch immédiat
           toast.success('Quantité mise à jour !')
         }
       },
       onError: (error) => {
+        console.log('❌ Erreur updateQuantity:', error)
         const message = error.response?.data?.message || 'Erreur lors de la mise à jour'
         toast.error(message)
       }
@@ -178,17 +197,22 @@ export const CartProvider = ({ children }) => {
   // Supprimer du panier
   const removeFromCart = useMutation(
     async (produitId) => {
+      console.log('🗑️ Suppression produit:', produitId)
       const response = await cartAPI.removeFromCart(produitId)
+      console.log('🗑️ Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
+        console.log('✅ Succès removeFromCart:', data)
         if (data.success) {
           queryClient.invalidateQueries(['cart'])
+          refetchCart() // Forcer le refetch immédiat
           toast.success('Produit retiré du panier !')
         }
       },
       onError: (error) => {
+        console.log('❌ Erreur removeFromCart:', error)
         const message = error.response?.data?.message || 'Erreur lors de la suppression'
         toast.error(message)
       }
@@ -198,17 +222,22 @@ export const CartProvider = ({ children }) => {
   // Vider le panier
   const clearCart = useMutation(
     async () => {
+      console.log('🧹 Vidage du panier')
       const response = await cartAPI.clearCart()
+      console.log('🧹 Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
+        console.log('✅ Succès clearCart:', data)
         if (data.success) {
           queryClient.invalidateQueries(['cart'])
+          refetchCart() // Forcer le refetch immédiat
           toast.success('Panier vidé !')
         }
       },
       onError: (error) => {
+        console.log('❌ Erreur clearCart:', error)
         const message = error.response?.data?.message || 'Erreur lors du vidage'
         toast.error(message)
       }

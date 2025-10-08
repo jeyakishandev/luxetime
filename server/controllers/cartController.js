@@ -22,6 +22,9 @@ class CartController {
   static async addToCart(req, res) {
     try {
       const { produitId, quantite } = req.body;
+      console.log('🛒 Backend - Données reçues:', { produitId, quantite, userId: req.user.id });
+      console.log('🛒 Backend - Types:', { produitId: typeof produitId, quantite: typeof quantite });
+      
       const result = await CartService.addToCart(req.user.id, produitId, quantite);
       
       res.json({
@@ -30,6 +33,7 @@ class CartController {
         data: result.data
       });
     } catch (error) {
+      console.log('🛒 Backend - Erreur:', error.message);
       res.status(400).json({
         success: false,
         message: error.message

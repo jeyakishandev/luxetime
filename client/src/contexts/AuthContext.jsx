@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 const initialState = {
   user: null,
   token: localStorage.getItem('luxetime_token'),
-  isAuthenticated: false,
+  isAuthenticated: !!localStorage.getItem('luxetime_token'),
   isLoading: false
 }
 
@@ -86,48 +86,83 @@ export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
   const queryClient = useQueryClient()
 
-  // Vérifier le token au chargement
-  useEffect(() => {
-    if (state.token) {
-      verifyToken()
-    }
-  }, [])
-
-  // Vérifier le token
-  const verifyToken = async () => {
+  // Récupérer le profil utilisateur
+  const fetchUserProfile = async (token) => {
     try {
       dispatch({ type: authActions.SET_LOADING, payload: true })
       
-      const response = await authAPI.verifyToken()
+      const response = await authAPI.getProfile()
       
       if (response.data.success) {
         dispatch({
           type: authActions.LOGIN_SUCCESS,
           payload: {
-            user: response.data.data.user,
-            token: state.token
+            user: response.data.data,
+            token: token
           }
         })
       } else {
-        throw new Error('Token invalide')
+        throw new Error('Erreur lors de la récupération du profil')
       }
     } catch (error) {
-      console.error('Erreur de vérification du token:', error)
-      dispatch({ type: authActions.LOGOUT })
+      console.error('Erreur lors de la récupération du profil:', error)
       localStorage.removeItem('luxetime_token')
+      dispatch({ type: authActions.LOGOUT })
     } finally {
       dispatch({ type: authActions.SET_LOADING, payload: false })
     }
   }
 
+  // Vérifier l'authentification au chargement
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('luxetime_token')
+      console.log('🔍 Vérification auth - Token:', token ? 'présent' : 'absent')
+      
+      if (token) {
+        try {
+          // Vérifier si le token est valide
+          const payload = JSON.parse(atob(token.split('.')[1]))
+          const currentTime = Date.now() / 1000
+          console.log('🔍 Token exp:', payload.exp, 'Current:', currentTime)
+          
+          if (payload.exp && payload.exp > currentTime) {
+            // Token valide, récupérer le profil
+            console.log('✅ Token valide, récupération du profil...')
+            await fetchUserProfile(token)
+          } else {
+            // Token expiré
+            console.log('❌ Token expiré')
+            localStorage.removeItem('luxetime_token')
+            dispatch({ type: authActions.LOGOUT })
+          }
+        } catch (error) {
+          // Token invalide
+          console.log('❌ Token invalide:', error)
+          localStorage.removeItem('luxetime_token')
+          dispatch({ type: authActions.LOGOUT })
+        }
+      } else {
+        // Pas de token, s'assurer que l'état est cohérent
+        console.log('❌ Pas de token')
+        dispatch({ type: authActions.LOGOUT })
+      }
+    }
+    
+    checkAuth()
+  }, [])
+
   // Connexion
   const login = useMutation(
     async ({ email, motDePasse }) => {
+      console.log('🔐 Tentative de connexion...', { email })
       const response = await authAPI.login(email, motDePasse)
+      console.log('🔐 Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
+        console.log('✅ Succès login:', data)
         if (data.success) {
           localStorage.setItem('luxetime_token', data.data.token)
           dispatch({
@@ -135,9 +170,13 @@ export const AuthProvider = ({ children }) => {
             payload: data.data
           })
           toast.success('Connexion réussie !')
+        } else {
+          console.log('❌ Login failed:', data.message)
+          toast.error(data.message || 'Erreur de connexion')
         }
       },
       onError: (error) => {
+        console.log('❌ Erreur login:', error)
         const message = error.response?.data?.message || 'Erreur de connexion'
         dispatch({
           type: authActions.LOGIN_ERROR,

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
 import { Button, Card } from './ui'
 import { FiHeart, FiShoppingCart, FiEye } from 'react-icons/fi'
 import { formatPrice } from '../utils/format'
+import toast from 'react-hot-toast'
 
 const ProductCardContainer = styled(Card)`
   position: relative;
@@ -226,6 +227,7 @@ const ProductCard = ({
 }) => {
   const { addToCart, isAddingToCart } = useCart()
   const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
 
   const handleAddToCart = async (e) => {
@@ -233,7 +235,8 @@ const ProductCard = ({
     e.stopPropagation()
     
     if (!isAuthenticated) {
-      // Rediriger vers la page de connexion
+      toast.error('Vous devez être connecté pour ajouter des produits au panier')
+      navigate('/login')
       return
     }
     

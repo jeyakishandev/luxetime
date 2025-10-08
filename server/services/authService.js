@@ -70,11 +70,6 @@ class AuthService {
         throw new Error('Email ou mot de passe incorrect');
       }
 
-      // Vérifier si le compte est actif
-      if (!user.estActif) {
-        throw new Error('Compte désactivé. Contactez le support.');
-      }
-
       // Générer le token JWT
       const token = this.generateToken(user.id);
 
