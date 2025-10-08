@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast'
 import App from './App.jsx'
 import { AuthProvider } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
+import { WishlistProvider } from './contexts/WishlistContext'
 import GlobalStyles from './styles/GlobalStyles'
 
 // Configuration React Query
@@ -28,8 +29,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <BrowserRouter>
           <AuthProvider>
             <CartProvider>
-              <GlobalStyles />
-              <App />
+              <WishlistProvider>
+                <GlobalStyles />
+                <App />
               <Toaster
                 position="top-right"
                 toastOptions={{
@@ -53,6 +55,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   },
                 }}
               />
+              </WishlistProvider>
             </CartProvider>
           </AuthProvider>
         </BrowserRouter>

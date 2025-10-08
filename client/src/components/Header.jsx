@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
+import { useWishlist } from '../contexts/WishlistContext'
 import { Button } from './ui'
 import { 
   FiMenu, 
@@ -243,6 +244,25 @@ const MobileNavLink = styled(Link)`
   }
 `
 
+const Badge = styled.span`
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: ${props => props.theme.colors.error};
+  color: ${props => props.theme.colors.white};
+  font-size: 10px;
+  font-weight: ${props => props.theme.fontWeights.bold};
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 2px solid ${props => props.theme.colors.gray[900]};
+`
+
 const UserMenu = styled(motion.div)`
   position: absolute;
   top: 100%;
@@ -292,6 +312,7 @@ const UserEmail = styled.div`
 const Header = () => {
   const { user, isAuthenticated, logout } = useAuth()
   const { itemCount } = useCart()
+  const { itemCount: wishlistCount } = useWishlist()
   const navigate = useNavigate()
   const location = useLocation()
   
@@ -360,6 +381,9 @@ const Header = () => {
         <ActionsContainer>
           <ActionButton as={Link} to="/wishlist" title="Liste de souhaits">
             <FiHeart size={20} />
+            {wishlistCount > 0 && (
+              <Badge>{wishlistCount}</Badge>
+            )}
           </ActionButton>
 
           <ActionButton as={Link} to="/cart" title="Panier">

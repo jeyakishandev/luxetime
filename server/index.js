@@ -54,6 +54,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/wishlist', require('./routes/wishlist'));
 
 // Route de santé
 app.get('/api/health', (req, res) => {

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
+import { useWishlist } from '../contexts/WishlistContext'
 import { Button, Card } from './ui'
 import { FiHeart, FiShoppingCart, FiEye } from 'react-icons/fi'
 import { formatPrice } from '../utils/format'
@@ -95,7 +96,7 @@ const ActionButton = styled(motion.button)`
   border-radius: 50%;
   border: none;
   background: ${props => props.theme.colors.white};
-  color: ${props => props.theme.colors.gray[800]};
+  color: ${props => props.$isInWishlist ? props.theme.colors.error : props.theme.colors.gray[800]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,7 +104,7 @@ const ActionButton = styled(motion.button)`
   transition: all ${props => props.theme.transitions.base};
   
   &:hover {
-    background: ${props => props.theme.colors.primary};
+    background: ${props => props.$isInWishlist ? props.theme.colors.error : props.theme.colors.primary};
     color: ${props => props.theme.colors.white};
     transform: scale(1.1);
   }
@@ -227,6 +228,7 @@ const ProductCard = ({
 }) => {
   const { addToCart, isAddingToCart } = useCart()
   const { isAuthenticated } = useAuth()
+  const { addToWishlist, removeFromWishlist, isInWishlist, isAddingToWishlist } = useWishlist()
   const navigate = useNavigate()
   const [isHovered, setIsHovered] = useState(false)
 
@@ -255,11 +257,24 @@ const ProductCard = ({
     }
   }
 
-  const handleAddToWishlist = (e) => {
+  const handleAddToWishlist = async (e) => {
     e.preventDefault()
     e.stopPropagation()
-    if (onAddToWishlist) {
-      onAddToWishlist(product)
+    
+    if (!isAuthenticated) {
+      toast.error('Vous devez être connecté pour ajouter aux favoris')
+      navigate('/login')
+      return
+    }
+    
+    try {
+      if (isInWishlist(product.id)) {
+        await removeFromWishlist(product.id)
+      } else {
+        await addToWishlist(product.id)
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des favoris:', error)
     }
   }
 
@@ -333,6 +348,8 @@ const ProductCard = ({
                 onClick={handleAddToWishlist}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
+                $isInWishlist={isInWishlist(product.id)}
+                disabled={isAddingToWishlist}
               >
                 <FiHeart size={18} />
               </ActionButton>

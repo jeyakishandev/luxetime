@@ -327,12 +327,12 @@ const CartItem = ({ item, onUpdate, onRemove }) => {
             {item.produit.estNouveau && (
               <Badge variant="new">✨ Nouveau</Badge>
             )}
-            {item.produit.prixPromo && item.produit.prixPromo > 0 && (
+            {item.produit.prixPromo && item.produit.prixPromo > 0 && item.produit.prix > item.produit.prixPromo && (
               <Badge variant="promo">
                 🔥 -{Math.round(((item.produit.prix - item.produit.prixPromo) / item.produit.prix) * 100)}%
               </Badge>
             )}
-            {item.produit.categorie && (
+            {item.produit.categorie && item.produit.categorie !== "0" && item.produit.categorie.trim() !== "" && (
               <Badge>{item.produit.categorie}</Badge>
             )}
           </ProductBadges>

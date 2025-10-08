@@ -17,22 +17,24 @@ class CartService {
         }
       });
 
-      // Calculer le total du panier
-      const total = cartItems.reduce((sum, item) => {
-        const prix = item.produit.prixPromo && item.produit.prixPromo > 0 
-          ? item.produit.prixPromo 
-          : item.produit.prix;
-        return sum + (prix * item.quantite);
-      }, 0);
+        // Calculer le total du panier et le nombre total d'articles
+        const total = cartItems.reduce((sum, item) => {
+          const prix = item.produit.prixPromo && item.produit.prixPromo > 0 
+            ? item.produit.prixPromo 
+            : item.produit.prix;
+          return sum + (prix * item.quantite);
+        }, 0);
 
-      return {
-        success: true,
-        data: {
-          items: cartItems,
-          total: Math.round(total * 100) / 100,
-          itemCount: cartItems.length
-        }
-      };
+        const itemCount = cartItems.reduce((sum, item) => sum + item.quantite, 0);
+
+        return {
+          success: true,
+          data: {
+            items: cartItems,
+            total: Math.round(total * 100) / 100,
+            itemCount: itemCount
+          }
+        };
     } catch (error) {
       throw new Error(`Erreur lors de la récupération du panier: ${error.message}`);
     }

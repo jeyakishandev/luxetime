@@ -29,6 +29,7 @@ model User {
   panier     PanierItem[]
   commandes  Commande[]
   avis       Avis[]
+  favoris    Favori[]
   
   // Timestamps
   createdAt DateTime @default(now())
@@ -69,6 +70,7 @@ model Produit {
   panierItems PanierItem[]
   commandeItems CommandeItem[]
   avis       Avis[]
+  favoris    Favori[]
   
   // Timestamps
   createdAt DateTime @default(now())
@@ -177,6 +179,20 @@ model Avis {
   
   @@unique([userId, produitId])
   @@map("avis")
+}
+
+model Favori {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  produitId Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  produit   Produit @relation(fields: [produitId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, produitId])
+  @@map("favoris")
 }
 
 // Enums

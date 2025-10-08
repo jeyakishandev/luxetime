@@ -43,13 +43,13 @@ const cartReducer = (state, action) => {
         error: null
       }
     
-    case cartActions.ADD_ITEM:
-      return {
-        ...state,
-        items: [...state.items, action.payload],
-        itemCount: state.itemCount + action.payload.quantite,
-        total: state.total + (action.payload.produit.prix * action.payload.quantite)
-      }
+        case cartActions.ADD_ITEM:
+          return {
+            ...state,
+            items: [...state.items, action.payload],
+            itemCount: state.itemCount + action.payload.quantite,
+            total: state.total + ((action.payload.produit.prixPromo && action.payload.produit.prixPromo > 0 ? action.payload.produit.prixPromo : action.payload.produit.prix) * action.payload.quantite)
+          }
     
     case cartActions.UPDATE_ITEM:
       return {
@@ -67,20 +67,21 @@ const cartReducer = (state, action) => {
         }, 0)
       }
     
-    case cartActions.REMOVE_ITEM:
-      return {
-        ...state,
-        items: state.items.filter(item => item.id !== action.payload),
-        itemCount: Math.max(0, state.itemCount - 1),
-        total: state.items
-          .filter(item => item.id !== action.payload)
-          .reduce((sum, item) => {
-            const prix = item.produit.prixPromo && item.produit.prixPromo > 0 
-              ? item.produit.prixPromo 
-              : item.produit.prix
-            return sum + (prix * item.quantite)
-          }, 0)
-      }
+        case cartActions.REMOVE_ITEM:
+          const removedItem = state.items.find(item => item.id === action.payload);
+          return {
+            ...state,
+            items: state.items.filter(item => item.id !== action.payload),
+            itemCount: Math.max(0, state.itemCount - (removedItem ? removedItem.quantite : 0)),
+            total: state.items
+              .filter(item => item.id !== action.payload)
+              .reduce((sum, item) => {
+                const prix = item.produit.prixPromo && item.produit.prixPromo > 0 
+                  ? item.produit.prixPromo 
+                  : item.produit.prix
+                return sum + (prix * item.quantite)
+              }, 0)
+          }
     
     case cartActions.CLEAR_CART:
       return {

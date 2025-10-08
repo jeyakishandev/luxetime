@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useProduct } from '../hooks/useProducts'
 import { useCart } from '../contexts/CartContext'
+import { useAuth } from '../contexts/AuthContext'
+import { useWishlist } from '../contexts/WishlistContext'
 import { Button, Card, PageLoading } from '../components/ui'
 import { formatPrice } from '../utils/format'
 import { 
@@ -456,9 +458,9 @@ const WishlistButton = styled(motion.button)`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: ${props => props.theme.colors.gray[300]};
+  background: ${props => props.$isInWishlist ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${props => props.$isInWishlist ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255, 255, 255, 0.1)'};
+  color: ${props => props.$isInWishlist ? '#ef4444' : props.theme.colors.gray[300]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -471,6 +473,11 @@ const WishlistButton = styled(motion.button)`
     border-color: rgba(239, 68, 68, 0.3);
     color: #ef4444;
     transform: scale(1.1);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `
 
@@ -776,10 +783,11 @@ const ProductDetail = () => {
   const navigate = useNavigate()
   const { data: product, isLoading } = useProduct(id)
   const { addToCart, isAddingToCart } = useCart()
+  const { isAuthenticated } = useAuth()
+  const { addToWishlist, removeFromWishlist, isInWishlist, isAddingToWishlist } = useWishlist()
   
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const [isWishlisted, setIsWishlisted] = useState(false)
   
   // Reset selectedImage when product changes
   React.useEffect(() => {
@@ -806,8 +814,24 @@ const ProductDetail = () => {
     }
   }
 
-  const toggleWishlist = () => {
-    setIsWishlisted(!isWishlisted)
+  const toggleWishlist = async () => {
+    if (!isAuthenticated) {
+      toast.error('Vous devez être connecté pour ajouter aux favoris')
+      navigate('/login')
+      return
+    }
+    
+    if (!product?.data?.data?.id) return
+    
+    try {
+      if (isInWishlist(product.data.data.id)) {
+        await removeFromWishlist(product.data.data.id)
+      } else {
+        await addToWishlist(product.data.data.id)
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des favoris:', error)
+    }
   }
 
   if (isLoading) {
@@ -1224,10 +1248,12 @@ const ProductDetail = () => {
               
               <WishlistButton
                 onClick={toggleWishlist}
+                disabled={isAddingToWishlist}
+                $isInWishlist={product?.data?.data?.id && isInWishlist(product.data.data.id)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <FiHeart size={20} fill={isWishlisted ? '#ef4444' : 'none'} />
+                <FiHeart size={20} fill={product?.data?.data?.id && isInWishlist(product.data.data.id) ? '#ef4444' : 'none'} />
               </WishlistButton>
               
               <ShareButton

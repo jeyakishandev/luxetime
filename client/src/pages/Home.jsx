@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button, Card, PageLoading } from '../components/ui'
 import { FiArrowRight, FiStar, FiShield, FiTruck, FiClock, FiAward, FiTrendingUp, FiHeart, FiShoppingCart } from 'react-icons/fi'
 import axios from 'axios'
+import { useAuth } from '../contexts/AuthContext'
+import { useCart } from '../contexts/CartContext'
+import { useWishlist } from '../contexts/WishlistContext'
+import toast from 'react-hot-toast'
 
 const HomeContainer = styled.div`
   min-height: 100vh;
@@ -375,10 +379,10 @@ const WishlistButton = styled(motion.button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: ${props => props.$isInWishlist ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${props => props.$isInWishlist ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255, 255, 255, 0.2)'};
   border-radius: 50%;
-  color: ${props => props.theme.colors.gray[300]};
+  color: ${props => props.$isInWishlist ? '#ef4444' : props.theme.colors.gray[300]};
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
@@ -388,6 +392,11 @@ const WishlistButton = styled(motion.button)`
     border-color: rgba(239, 68, 68, 0.3);
     color: #ef4444;
     transform: scale(1.1);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `
 
@@ -453,6 +462,10 @@ const productImages = {
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const { isAuthenticated } = useAuth()
+  const { addToCart } = useCart()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchFeaturedProducts()
@@ -480,6 +493,44 @@ const Home = () => {
       style: 'currency',
       currency: 'EUR'
     }).format(price)
+  }
+
+  const handleAddToCart = async (product, e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!isAuthenticated) {
+      toast.error('Vous devez être connecté pour ajouter au panier')
+      navigate('/login')
+      return
+    }
+    
+    try {
+      await addToCart({ produitId: product.id, quantite: 1 })
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout au panier:', error)
+    }
+  }
+
+  const handleToggleWishlist = async (product, e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!isAuthenticated) {
+      toast.error('Vous devez être connecté pour ajouter aux favoris')
+      navigate('/login')
+      return
+    }
+    
+    try {
+      if (isInWishlist(product.id)) {
+        await removeFromWishlist(product.id)
+      } else {
+        await addToWishlist(product.id)
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des favoris:', error)
+    }
   }
 
   return (
@@ -584,6 +635,8 @@ const Home = () => {
                         Voir les détails
                       </ActionButton>
                       <WishlistButton
+                        onClick={(e) => handleToggleWishlist(product, e)}
+                        $isInWishlist={isInWishlist(product.id)}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                       >

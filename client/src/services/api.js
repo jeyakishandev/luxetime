@@ -203,5 +203,15 @@ export const utilAPI = {
   }
 }
 
+// API pour les favoris
+export const wishlistAPI = {
+  getWishlist: () => api.get('/wishlist'),
+  addToWishlist: (produitId) => api.post('/wishlist/add', { produitId }),
+  removeFromWishlist: (produitId) => api.delete(`/wishlist/${produitId}`),
+  isInWishlist: (produitId) => api.get(`/wishlist/check/${produitId}`),
+  clearWishlist: () => api.delete('/wishlist'),
+  getWishlistCount: () => api.get('/wishlist/count')
+}
+
 // Export par défaut
 export default api
