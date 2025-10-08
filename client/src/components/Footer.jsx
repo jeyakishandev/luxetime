@@ -246,24 +246,33 @@ const Footer = () => {
             </motion.p>
             <SocialLinks>
               <SocialLink 
-                href="#" 
+                href="https://www.facebook.com/luxetime.paris" 
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Facebook"
+                title="Rejoignez-nous sur Facebook"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <FiFacebook size={18} />
               </SocialLink>
               <SocialLink 
-                href="#" 
+                href="https://twitter.com/luxetime_paris" 
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Twitter"
+                title="Suivez-nous sur Twitter"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <FiTwitter size={18} />
               </SocialLink>
               <SocialLink 
-                href="#" 
+                href="https://www.instagram.com/luxetime.paris" 
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
+                title="Suivez-nous sur Instagram"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >

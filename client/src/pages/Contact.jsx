@@ -495,13 +495,13 @@ const Contact = () => {
                   <a href="mailto:vip@luxetime.fr">vip@luxetime.fr</a> (Service VIP)
                 </InfoContent>
                 <SocialLinks>
-                  <SocialLink href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                  <SocialLink href="https://www.instagram.com/luxetime.paris" target="_blank" rel="noopener noreferrer" title="Suivez-nous sur Instagram">
                     <FiInstagram size={20} />
                   </SocialLink>
-                  <SocialLink href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                  <SocialLink href="https://www.facebook.com/luxetime.paris" target="_blank" rel="noopener noreferrer" title="Rejoignez-nous sur Facebook">
                     <FiFacebook size={20} />
                   </SocialLink>
-                  <SocialLink href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                  <SocialLink href="https://twitter.com/luxetime_paris" target="_blank" rel="noopener noreferrer" title="Suivez-nous sur Twitter">
                     <FiTwitter size={20} />
                   </SocialLink>
                 </SocialLinks>
