@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { useQuery } from 'react-query'
 import { Card, Button, PageLoading } from '../components/ui'
 import { FiPackage, FiClock, FiCheckCircle, FiTruck, FiMapPin, FiCalendar, FiCreditCard, FiEye } from 'react-icons/fi'
 import { orderAPI } from '../services/api'
@@ -312,6 +311,9 @@ const EmptyText = styled.p`
 const Orders = () => {
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const [orders, setOrders] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   // Rediriger si non connecté
   useEffect(() => {
@@ -321,16 +323,36 @@ const Orders = () => {
   }, [isAuthenticated, navigate])
 
   // Récupérer les commandes
-  const { data: ordersData, isLoading, error } = useQuery(
-    ['orders'],
-    () => orderAPI.getUserOrders(),
-    {
-      enabled: isAuthenticated,
-      refetchOnWindowFocus: false
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!isAuthenticated) return
+      
+      setIsLoading(true)
+      setError(null)
+      
+      try {
+        const response = await orderAPI.getUserOrders()
+        console.log('📦 Commandes reçues:', response.data)
+        
+        if (response.data.success) {
+          console.log('📦 Structure des données:', response.data.data)
+          // L'API retourne { commandes, pagination }
+          const ordersData = response.data.data?.commandes || []
+          console.log('📦 Commandes extraites:', ordersData)
+          setOrders(ordersData)
+        } else {
+          setError('Erreur lors du chargement des commandes')
+        }
+      } catch (err) {
+        console.error('❌ Erreur:', err)
+        setError(err.response?.data?.message || 'Erreur lors du chargement')
+      } finally {
+        setIsLoading(false)
+      }
     }
-  )
-
-  const orders = ordersData?.data?.data || []
+    
+    fetchOrders()
+  }, [isAuthenticated])
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -397,6 +419,31 @@ const Orders = () => {
             </EmptyIcon>
             <EmptyTitle>Erreur</EmptyTitle>
             <EmptyText>Impossible de charger vos commandes</EmptyText>
+            <Button onClick={() => window.location.reload()}>
+              Réessayer
+            </Button>
+          </EmptyState>
+        </Container>
+      </OrdersContainer>
+    )
+  }
+
+  // Protection supplémentaire
+  if (!Array.isArray(orders)) {
+    console.error('❌ orders n\'est pas un tableau:', orders)
+    return (
+      <OrdersContainer>
+        <Container>
+          <EmptyState
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <EmptyIcon>
+              <FiPackage size={48} color="#d4af37" />
+            </EmptyIcon>
+            <EmptyTitle>Erreur de format</EmptyTitle>
+            <EmptyText>Format de données invalide</EmptyText>
             <Button onClick={() => window.location.reload()}>
               Réessayer
             </Button>
