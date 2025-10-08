@@ -17,13 +17,16 @@ class AuthService {
         throw new Error('Un compte avec cet email existe déjà');
       }
 
+      // Hasher le mot de passe
+      const hashedPassword = await bcrypt.hash(motDePasse, 12);
+
       // Créer l'utilisateur
       const user = await prisma.user.create({
         data: {
           nom,
           prenom,
           email,
-          motDePasse, // Le hash sera fait automatiquement par Prisma
+          motDePasse: hashedPassword,
           telephone,
           role: 'CLIENT'
         },
