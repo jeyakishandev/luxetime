@@ -254,19 +254,157 @@ async function main() {
     
     // Créer les produits
     console.log('📦 Création des produits...')
+    const createdProducts = []
     for (const product of products) {
-      await prisma.produit.create({
+      const createdProduct = await prisma.produit.create({
         data: product
       })
+      createdProducts.push(createdProduct)
     }
+    
+    // Créer des commandes de test pour l'historique
+    console.log('\n📋 Création des commandes de test...')
+    
+    const testOrders = [
+      {
+        numero: 'CMD-2024-09-001',
+        clientId: user.id,
+        adresseLivraisonNom: 'Dupont',
+        adresseLivraisonPrenom: 'Jean',
+        adresseLivraisonRue: '123 Avenue des Champs-Élysées',
+        adresseLivraisonVille: 'Paris',
+        adresseLivraisonCodePostal: '75008',
+        adresseLivraisonPays: 'France',
+        adresseLivraisonTelephone: '+33 6 12 34 56 78',
+        adresseFacturationNom: 'Dupont',
+        adresseFacturationPrenom: 'Jean',
+        adresseFacturationRue: '123 Avenue des Champs-Élysées',
+        adresseFacturationVille: 'Paris',
+        adresseFacturationCodePostal: '75008',
+        adresseFacturationPays: 'France',
+        methodePaiement: 'CARTE',
+        statut: 'LIVREE',
+        sousTotal: 8500.00,
+        fraisLivraison: 0,
+        total: 8500.00,
+        createdAt: new Date('2024-09-15'),
+        items: {
+          create: [
+            {
+              produitId: createdProducts[0].id,
+              quantite: 1,
+              prixUnitaire: 8500.00,
+              nomProduit: createdProducts[0].nom
+            }
+          ]
+        }
+      },
+      {
+        numero: 'CMD-2024-10-002',
+        clientId: user.id,
+        adresseLivraisonNom: 'Dupont',
+        adresseLivraisonPrenom: 'Jean',
+        adresseLivraisonRue: '123 Avenue des Champs-Élysées',
+        adresseLivraisonVille: 'Paris',
+        adresseLivraisonCodePostal: '75008',
+        adresseLivraisonPays: 'France',
+        adresseLivraisonTelephone: '+33 6 12 34 56 78',
+        adresseFacturationNom: 'Dupont',
+        adresseFacturationPrenom: 'Jean',
+        adresseFacturationRue: '123 Avenue des Champs-Élysées',
+        adresseFacturationVille: 'Paris',
+        adresseFacturationCodePostal: '75008',
+        adresseFacturationPays: 'France',
+        methodePaiement: 'PAYPAL',
+        statut: 'EN_PREPARATION',
+        sousTotal: 12500.00,
+        fraisLivraison: 0,
+        total: 12500.00,
+        createdAt: new Date('2024-10-01'),
+        items: {
+          create: [
+            {
+              produitId: createdProducts[1].id,
+              quantite: 1,
+              prixUnitaire: 12500.00,
+              nomProduit: createdProducts[1].nom
+            }
+          ]
+        }
+      },
+      {
+        numero: 'CMD-2024-10-003',
+        clientId: user.id,
+        adresseLivraisonNom: 'Dupont',
+        adresseLivraisonPrenom: 'Jean',
+        adresseLivraisonRue: '123 Avenue des Champs-Élysées',
+        adresseLivraisonVille: 'Paris',
+        adresseLivraisonCodePostal: '75008',
+        adresseLivraisonPays: 'France',
+        adresseLivraisonTelephone: '+33 6 12 34 56 78',
+        adresseFacturationNom: 'Dupont',
+        adresseFacturationPrenom: 'Jean',
+        adresseFacturationRue: '123 Avenue des Champs-Élysées',
+        adresseFacturationVille: 'Paris',
+        adresseFacturationCodePostal: '75008',
+        adresseFacturationPays: 'France',
+        methodePaiement: 'CARTE',
+        statut: 'EXPEDIEE',
+        sousTotal: 6500.00,
+        fraisLivraison: 0,
+        total: 6500.00,
+        numeroSuivi: 'FR123456789',
+        createdAt: new Date('2024-10-05'),
+        items: {
+          create: [
+            {
+              produitId: createdProducts[2].id,
+              quantite: 1,
+              prixUnitaire: 6500.00,
+              nomProduit: createdProducts[2].nom
+            }
+          ]
+        }
+      }
+    ]
+
+    for (const orderData of testOrders) {
+      const { clientId, items, ...restOrderData } = orderData
+      
+      // Transformer les items pour utiliser connect
+      const transformedItems = {
+        create: items.create.map(item => ({
+          quantite: item.quantite,
+          prixUnitaire: item.prixUnitaire,
+          nomProduit: item.nomProduit,
+          produit: {
+            connect: { id: item.produitId }
+          }
+        }))
+      }
+      
+      await prisma.commande.create({
+        data: {
+          ...restOrderData,
+          client: {
+            connect: { id: clientId }
+          },
+          items: transformedItems
+        }
+      })
+    }
+
+    console.log('✅ Commandes de test créées avec succès')
+    console.log(`📋 ${testOrders.length} commandes ajoutées\n`)
     
     console.log('✅ Seeding terminé !')
     console.log(`📦 ${products.length} produits créés`)
     console.log('👤 1 utilisateur de test créé')
+    console.log(`📋 ${testOrders.length} commandes de test créées`)
     console.log('')
     console.log('🚀 Vous pouvez maintenant vous connecter avec:')
     console.log(`   Email: ${testUser.email}`)
-    console.log(`   Mot de passe: ${testUser.motDePasse}`)
+    console.log(`   Mot de passe: Luxetime2024!`)
   } catch (error) {
     console.error('❌ Erreur lors du seeding:', error)
     throw error
