@@ -4,11 +4,22 @@ class OrderService {
   // Créer une nouvelle commande
   static async createOrder(userId, orderData) {
     try {
+      console.log('🛒 OrderService - Création commande pour userId:', userId)
+      console.log('🛒 OrderService - Données reçues:', JSON.stringify(orderData, null, 2))
+      
       // Récupérer le panier de l'utilisateur
       const cartItems = await prisma.panierItem.findMany({
         where: { userId },
         include: { produit: true }
       });
+
+      console.log('🛒 OrderService - Items panier trouvés:', cartItems.length)
+      console.log('🛒 OrderService - Détails panier:', cartItems.map(item => ({
+        id: item.id,
+        quantite: item.quantite,
+        produitId: item.produitId,
+        produitNom: item.produit?.nom
+      })))
 
       if (cartItems.length === 0) {
         throw new Error('Le panier est vide');
@@ -48,9 +59,15 @@ class OrderService {
       const fraisLivraison = sousTotal >= 100 ? 0 : 15;
       const total = sousTotal + fraisLivraison - (orderData.reduction || 0);
 
+      // Générer un numéro de commande unique
+      const numero = `CMD-${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}-${String(Date.now()).slice(-3)}`;
+
+      console.log('🛒 OrderService - Numéro de commande généré:', numero)
+
       // Créer la commande
       const commande = await prisma.commande.create({
         data: {
+          numero: numero,
           clientId: userId,
           adresseLivraisonNom: orderData.adresseLivraison.nom,
           adresseLivraisonPrenom: orderData.adresseLivraison.prenom,

@@ -4,7 +4,13 @@ class OrderController {
   // Créer une nouvelle commande
   static async createOrder(req, res) {
     try {
+      console.log('📦 OrderController - Création commande')
+      console.log('📦 OrderController - User ID:', req.user.id)
+      console.log('📦 OrderController - Body:', JSON.stringify(req.body, null, 2))
+      
       const result = await OrderService.createOrder(req.user.id, req.body);
+      
+      console.log('📦 OrderController - Résultat:', result)
       
       res.status(201).json({
         success: true,
@@ -12,6 +18,7 @@ class OrderController {
         data: result.data
       });
     } catch (error) {
+      console.error('❌ OrderController - Erreur:', error.message)
       res.status(400).json({
         success: false,
         message: error.message
