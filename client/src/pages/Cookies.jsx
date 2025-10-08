@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
-import { FiCookie, FiSettings, FiBarChart, FiTarget } from 'react-icons/fi'
+import { FiSettings, FiBarChart, FiTarget, FiInfo } from 'react-icons/fi'
 
 const CookiesContainer = styled.div`
   min-height: 100vh;
@@ -203,7 +203,7 @@ const Cookies = () => {
         >
           <Section>
             <SectionTitle>
-              <FiCookie size={24} />
+              <FiInfo size={24} />
               Qu'est-ce qu'un Cookie ?
             </SectionTitle>
             <Paragraph>
