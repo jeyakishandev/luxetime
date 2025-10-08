@@ -15,7 +15,7 @@ const ResetPasswordContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme.spacing[8]} ${props => props.theme.spacing[4]};
+  padding: 2rem 1rem;
   
   &::before {
     content: '';
@@ -32,20 +32,46 @@ const ResetPasswordContainer = styled.div`
   }
 `
 
-const BackButton = styled(Button)`
+const BackButton = styled(Link)`
   position: absolute;
-  top: ${props => props.theme.spacing[6]};
-  left: ${props => props.theme.spacing[6]};
-  background: rgba(255, 255, 255, 0.05);
-  color: ${props => props.theme.colors.gray[300]};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  top: 2rem;
+  left: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d1d5db;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(12px);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   
   &:hover {
-    background: rgba(212, 175, 55, 0.1);
-    color: ${props => props.theme.colors.primary};
-    border-color: ${props => props.theme.colors.primary};
-    transform: translateX(-4px);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(244, 208, 63, 0.1));
+    color: #f4d03f;
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateX(-6px) translateY(-2px);
+    box-shadow: 
+      0 8px 25px rgba(212, 175, 55, 0.2),
+      0 0 0 1px rgba(212, 175, 55, 0.1);
+    text-shadow: 0 0 8px rgba(244, 208, 63, 0.3);
+  }
+  
+  &:active {
+    transform: translateX(-4px) translateY(-1px);
+  }
+  
+  svg {
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover svg {
+    transform: translateX(-2px);
   }
 `
 
@@ -59,8 +85,8 @@ const FormContainer = styled.div`
 const FormCard = styled.div`
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: ${props => props.theme.radii.xl};
-  padding: ${props => props.theme.spacing[10]};
+  border-radius: 1rem;
+  padding: 3rem;
   backdrop-filter: blur(20px);
   box-shadow: 
     0 25px 50px rgba(0, 0, 0, 0.25),
@@ -75,20 +101,20 @@ const FormCard = styled.div`
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, ${props => props.theme.colors.primary}, transparent);
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
   }
 `
 
 const Header = styled.div`
   text-align: center;
-  margin-bottom: ${props => props.theme.spacing[8]};
+  margin-bottom: 2rem;
 `
 
 const IconContainer = styled.div`
   width: 80px;
   height: 80px;
-  margin: 0 auto ${props => props.theme.spacing[6]};
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, ${props => props.theme.colors.gold[300]});
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -97,16 +123,16 @@ const IconContainer = styled.div`
 `
 
 const Title = styled(motion.h1)`
-  font-size: ${props => props.theme.fontSizes['3xl']};
-  font-weight: ${props => props.theme.fontWeights.bold};
-  color: ${props => props.theme.colors.white};
-  margin: 0 0 ${props => props.theme.spacing[3]} 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
   letter-spacing: -0.02em;
 `
 
 const Subtitle = styled(motion.p)`
-  font-size: ${props => props.theme.fontSizes.lg};
-  color: ${props => props.theme.colors.gray[300]};
+  font-size: 1.125rem;
+  color: #d1d5db;
   margin: 0;
   line-height: 1.6;
 `
@@ -114,19 +140,20 @@ const Subtitle = styled(motion.p)`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${props => props.theme.spacing[6]};
+  gap: 1.5rem;
 `
 
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${props => props.theme.spacing[3]};
+  gap: 0.75rem;
+  position: relative;
 `
 
 const Label = styled.label`
-  font-size: ${props => props.theme.fontSizes.sm};
-  font-weight: ${props => props.theme.fontWeights.semibold};
-  color: ${props => props.theme.colors.gray[200]};
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e5e7eb;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 `
@@ -139,16 +166,16 @@ const StyledInput = styled(Input)`
   padding-right: 3.5rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: ${props => props.theme.colors.white};
+  color: #ffffff;
   
   &:focus {
-    border-color: ${props => props.theme.colors.primary};
+    border-color: #d4af37;
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
     background: rgba(255, 255, 255, 0.08);
   }
   
   &::placeholder {
-    color: ${props => props.theme.colors.gray[400]};
+    color: #9ca3af;
   }
 `
 
@@ -159,17 +186,17 @@ const PasswordToggle = styled.button`
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: ${props => props.theme.colors.gray[400]};
+  color: #9ca3af;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: ${props => props.theme.radii.sm};
+  border-radius: 0.25rem;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   
   &:hover {
-    color: ${props => props.theme.colors.white};
+    color: #ffffff;
     background: rgba(255, 255, 255, 0.1);
   }
 `
@@ -177,10 +204,10 @@ const PasswordToggle = styled.button`
 const PasswordStrength = styled.div`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[2]};
-  font-size: ${props => props.theme.fontSizes.xs};
-  color: ${props => props.theme.colors.gray[400]};
-  margin-top: ${props => props.theme.spacing[1]};
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
 `
 
 const StrengthBar = styled.div`
@@ -208,16 +235,16 @@ const StrengthFill = styled(motion.div)`
 const MatchIndicator = styled.div`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[2]};
-  font-size: ${props => props.theme.fontSizes.xs};
-  margin-top: ${props => props.theme.spacing[1]};
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
   color: ${props => props.$match ? '#22c55e' : '#ef4444'};
 `
 
 const SubmitButton = styled(Button)`
   width: 100%;
-  margin-top: ${props => props.theme.spacing[4]};
-  background: linear-gradient(135deg, ${props => props.theme.colors.primary}, ${props => props.theme.colors.gold[300]});
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
   border: none;
   position: relative;
   overflow: hidden;
@@ -237,51 +264,51 @@ const SubmitButton = styled(Button)`
 const SuccessMessage = styled(motion.div)`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[3]};
-  padding: ${props => props.theme.spacing[4]};
+  gap: 0.75rem;
+  padding: 1rem;
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid rgba(34, 197, 94, 0.3);
-  border-radius: ${props => props.theme.radii.lg};
+  border-radius: 0.5rem;
   color: #22c55e;
-  margin-bottom: ${props => props.theme.spacing[6]};
+  margin-bottom: 1.5rem;
 `
 
 const ErrorMessage = styled(motion.div)`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[3]};
-  padding: ${props => props.theme.spacing[4]};
+  gap: 0.75rem;
+  padding: 1rem;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: ${props => props.theme.radii.lg};
+  border-radius: 0.5rem;
   color: #ef4444;
-  margin-bottom: ${props => props.theme.spacing[6]};
+  margin-bottom: 1.5rem;
 `
 
 const LoginLink = styled(Link)`
-  color: ${props => props.theme.colors.primary};
+  color: #d4af37;
   text-decoration: none;
-  font-weight: ${props => props.theme.fontWeights.medium};
+  font-weight: 500;
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[2]};
+  gap: 0.5rem;
   
   &:hover {
-    color: ${props => props.theme.colors.white};
+    color: #ffffff;
     text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
   }
 `
 
 const Footer = styled(motion.div)`
   text-align: center;
-  margin-top: ${props => props.theme.spacing[8]};
-  padding-top: ${props => props.theme.spacing[6]};
+  margin-top: 2rem;
+  padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   
   p {
-    color: ${props => props.theme.colors.gray[400]};
-    font-size: ${props => props.theme.fontSizes.sm};
+    color: #9ca3af;
+    font-size: 0.875rem;
     margin: 0;
   }
 `
@@ -425,12 +452,7 @@ const ResetPassword = () => {
 
   return (
     <ResetPasswordContainer>
-      <BackButton
-        as={Link}
-        to="/login"
-        variant="outline"
-        size="sm"
-      >
+      <BackButton to="/login">
         <FiArrowLeft size={16} />
         Retour
       </BackButton>
