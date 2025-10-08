@@ -89,24 +89,39 @@ const NavLink = styled(Link)`
   color: ${props => props.theme.colors.gray[300]};
   text-decoration: none;
   font-weight: ${props => props.theme.fontWeights.medium};
-  transition: color ${props => props.theme.transitions.base};
+  font-size: ${props => props.theme.fontSizes.sm};
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, ${props => props.theme.colors.primary}, transparent);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
   
   &:hover {
     color: ${props => props.theme.colors.primary};
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    
+    &::after {
+      transform: translateX(-50%) scaleX(1);
+    }
   }
   
   &.active {
     color: ${props => props.theme.colors.primary};
     
     &::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: ${props => props.theme.colors.primary};
+      transform: translateX(-50%) scaleX(1);
+      width: 30px;
     }
   }
 `

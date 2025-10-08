@@ -80,31 +80,35 @@ const FooterLinks = styled.div`
 `
 
 const FooterLink = styled(motion(Link))`
-  color: ${props => props.theme.colors.gray[300]};
+  color: ${props => props.theme.colors.gray[400]};
   text-decoration: none;
   font-size: ${props => props.theme.fontSizes.sm};
-  font-weight: ${props => props.theme.fontWeights.medium};
-  transition: all ${props => props.theme.transitions.base};
+  font-weight: ${props => props.theme.fontWeights.normal};
+  letter-spacing: 0.3px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   padding: ${props => props.theme.spacing[1]} 0;
   position: relative;
+  display: inline-block;
   
   &::before {
-    content: '';
+    content: '✦';
     position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 1px;
-    background: linear-gradient(90deg, ${props => props.theme.colors.primary}, #f4d03f);
-    transition: width 0.3s ease;
+    left: -16px;
+    opacity: 0;
+    color: ${props => props.theme.colors.primary};
+    font-size: 8px;
+    transform: translateX(-4px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   &:hover {
-    color: ${props => props.theme.colors.primary};
-    transform: translateX(4px);
+    color: ${props => props.theme.colors.white};
+    padding-left: ${props => props.theme.spacing[3]};
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
     
     &::before {
-      width: 100%;
+      opacity: 1;
+      transform: translateX(0);
     }
   }
 `
@@ -211,11 +215,28 @@ const LegalLinks = styled.div`
 const LegalLink = styled(Link)`
   color: ${props => props.theme.colors.gray[500]};
   text-decoration: none;
-  font-size: ${props => props.theme.fontSizes.sm};
-  transition: color ${props => props.theme.transitions.base};
+  font-size: ${props => props.theme.fontSizes.xs};
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: ${props => props.theme.colors.primary};
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
   
   &:hover {
     color: ${props => props.theme.colors.primary};
+    
+    &::after {
+      width: 100%;
+    }
   }
 `
 
