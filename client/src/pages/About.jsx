@@ -172,7 +172,7 @@ const ValuesGrid = styled.div`
   }
 `
 
-const ValueCard = styled(motion(Card))`
+const ValueCard = styled(Card)`
   padding: ${props => props.theme.spacing[6]};
   text-align: center;
   border: 1px solid rgba(212, 175, 55, 0.2);
@@ -224,7 +224,7 @@ const StatsGrid = styled.div`
   }
 `
 
-const StatCard = styled(motion.div)`
+const StatCard = styled.div`
   text-align: center;
   padding: ${props => props.theme.spacing[6]};
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
@@ -285,7 +285,7 @@ const Timeline = styled.div`
   }
 `
 
-const TimelineItem = styled(motion.div)`
+const TimelineItem = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${props => props.theme.spacing[8]};
@@ -509,33 +509,37 @@ const About = () => {
           
           <ValuesGrid>
             {values.map((value, index) => (
-              <ValueCard
+              <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <ValueIcon>{value.icon}</ValueIcon>
-                <ValueTitle>{value.title}</ValueTitle>
-                <ValueDescription>{value.description}</ValueDescription>
-              </ValueCard>
+                <ValueCard>
+                  <ValueIcon>{value.icon}</ValueIcon>
+                  <ValueTitle>{value.title}</ValueTitle>
+                  <ValueDescription>{value.description}</ValueDescription>
+                </ValueCard>
+              </motion.div>
             ))}
           </ValuesGrid>
 
           {/* Stats */}
           <StatsGrid>
             {stats.map((stat, index) => (
-              <StatCard
+              <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <StatNumber>{stat.number}</StatNumber>
-                <StatLabel>{stat.label}</StatLabel>
-              </StatCard>
+                <StatCard>
+                  <StatNumber>{stat.number}</StatNumber>
+                  <StatLabel>{stat.label}</StatLabel>
+                </StatCard>
+              </motion.div>
             ))}
           </StatsGrid>
         </Container>
@@ -563,20 +567,22 @@ const About = () => {
 
           <Timeline>
             {timeline.map((item, index) => (
-              <TimelineItem
+              <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <TimelineDot />
-                <TimelineYear className="timeline-year">{item.year}</TimelineYear>
-                <TimelineContent className="timeline-content">
-                  <h4>{item.title}</h4>
-                  <p>{item.description}</p>
-                </TimelineContent>
-              </TimelineItem>
+                <TimelineItem>
+                  <TimelineDot />
+                  <TimelineYear className="timeline-year">{item.year}</TimelineYear>
+                  <TimelineContent className="timeline-content">
+                    <h4>{item.title}</h4>
+                    <p>{item.description}</p>
+                  </TimelineContent>
+                </TimelineItem>
+              </motion.div>
             ))}
           </Timeline>
         </Container>
