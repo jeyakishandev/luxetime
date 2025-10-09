@@ -182,6 +182,34 @@ luxetime/
 └── package.json
 ```
 
+## 📸 Aperçu du projet
+
+### Page d'accueil
+![Page d'accueil](docs/screenshots/home.png)
+*Interface d'accueil avec bannière et sélection de montres*
+
+### Catalogue de produits
+![Catalogue](docs/screenshots/products.png)
+*Catalogue complet avec système de filtres et tri*
+
+### Détail d'un produit
+![Détail produit](docs/screenshots/product-detail.png)
+*Page de détail avec spécifications techniques complètes*
+
+### Panier d'achat
+![Panier](docs/screenshots/cart.png)
+*Gestion du panier avec calcul en temps réel*
+
+### Authentification
+![Connexion](docs/screenshots/login.png)
+*Interface de connexion sécurisée*
+
+### Profil utilisateur
+![Profil](docs/screenshots/profile.png)
+*Tableau de bord utilisateur avec historique des commandes*
+
+---
+
 ## 📚 Documentation complémentaire
 
 Pour plus de détails sur l'installation, consultez [INSTALLATION.md](INSTALLATION.md)
