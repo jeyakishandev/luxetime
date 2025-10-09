@@ -210,10 +210,6 @@ luxetime/
 
 ---
 
-## 📚 Documentation complémentaire
-
-Pour plus de détails sur l'installation, consultez [INSTALLATION.md](INSTALLATION.md)
-
 ## 🔑 Variables d'environnement
 
 Le fichier `server/config.env` doit contenir :
