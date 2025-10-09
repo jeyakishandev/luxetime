@@ -9,15 +9,9 @@ node index.js &
 sleep 3
 
 echo "✅ Serveur démarré !"
-echo "🌐 Frontend: http://localhost:3003"
+echo "🌐 Frontend: http://localhost:3000"
 echo "📡 Backend: http://localhost:5000"
 echo ""
 echo "🔑 Identifiants de test:"
 echo "   Email: test@luxetime.fr"
 echo "   Mot de passe: Luxetime2024!"
-
-
-
-
-
-
