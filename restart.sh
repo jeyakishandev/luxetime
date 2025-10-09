@@ -4,7 +4,7 @@ pkill -f node
 sleep 2
 
 echo "🚀 Démarrage du serveur backend..."
-cd /root/Luxetime/server
+cd server
 node index.js &
 sleep 3
 
