@@ -35,6 +35,11 @@ Application e-commerce fullstack pour la vente de montres de luxe, développée 
 - bcrypt pour le hashage des mots de passe
 - Helmet, CORS, Rate Limiting
 
+**Tests & DevOps :**
+- Jest (Backend)
+- Vitest (Frontend)
+- Docker & Docker Compose
+
 ## 🚀 Installation et démarrage
 
 ### Prérequis
@@ -99,26 +104,81 @@ Email : test@luxetime.fr
 Mot de passe : Luxetime2024!
 ```
 
+## 🐳 Installation avec Docker (Alternative)
+
+Si vous préférez utiliser Docker :
+
+```bash
+# Cloner le projet
+git clone https://github.com/jeyakishandev/luxetime.git
+cd luxetime
+
+# Lancer avec Docker Compose
+bash docker-setup.sh
+
+# Ou manuellement
+docker-compose up -d
+```
+
+L'application sera disponible sur :
+- Frontend : http://localhost:3000
+- Backend : http://localhost:5000
+
+**Commandes Docker utiles :**
+```bash
+docker-compose logs -f      # Voir les logs
+docker-compose down         # Arrêter les conteneurs
+docker-compose restart      # Redémarrer
+```
+
+## 🧪 Tests
+
+Le projet inclut des tests unitaires pour assurer la qualité du code.
+
+### Lancer les tests backend
+
+```bash
+cd server
+npm test
+```
+
+### Lancer les tests frontend
+
+```bash
+cd client
+npm test
+```
+
+**Coverage des tests :**
+- Tests d'authentification (hashing, JWT)
+- Tests de validation des produits
+- Tests des fonctions utilitaires
+
 ## 📁 Structure du projet
 
 ```
 luxetime/
-├── client/              # Application React
+├── client/                  # Application React
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
 │   │   ├── pages/
 │   │   ├── contexts/
 │   │   ├── hooks/
-│   │   └── services/
+│   │   ├── services/
+│   │   └── __tests__/      # Tests frontend
 │   └── package.json
-├── server/              # API Node.js
+├── server/                  # API Node.js
 │   ├── controllers/
 │   ├── middleware/
 │   ├── routes/
 │   ├── services/
 │   ├── prisma/
+│   ├── __tests__/          # Tests backend
 │   └── package.json
+├── docker-compose.yml       # Configuration Docker
+├── Dockerfile.client        # Image Docker frontend
+├── Dockerfile.server        # Image Docker backend
 └── package.json
 ```
 
@@ -144,7 +204,9 @@ NODE_ENV=development
 - [ ] Wishlist
 - [ ] Notifications email
 - [ ] Dashboard administrateur
-- [ ] Tests unitaires et E2E
+- [ ] Tests E2E avec Cypress
+- [ ] CI/CD avec GitHub Actions
+- [ ] Déploiement sur AWS/Vercel
 
 ## 👨‍💻 Auteur
 

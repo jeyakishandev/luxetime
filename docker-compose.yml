@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  db:
+    image: postgres:14-alpine
+    container_name: luxetime-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: luxetime
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - luxetime-network
+
+  # Backend Node.js
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: luxetime-server
+    restart: always
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/luxetime?schema=public"
+      JWT_SECRET: "super_secret_jwt_key_for_luxetime_2024"
+      PORT: 5000
+      NODE_ENV: development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    networks:
+      - luxetime-network
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  # Frontend React
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: luxetime-client
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - luxetime-network
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+
+networks:
+  luxetime-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
