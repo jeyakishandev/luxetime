@@ -29,7 +29,7 @@ app.use(helmet());
 // Configuration CORS
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL || 'https://luxetime.vercel.app'] 
+    ? [process.env.FRONTEND_URL || 'https://luxetime-three.vercel.app'] 
     : ['http://localhost:3000'],
   credentials: true
 }));
