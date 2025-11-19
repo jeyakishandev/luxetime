@@ -1,7 +1,13 @@
 import axios from 'axios'
 
 // Configuration de base d'axios
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+let API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+
+// S'assurer que l'URL se termine par /api
+if (API_BASE_URL && !API_BASE_URL.endsWith('/api')) {
+  // Si l'URL ne se termine pas par /api, l'ajouter
+  API_BASE_URL = API_BASE_URL.replace(/\/$/, '') + '/api'
+}
 
 // Instance axios principale
 const api = axios.create({
