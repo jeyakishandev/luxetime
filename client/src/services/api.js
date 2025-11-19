@@ -227,5 +227,20 @@ export const wishlistAPI = {
   getWishlistCount: () => api.get('/wishlist/count')
 }
 
+// API des avis
+export const reviewAPI = {
+  // Créer ou mettre à jour un avis
+  createOrUpdateReview: (produitId, note, commentaire) => 
+    api.post('/reviews', { produitId, note, commentaire }),
+  
+  // Supprimer un avis
+  deleteReview: (id) => 
+    api.delete(`/reviews/${id}`),
+  
+  // Récupérer les avis d'un produit
+  getProductReviews: (produitId) => 
+    api.get(`/reviews/produit/${produitId}`)
+}
+
 // Export par défaut
 export default api
