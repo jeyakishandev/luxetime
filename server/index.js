@@ -77,24 +77,41 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Servir les fichiers statiques (images uploadées) avec CORS
 app.use('/uploads', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  // Définir les headers CORS avant de servir le fichier
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
   next();
-}, express.static(path.join(__dirname, 'uploads')));
+}, express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, path) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+}));
 
 // Servir les assets statiques (images, logos, etc.) avec CORS
 app.use('/assets', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  // Définir les headers CORS avant de servir le fichier
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
   next();
-}, express.static(path.join(__dirname, 'public', 'assets')));
+}, express.static(path.join(__dirname, 'public', 'assets'), {
+  setHeaders: (res, path) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  }
+}));
 
 // Routes API
 app.use('/api/auth', authRoutes);
