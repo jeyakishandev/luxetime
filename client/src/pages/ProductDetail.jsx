@@ -988,7 +988,20 @@ const ProductDetail = () => {
     return reviews
   }
   
-  const reviews = generateReviews(productData.id, productData.noteMoyenne || 4.5, productData.nombreAvis || 5)
+  // Utiliser les vrais avis de la base de données s'ils existent, sinon générer des avis fictifs
+  const realReviews = productData.avis && productData.avis.length > 0 
+    ? productData.avis.map(avis => ({
+        id: avis.id,
+        name: `${avis.user?.prenom || ''} ${avis.user?.nom || ''}`.trim() || 'Client',
+        rating: avis.note,
+        comment: avis.commentaire || 'Aucun commentaire',
+        date: new Date(avis.createdAt).toLocaleDateString('fr-FR')
+      }))
+    : []
+  
+  const reviews = realReviews.length > 0 
+    ? realReviews 
+    : generateReviews(productData.id, productData.noteMoyenne || 4.5, productData.nombreAvis || 5)
 
   // Données fictives détaillées pour chaque produit
   const productDetails = {
