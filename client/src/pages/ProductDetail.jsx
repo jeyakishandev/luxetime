@@ -1106,7 +1106,7 @@ const ProductDetail = () => {
   
   // Utiliser les vrais avis de la base de données (mémorisés)
   const realReviews = useMemo(() => {
-    if (!productData?.avis || productData.avis.length === 0) {
+    if (!productData?.avis || productData?.avis?.length === 0) {
       return []
     }
     return productData.avis.map(avis => ({
@@ -1631,7 +1631,7 @@ const ProductDetail = () => {
               Caractéristiques
             </DetailsTitle>
             <SpecsList>
-              {details.features.map((feature, index) => (
+              {details?.features?.map((feature, index) => (
                 <SpecItem key={index}>
                   <SpecLabel>
                     <FiCheck size={16} style={{ marginRight: '8px', color: '#22c55e' }} />
@@ -1698,7 +1698,7 @@ const ProductDetail = () => {
               Matériaux d'exception
             </DetailsTitle>
             <SpecsList>
-              {details.materials.map((material, index) => (
+              {details?.materials?.map((material, index) => (
                 <SpecItem key={index}>
                   <SpecLabel>
                     <FiCheck size={16} style={{ marginRight: '8px', color: '#22c55e' }} />
@@ -1720,7 +1720,7 @@ const ProductDetail = () => {
               Certifications
             </DetailsTitle>
             <SpecsList>
-              {details.certifications.map((cert, index) => (
+              {details?.certifications?.map((cert, index) => (
                 <SpecItem key={index}>
                   <SpecLabel>
                     <FiAward size={16} style={{ marginRight: '8px', color: '#d4af37' }} />
