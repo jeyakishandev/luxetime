@@ -34,13 +34,6 @@ const HeroSection = styled.section`
   position: relative;
   height: 80vh;
   min-height: 600px;
-  background: linear-gradient(
-    135deg,
-    rgba(26, 26, 26, 0.9) 0%,
-    rgba(45, 45, 45, 0.8) 50%,
-    rgba(26, 26, 26, 0.9) 100%
-  ),
-  url('/assets/images/banniere.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -536,7 +529,14 @@ const Home = () => {
 
   return (
     <HomeContainer>
-      <HeroSection>
+      <HeroSection style={{
+        background: `linear-gradient(
+          135deg,
+          rgba(26, 26, 26, 0.9) 0%,
+          rgba(45, 45, 45, 0.8) 50%,
+          rgba(26, 26, 26, 0.9) 100%
+        ), url(${getImageUrl('/assets/images/banniere.jpg')})`
+      }}>
         <HeroContent
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

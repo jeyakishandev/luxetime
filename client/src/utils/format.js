@@ -219,20 +219,37 @@ export const formatEmail = (email) => {
 
 // Normalisation des URLs d'images
 export const getImageUrl = (imageUrl) => {
-  if (!imageUrl) return '/assets/images/analog-watch-1845547_1280.jpg'
+  if (!imageUrl) {
+    const defaultImage = '/assets/images/analog-watch-1845547_1280.jpg'
+    return getImageUrl(defaultImage)
+  }
   
   // Si c'est déjà une URL complète (http/https), on la retourne telle quelle
   if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
     return imageUrl
   }
   
-  // Si c'est un chemin relatif qui commence par /, on le retourne tel quel
+  // En production, servir les images depuis le backend (Render)
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+  const isProduction = import.meta.env.PROD
+  
+  // Si c'est un chemin relatif qui commence par /
   if (imageUrl.startsWith('/')) {
+    // En production, pointer vers le backend
+    if (isProduction && API_URL) {
+      // Enlever le slash initial pour éviter les doubles slashes
+      const cleanPath = imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl
+      return `${API_URL}/${cleanPath}`
+    }
     return imageUrl
   }
   
   // Sinon, on ajoute /assets/images/ au début
-  return `/assets/images/${imageUrl}`
+  const fullPath = `/assets/images/${imageUrl}`
+  if (isProduction && API_URL) {
+    return `${API_URL}${fullPath}`
+  }
+  return fullPath
 }
 
 // Validation des formats

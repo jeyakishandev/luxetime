@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { Button, Input, Card } from '../components/ui'
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiZap } from 'react-icons/fi'
 import toast from 'react-hot-toast'
+import { getImageUrl } from '../utils/format'
 
 const LoginContainer = styled.div`
   min-height: 100vh;
@@ -356,7 +357,7 @@ const Login = () => {
               transition={{ duration: 0.8, type: "spring" }}
             >
               <LogoImage 
-                src="/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png" 
+                src={getImageUrl("/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png")} 
                 alt="Luxetime Logo" 
               />
             </Logo>

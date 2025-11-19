@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { Button, Card, Input } from '../components/ui'
 import { FiUser, FiMail, FiPhone, FiMapPin, FiEdit3, FiSave, FiX } from 'react-icons/fi'
 import toast from 'react-hot-toast'
+import { getImageUrl } from '../utils/format'
 
 const ProfileContainer = styled.div`
   min-height: 100vh;
@@ -237,7 +238,7 @@ const Profile = () => {
               transition={{ duration: 0.8, type: "spring" }}
             >
               <AvatarImage 
-                src="/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png" 
+                src={getImageUrl("/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png")} 
                 alt="Luxetime Logo" 
               />
             </Avatar>

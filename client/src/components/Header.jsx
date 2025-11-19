@@ -15,7 +15,7 @@ import {
   FiHeart,
   FiLogOut
 } from 'react-icons/fi'
-import { formatPrice } from '../utils/format'
+import { formatPrice, getImageUrl } from '../utils/format'
 
 const HeaderContainer = styled.header`
   position: fixed;
@@ -365,7 +365,7 @@ const Header = () => {
     <HeaderContainer>
       <HeaderContent>
         <Logo to="/">
-          <LogoImage src="/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png" alt="Luxetime" />
+          <LogoImage src={getImageUrl("/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png")} alt="Luxetime" />
           Luxetime
         </Logo>
 
