@@ -395,6 +395,13 @@ const About = () => {
   const [imageError, setImageError] = React.useState(false)
   const imgRef = React.useRef(null)
 
+  // Vérifier si l'image est déjà chargée (cache)
+  React.useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      setImageLoaded(true)
+    }
+  }, [])
+
   const values = [
     {
       icon: <FiAward size={32} />,
