@@ -15,19 +15,21 @@ router.get('/popular', ProductController.getPopularProducts);
 router.get('/new', ProductController.getNewProducts);
 router.get('/categories', ProductController.getCategories);
 router.get('/brands', ProductController.getBrands);
-// Route pour debug : lister les IDs des produits
-router.get('/debug/ids', async (req, res) => {
-  try {
-    const { prisma } = require('../config/database');
-    const products = await prisma.produit.findMany({
-      select: { id: true, nom: true, reference: true },
-      orderBy: { id: 'asc' }
-    });
-    res.json({ success: true, data: products });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
+// Route pour debug : lister les IDs des produits (uniquement en développement)
+if (process.env.NODE_ENV !== 'production') {
+  router.get('/debug/ids', async (req, res) => {
+    try {
+      const { prisma } = require('../config/database');
+      const products = await prisma.produit.findMany({
+        select: { id: true, nom: true, reference: true },
+        orderBy: { id: 'asc' }
+      });
+      res.json({ success: true, data: products });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  });
+}
 router.get('/:id', optionalAuth, ProductController.getProductById);
 
 // Routes protégées (admin)
