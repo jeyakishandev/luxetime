@@ -83,24 +83,24 @@ const initDatabase = async () => {
     
     console.log(`✅ Utilisateur créé: ${user.email}`);
     
-    // Créer les produits (exemple avec quelques produits)
+    // Créer tous les produits
     const products = [
       {
-        nom: 'Luxetime Classic',
-        description: 'Une montre classique intemporelle, alliant élégance et précision.',
+        nom: "Luxetime Classic",
+        description: "Une montre classique intemporelle, alliant élégance et précision. Parfaite pour toutes les occasions.",
         prix: 1299,
         prixPromo: null,
-        marque: 'Luxetime',
-        reference: 'LT-CL-001',
-        categorie: 'HOMME',
+        marque: "Luxetime",
+        reference: "LT-CL-001",
+        categorie: "HOMME",
         stock: 15,
-        mouvement: 'Mécanique automatique',
-        boitier: 'Acier inoxydable',
-        bracelet: 'Cuir noir',
-        etanche: '5 ATM',
-        diametre: '42mm',
-        poids: '85g',
-        tags: ['classique', 'élégant', 'automatique'],
+        mouvement: "Mécanique automatique",
+        boitier: "Acier inoxydable",
+        bracelet: "Cuir noir",
+        etanche: "5 ATM",
+        diametre: "42mm",
+        poids: "85g",
+        tags: ["classique", "élégant", "automatique"],
         estEnVente: true,
         estNouveau: true,
         noteMoyenne: 4.8,
@@ -108,28 +108,28 @@ const initDatabase = async () => {
         vues: 156,
         images: {
           create: [{
-            url: '/assets/images/analog-watch-1845547_1280.jpg',
-            alt: 'Luxetime Classic',
+            url: "/assets/images/analog-watch-1845547_1280.jpg",
+            alt: "Luxetime Classic",
             estPrincipale: true
           }]
         }
       },
       {
-        nom: 'Luxetime Sport',
-        description: 'Montre sportive robuste avec chronographe et résistance à l\'eau.',
+        nom: "Luxetime Sport",
+        description: "Montre sportive robuste avec chronographe et résistance à l'eau. Idéale pour les activités intenses.",
         prix: 899,
         prixPromo: null,
-        marque: 'Luxetime',
-        reference: 'LT-SP-002',
-        categorie: 'SPORT',
+        marque: "Luxetime",
+        reference: "LT-SP-002",
+        categorie: "SPORT",
         stock: 8,
-        mouvement: 'Quartz haute précision',
-        boitier: 'Titane',
-        bracelet: 'Caoutchouc sport',
-        etanche: '20 ATM',
-        diametre: '44mm',
-        poids: '95g',
-        tags: ['sport', 'chronographe', 'résistant'],
+        mouvement: "Quartz haute précision",
+        boitier: "Titane",
+        bracelet: "Caoutchouc sport",
+        etanche: "20 ATM",
+        diametre: "44mm",
+        poids: "95g",
+        tags: ["sport", "chronographe", "résistant"],
         estEnVente: true,
         estNouveau: false,
         noteMoyenne: 4.6,
@@ -137,8 +137,124 @@ const initDatabase = async () => {
         vues: 203,
         images: {
           create: [{
-            url: '/assets/images/analog-watch-1869928_1280.jpg',
-            alt: 'Luxetime Sport',
+            url: "/assets/images/analog-watch-1869928_1280.jpg",
+            alt: "Luxetime Sport",
+            estPrincipale: true
+          }]
+        }
+      },
+      {
+        nom: "Luxetime Elegance",
+        description: "Montre de soirée raffinée avec boîtier en or rose et cadran émaillé. Un bijou horloger d'exception.",
+        prix: 1599,
+        prixPromo: 1399,
+        marque: "Luxetime",
+        reference: "LT-EL-003",
+        categorie: "FEMME",
+        stock: 5,
+        mouvement: "Mécanique manuelle",
+        boitier: "Or rose 18k",
+        bracelet: "Satin noir",
+        etanche: "3 ATM",
+        diametre: "36mm",
+        poids: "65g",
+        tags: ["élégance", "or", "soirée"],
+        estEnVente: true,
+        estNouveau: true,
+        noteMoyenne: 4.9,
+        nombreAvis: 12,
+        vues: 89,
+        images: {
+          create: [{
+            url: "/assets/images/clock-1224379_1280.jpg",
+            alt: "Luxetime Elegance",
+            estPrincipale: true
+          }]
+        }
+      },
+      {
+        nom: "Luxetime Heritage",
+        description: "Réédition d'un modèle historique des années 60. Un hommage à l'âge d'or de l'horlogerie française.",
+        prix: 2199,
+        prixPromo: null,
+        marque: "Luxetime",
+        reference: "LT-HT-004",
+        categorie: "VINTAGE",
+        stock: 3,
+        mouvement: "Mécanique automatique",
+        boitier: "Acier brossé",
+        bracelet: "Cuir vintage",
+        etanche: "5 ATM",
+        diametre: "40mm",
+        poids: "78g",
+        tags: ["vintage", "heritage", "limité"],
+        estEnVente: true,
+        estNouveau: false,
+        noteMoyenne: 5.0,
+        nombreAvis: 8,
+        vues: 67,
+        images: {
+          create: [{
+            url: "/assets/images/analog-watch-1845547_1280.jpg",
+            alt: "Luxetime Heritage",
+            estPrincipale: true
+          }]
+        }
+      },
+      {
+        nom: "Luxetime Modern",
+        description: "Design contemporain avec matériaux innovants. Une montre qui reflète l'esprit de notre époque.",
+        prix: 999,
+        prixPromo: null,
+        marque: "Luxetime",
+        reference: "LT-MD-005",
+        categorie: "UNISEXE",
+        stock: 12,
+        mouvement: "Quartz solaire",
+        boitier: "Fibre de carbone",
+        bracelet: "Caoutchouc recyclé",
+        etanche: "10 ATM",
+        diametre: "41mm",
+        poids: "72g",
+        tags: ["moderne", "écologique", "innovant"],
+        estEnVente: true,
+        estNouveau: true,
+        noteMoyenne: 4.7,
+        nombreAvis: 15,
+        vues: 134,
+        images: {
+          create: [{
+            url: "/assets/images/analog-watch-1869928_1280.jpg",
+            alt: "Luxetime Modern",
+            estPrincipale: true
+          }]
+        }
+      },
+      {
+        nom: "Luxetime Premium",
+        description: "Le summum de l'art horloger. Montre de collection avec complications et finitions d'exception.",
+        prix: 2999,
+        prixPromo: null,
+        marque: "Luxetime",
+        reference: "LT-PR-006",
+        categorie: "HOMME",
+        stock: 2,
+        mouvement: "Mécanique automatique avec réserve de marche",
+        boitier: "Platine 950",
+        bracelet: "Alligator noir",
+        etanche: "5 ATM",
+        diametre: "43mm",
+        poids: "92g",
+        tags: ["premium", "collection", "complications"],
+        estEnVente: true,
+        estNouveau: false,
+        noteMoyenne: 5.0,
+        nombreAvis: 6,
+        vues: 45,
+        images: {
+          create: [{
+            url: "/assets/images/clock-1224379_1280.jpg",
+            alt: "Luxetime Premium",
             estPrincipale: true
           }]
         }
