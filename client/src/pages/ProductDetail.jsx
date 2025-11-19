@@ -1019,10 +1019,10 @@ const ProductDetail = () => {
   }
   
   // Prix dynamiques
-  const currentPrice = productData.prixPromo && productData.prixPromo > 0 
+  const currentPrice = productData?.prixPromo && productData.prixPromo > 0 
     ? productData.prixPromo 
-    : productData.prix
-  const originalPrice = productData.prixPromo && productData.prixPromo > 0 
+    : productData?.prix || 0
+  const originalPrice = productData?.prixPromo && productData.prixPromo > 0 
     ? productData.prix 
     : null
   const discount = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0
@@ -1130,8 +1130,8 @@ const ProductDetail = () => {
     }
     
     return generateReviews(
-      productData.id, 
-      productData.noteMoyenne || 4.5, 
+      productData?.id, 
+      productData?.noteMoyenne || 4.5, 
       fakeReviewsNeeded
     )
   }, [productData?.id, productData?.noteMoyenne, realReviews.length])
