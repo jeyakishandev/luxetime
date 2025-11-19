@@ -795,16 +795,8 @@ const ProductDetail = () => {
   }, [product?.data?.data?.id])
 
   const handleAddToCart = () => {
-    console.log('🛒 ProductDetail - Product:', product)
-    console.log('🛒 ProductDetail - Product.data:', product?.data)
-    console.log('🛒 ProductDetail - Product.data.data:', product?.data?.data)
-    console.log('🛒 ProductDetail - Product.data.data.id:', product?.data?.data?.id)
-    console.log('🛒 ProductDetail - Quantity:', quantity)
-    
     if (product?.data?.data) {
       addToCart({ produitId: product.data.data.id, quantite: quantity })
-    } else {
-      console.log('❌ ProductDetail - Pas de données produit')
     }
   }
 
@@ -844,12 +836,6 @@ const ProductDetail = () => {
     )
   }
 
-  // Debug de la structure de la réponse
-  console.log('🔍 Product response:', product)
-  console.log('🔍 Product.data:', product?.data)
-  console.log('🔍 Product.data?.data:', product?.data?.data)
-  console.log('🔍 Product.data?.success:', product?.data?.success)
-  
   // La réponse de l'API est : { success: true, data: product }
   // Donc product.data = { success: true, data: product }
   // Et product.data.data = le produit lui-même
@@ -879,10 +865,6 @@ const ProductDetail = () => {
     )
   }
   
-  // Debug des données
-  console.log('🔍 ProductData:', productData)
-  console.log('💰 Prix:', productData.prix, 'PrixPromo:', productData.prixPromo)
-  
   // Prix dynamiques
   const currentPrice = productData.prixPromo && productData.prixPromo > 0 
     ? productData.prixPromo 
@@ -891,8 +873,6 @@ const ProductDetail = () => {
     ? productData.prix 
     : null
   const discount = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0
-  
-  console.log('💵 CurrentPrice:', currentPrice, 'OriginalPrice:', originalPrice)
   
   // Images dynamiques - utiliser les vraies images du produit ou fallback
   const productImagesData = productData.images && productData.images.length > 0 

@@ -570,12 +570,8 @@ const Checkout = () => {
         reduction: discount
       }
       
-      console.log('📦 Envoi de la commande:', orderData)
-      
       // Créer la commande via l'API
       const response = await orderAPI.createOrder(orderData)
-      
-      console.log('✅ Commande créée:', response.data)
       
       if (response.data.success) {
         // Vider le panier

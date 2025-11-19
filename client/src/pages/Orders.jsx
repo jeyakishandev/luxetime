@@ -332,13 +332,10 @@ const Orders = () => {
       
       try {
         const response = await orderAPI.getUserOrders()
-        console.log('📦 Commandes reçues:', response.data)
         
         if (response.data.success) {
-          console.log('📦 Structure des données:', response.data.data)
           // L'API retourne { commandes, pagination }
           const ordersData = response.data.data?.commandes || []
-          console.log('📦 Commandes extraites:', ordersData)
           setOrders(ordersData)
         } else {
           setError('Erreur lors du chargement des commandes')

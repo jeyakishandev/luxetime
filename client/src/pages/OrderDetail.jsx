@@ -346,7 +346,6 @@ const OrderDetail = () => {
       
       try {
         const response = await orderAPI.getOrderById(id)
-        console.log('📦 Détails commande reçus:', response.data)
         
         if (response.data.success) {
           setOrder(response.data.data)

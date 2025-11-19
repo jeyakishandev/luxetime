@@ -441,15 +441,12 @@ const Products = () => {
     limit: 12,
   })
 
-  console.log('🔍 Products component rendering, loading:', loading, 'products:', products.length)
-
   useEffect(() => {
     fetchProducts()
   }, [filters])
 
   const fetchProducts = async () => {
     try {
-      console.log('🔄 Début du chargement des produits...')
       setLoading(true)
       setError(null)
       
@@ -473,20 +470,15 @@ const Products = () => {
         queryParams.search = filters.search
       }
       
-      console.log('📤 Paramètres envoyés:', queryParams)
-      
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
       const response = await axios.get(`${API_URL}/api/products`, {
         params: queryParams,
         timeout: 10000
       })
       
-      console.log('✅ Réponse API:', response.data)
-      
       if (response.data.success) {
         setProducts(response.data.data.products || [])
         setError(null)
-        console.log('📦 Produits chargés:', response.data.data.products.length)
       } else {
         setError('Erreur lors du chargement des produits')
       }

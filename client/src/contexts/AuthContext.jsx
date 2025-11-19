@@ -117,18 +117,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('luxetime_token')
-      console.log('🔍 Vérification auth - Token:', token ? 'présent' : 'absent')
       
       if (token) {
         try {
           // Vérifier si le token est valide
           const payload = JSON.parse(atob(token.split('.')[1]))
           const currentTime = Date.now() / 1000
-          console.log('🔍 Token exp:', payload.exp, 'Current:', currentTime)
           
           if (payload.exp && payload.exp > currentTime) {
             // Token valide, récupérer le profil
-            console.log('✅ Token valide, récupération du profil...')
             await fetchUserProfile(token)
           } else {
             // Token expiré

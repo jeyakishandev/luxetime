@@ -363,10 +363,6 @@ const FeatureDescription = styled.p`
 const Cart = () => {
   const navigate = useNavigate()
   const { items, total, itemCount, isLoading, clearCart } = useCart()
-  
-  console.log('🛒 Cart - Items:', items)
-  console.log('🛒 Cart - ItemCount:', itemCount)
-  console.log('🛒 Cart - Total:', total)
   const { isAuthenticated } = useAuth()
   const [isClearing, setIsClearing] = useState(false)
 

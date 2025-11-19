@@ -115,10 +115,7 @@ export const CartProvider = ({ children }) => {
   // Récupérer le panier
   const { data: cartData, isLoading: isLoadingCart, refetch: refetchCart } = useQuery(
     ['cart'],
-    () => {
-      console.log('🛒 CartContext - Récupération du panier...')
-      return cartAPI.getCart()
-    },
+    () => cartAPI.getCart(),
     {
       enabled: isAuthenticated,
       refetchOnWindowFocus: false,
@@ -128,30 +125,18 @@ export const CartProvider = ({ children }) => {
 
   // Traiter les données du panier
   useEffect(() => {
-    if (cartData) {
-      console.log('🛒 CartContext - Données reçues:', cartData)
-      console.log('🛒 CartContext - cartData.data:', cartData.data)
-      console.log('🛒 CartContext - cartData.data.success:', cartData.data?.success)
-      console.log('🛒 CartContext - cartData.data.data:', cartData.data?.data)
-      if (cartData.data?.success) {
-        console.log('🛒 CartContext - Dispatch SET_CART avec:', cartData.data.data)
-        dispatch({
-          type: cartActions.SET_CART,
-          payload: cartData.data.data
-        })
-      } else {
-        console.log('🛒 CartContext - data.success est false!')
-      }
+    if (cartData?.data?.success) {
+      dispatch({
+        type: cartActions.SET_CART,
+        payload: cartData.data.data
+      })
     }
   }, [cartData])
 
   // Ajouter au panier
   const addToCart = useMutation(
     async ({ produitId, quantite = 1 }) => {
-      console.log('🛒 Ajout au panier:', { produitId, quantite })
-      console.log('🛒 Types:', { produitId: typeof produitId, quantite: typeof quantite })
       const response = await cartAPI.addToCart(produitId, quantite)
-      console.log('🛒 Réponse API:', response.data)
       return response.data
     },
     {
@@ -173,14 +158,11 @@ export const CartProvider = ({ children }) => {
   // Mettre à jour la quantité
   const updateQuantity = useMutation(
     async ({ produitId, quantite }) => {
-      console.log('🔄 Mise à jour quantité:', { produitId, quantite })
       const response = await cartAPI.updateCartItem(produitId, quantite)
-      console.log('🔄 Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
-        console.log('✅ Succès updateQuantity:', data)
         if (data.success) {
           queryClient.invalidateQueries(['cart'])
           refetchCart() // Forcer le refetch immédiat

@@ -316,7 +316,6 @@ const ProductCard = ({
     >
       <ProductLink 
         to={`/products/${product.id}`}
-        onClick={() => console.log('Navigation vers:', `/products/${product.id}`)}
       >
         <ImageContainer>
           {getBadgeType() && (
