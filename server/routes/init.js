@@ -58,6 +58,21 @@ router.post('/reset-db', async (req, res) => {
     
     console.log('🗑️ Données supprimées');
     
+    // Réinitialiser les séquences PostgreSQL pour que les IDs recommencent à 1
+    try {
+      await prisma.$executeRaw`ALTER SEQUENCE "produits_id_seq" RESTART WITH 1;`;
+      await prisma.$executeRaw`ALTER SEQUENCE "users_id_seq" RESTART WITH 1;`;
+      await prisma.$executeRaw`ALTER SEQUENCE "image_produits_id_seq" RESTART WITH 1;`;
+      await prisma.$executeRaw`ALTER SEQUENCE "panier_items_id_seq" RESTART WITH 1;`;
+      await prisma.$executeRaw`ALTER SEQUENCE "commandes_id_seq" RESTART WITH 1;`;
+      await prisma.$executeRaw`ALTER SEQUENCE "commande_items_id_seq" RESTART WITH 1;`;
+      await prisma.$executeRaw`ALTER SEQUENCE "avis_id_seq" RESTART WITH 1;`;
+      await prisma.$executeRaw`ALTER SEQUENCE "favoris_id_seq" RESTART WITH 1;`;
+      console.log('🔄 Séquences PostgreSQL réinitialisées');
+    } catch (error) {
+      console.log('⚠️ Erreur lors de la réinitialisation des séquences (peut-être déjà fait):', error.message);
+    }
+    
     // Réinitialiser
     await initDatabase();
     
