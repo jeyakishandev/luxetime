@@ -8,7 +8,9 @@ import axios from 'axios'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed'
 import { getImageUrl } from '../utils/format'
+import ProductCard from '../components/ProductCard'
 import toast from 'react-hot-toast'
 
 const HomeContainer = styled.div`
@@ -459,6 +461,7 @@ const Home = () => {
   const { isAuthenticated } = useAuth()
   const { addToCart } = useCart()
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const { recentlyViewed } = useRecentlyViewed()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -656,6 +659,44 @@ const Home = () => {
           )}
         </Container>
       </Section>
+
+      {/* Section Produits récemment consultés */}
+      {recentlyViewed.length > 0 && (
+        <Section style={{ background: '#1a1a1a' }}>
+          <Container>
+            <SectionTitle
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              Récemment consultés
+            </SectionTitle>
+            <SectionSubtitle
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              Retrouvez les montres que vous avez récemment consultées
+            </SectionSubtitle>
+            
+            <ProductsGrid
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              {recentlyViewed.slice(0, 4).map((product, index) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                />
+              ))}
+            </ProductsGrid>
+          </Container>
+        </Section>
+      )}
 
       <Section style={{ background: '#1a1a1a' }}>
         <Container>

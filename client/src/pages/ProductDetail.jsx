@@ -6,6 +6,7 @@ import { useProduct } from '../hooks/useProducts'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
 import { useWishlist } from '../contexts/WishlistContext'
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed'
 import { Button, Card, PageLoading } from '../components/ui'
 import { formatPrice, getImageUrl } from '../utils/format'
 import { reviewAPI } from '../services/api'
@@ -874,6 +875,7 @@ const ProductDetail = () => {
   const { addToCart, isAddingToCart } = useCart()
   const { isAuthenticated } = useAuth()
   const { addToWishlist, removeFromWishlist, isInWishlist, isAddingToWishlist } = useWishlist()
+  const { addToRecentlyViewed } = useRecentlyViewed()
   const queryClient = useQueryClient()
   
   const [selectedImage, setSelectedImage] = useState(0)
@@ -1001,6 +1003,13 @@ const ProductDetail = () => {
   // product.data.data.data = le produit lui-même
   const apiResponse = product?.data?.data
   const productData = apiResponse?.data || apiResponse
+  
+  // Enregistrer le produit dans l'historique des produits consultés
+  React.useEffect(() => {
+    if (productData && productData.id) {
+      addToRecentlyViewed(productData)
+    }
+  }, [productData?.id, addToRecentlyViewed])
   
   // Valeurs par défaut pour noteMoyenne et nombreAvis si elles sont manquantes ou à 0
   // (utilisées uniquement pour la génération des avis fictifs)
