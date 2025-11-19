@@ -77,6 +77,8 @@ dist
 # Gatsby files
 .cache/
 public
+# Mais on garde les assets du serveur
+!server/public/assets/
 
 # Storybook build outputs
 .out
