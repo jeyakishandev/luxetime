@@ -22,7 +22,7 @@ import {
 } from 'react-icons/fi'
 import { orderAPI } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
-import { formatPrice, formatDate } from '../utils/format'
+import { formatPrice, formatDate, getImageUrl } from '../utils/format'
 import toast from 'react-hot-toast'
 
 const OrderDetailContainer = styled.div`
@@ -522,7 +522,7 @@ const OrderDetail = () => {
                   >
                     <ItemCard>
                       <ItemImage 
-                        src={item.produit?.images?.[0]?.url || '/placeholder-watch.jpg'} 
+                        src={getImageUrl(item.produit?.images?.[0]?.url || '/assets/images/analog-watch-1845547_1280.jpg')} 
                         alt={item.produit?.nom || 'Produit'} 
                       />
                       <ItemInfo>

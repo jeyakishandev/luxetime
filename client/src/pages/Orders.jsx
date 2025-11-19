@@ -6,7 +6,7 @@ import { Card, Button, PageLoading } from '../components/ui'
 import { FiPackage, FiClock, FiCheckCircle, FiTruck, FiMapPin, FiCalendar, FiCreditCard, FiEye } from 'react-icons/fi'
 import { orderAPI } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
-import { formatPrice } from '../utils/format'
+import { formatPrice, getImageUrl } from '../utils/format'
 import toast from 'react-hot-toast'
 
 const OrdersContainer = styled.div`
@@ -516,7 +516,7 @@ const Orders = () => {
                       <OrderItem key={item.id}>
                         <ItemImage>
                           <img
-                            src={item.produit?.images?.[0]?.url || '/placeholder-watch.jpg'}
+                            src={getImageUrl(item.produit?.images?.[0]?.url || '/assets/images/analog-watch-1845547_1280.jpg')}
                             alt={item.nomProduit}
                           />
                         </ItemImage>

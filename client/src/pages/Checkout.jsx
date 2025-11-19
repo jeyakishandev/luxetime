@@ -6,7 +6,7 @@ import { Button, Card, Input } from '../components/ui'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
 import { FiCreditCard, FiShield, FiLock, FiTruck, FiMapPin, FiUser, FiPhone, FiMail, FiArrowLeft, FiCheck, FiTag, FiFileText } from 'react-icons/fi'
-import { formatPrice } from '../utils/format'
+import { formatPrice, getImageUrl } from '../utils/format'
 import { orderAPI } from '../services/api'
 import toast from 'react-hot-toast'
 
@@ -885,7 +885,7 @@ const Checkout = () => {
                 <OrderItem key={item.id}>
                   <ItemImage>
                     <img
-                      src={item.produit.images?.[0]?.url || '/placeholder-watch.jpg'}
+                      src={getImageUrl(item.produit.images?.[0]?.url || '/assets/images/analog-watch-1845547_1280.jpg')}
                       alt={item.produit.nom}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
