@@ -1003,20 +1003,13 @@ const ProductDetail = () => {
   const productData = apiResponse?.data || apiResponse
   
   // Valeurs par défaut pour noteMoyenne et nombreAvis si elles sont manquantes ou à 0
-  const noteMoyenne = productData && productData.noteMoyenne && productData.noteMoyenne > 0
+  // (utilisées uniquement pour la génération des avis fictifs)
+  const baseNoteMoyenne = productData && productData.noteMoyenne && productData.noteMoyenne > 0
     ? productData.noteMoyenne 
     : 4.5 // Valeur par défaut
-  const nombreAvis = productData && productData.nombreAvis && productData.nombreAvis > 0
+  const baseNombreAvis = productData && productData.nombreAvis && productData.nombreAvis > 0
     ? productData.nombreAvis 
     : 5 // Valeur par défaut
-  
-  // Mettre à jour productData avec les valeurs par défaut si nécessaire
-  if (productData && (!productData.noteMoyenne || productData.noteMoyenne === 0)) {
-    productData.noteMoyenne = noteMoyenne
-  }
-  if (productData && (!productData.nombreAvis || productData.nombreAvis === 0)) {
-    productData.nombreAvis = nombreAvis
-  }
   
   // Prix dynamiques
   const currentPrice = productData?.prixPromo && productData?.prixPromo > 0 
@@ -1131,15 +1124,27 @@ const ProductDetail = () => {
     
     return generateReviews(
       productData?.id, 
-      productData?.noteMoyenne || 4.5, 
+      baseNoteMoyenne, 
       fakeReviewsNeeded
     )
-  }, [productData?.id, productData?.noteMoyenne, realReviews.length])
+  }, [productData?.id, baseNoteMoyenne, realReviews.length])
   
   // Combiner : vrais avis en premier, puis avis fictifs
   const reviews = useMemo(() => {
     return [...realReviews, ...fakeReviews]
   }, [realReviews, fakeReviews])
+  
+  // Calculer la note moyenne combinée (vrais avis + avis fictifs)
+  const combinedNoteMoyenne = useMemo(() => {
+    if (reviews.length === 0) return 4.5
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
+    return Math.round((totalRating / reviews.length) * 10) / 10 // Arrondir à 1 décimale
+  }, [reviews])
+  
+  // Nombre total d'avis (vrais + fictifs)
+  const combinedNombreAvis = useMemo(() => {
+    return reviews.length
+  }, [reviews])
   
   // Retours conditionnels APRÈS tous les hooks
   if (isLoading) {
@@ -1411,13 +1416,13 @@ const ProductDetail = () => {
                     Nouveau
                   </Badge>
                 )}
-                {productData.noteMoyenne >= 4.5 && (
+                {combinedNoteMoyenne >= 4.5 && (
                   <Badge variant="popular">
                     <FiTrendingUp size={12} />
                     Populaire
                   </Badge>
                 )}
-                {productData.noteMoyenne >= 4.8 && (
+                {combinedNoteMoyenne >= 4.8 && (
                   <Badge>
                     <FiAward size={12} />
                     Premium
@@ -1450,7 +1455,7 @@ const ProductDetail = () => {
               <RatingSection>
                 <StarsContainer>
                   {[1, 2, 3, 4, 5].map((star) => {
-                    const noteMoyenne = productData.noteMoyenne || 4.5
+                    const noteMoyenne = combinedNoteMoyenne
                     // Étoile pleine si sa valeur est <= à la note moyenne arrondie
                     // Exemples :
                     // - Note 4.3 → Math.round(4.3) = 4 → 4 étoiles pleines
@@ -1465,7 +1470,7 @@ const ProductDetail = () => {
                   })}
                 </StarsContainer>
                 <RatingText>
-                  {productData.noteMoyenne?.toFixed(1) || '4.5'}/5 ({productData.nombreAvis || reviews.length} avis)
+                  {combinedNoteMoyenne.toFixed(1)}/5 ({combinedNombreAvis} avis)
                 </RatingText>
               </RatingSection>
             </PriceSection>
@@ -1812,10 +1817,10 @@ const ProductDetail = () => {
             </ReviewsTitle>
             <ReviewsStats>
               <AverageRating>
-                <RatingNumber>{productData.noteMoyenne?.toFixed(1) || '4.5'}</RatingNumber>
+                <RatingNumber>{combinedNoteMoyenne.toFixed(1)}</RatingNumber>
                 <StarsContainer>
                   {[1, 2, 3, 4, 5].map((star) => {
-                    const noteMoyenne = productData.noteMoyenne || 4.5
+                    const noteMoyenne = combinedNoteMoyenne
                     const isFilled = star <= Math.round(noteMoyenne)
                     return (
                       <Star key={star} filled={isFilled}>
@@ -1826,7 +1831,7 @@ const ProductDetail = () => {
                 </StarsContainer>
               </AverageRating>
               <ReviewsCount>
-                {productData.nombreAvis || reviews.length} avis
+                {combinedNombreAvis} avis
               </ReviewsCount>
             </ReviewsStats>
           </ReviewsHeader>
