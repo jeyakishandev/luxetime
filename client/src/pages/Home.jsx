@@ -687,11 +687,63 @@ const Home = () => {
               {recentlyViewed.slice(0, 4).map((product, index) => (
                 <ProductCard
                   key={product.id}
-                  product={product}
+                  as={Link}
+                  to={`/products/${product.id}`}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                />
+                  whileHover={{ y: -8 }}
+                  layout
+                >
+                  <ProductImage bgImage={getImageUrl(product.images?.[0]?.url)}>
+                    {product.nom}
+                  </ProductImage>
+                  
+                  <ProductBadges>
+                    {product.noteMoyenne >= 4.5 && (
+                      <Badge>
+                        <FiTrendingUp size={12} />
+                        Populaire
+                      </Badge>
+                    )}
+                  </ProductBadges>
+                  
+                  <ProductName>{product.nom}</ProductName>
+                  <ProductBrand>{product.marque}</ProductBrand>
+                  
+                  <ProductPrice>
+                    <CurrentPrice>
+                      {formatPrice(product.prixPromo && product.prixPromo > 0 ? product.prixPromo : product.prix)}
+                    </CurrentPrice>
+                    {product.prixPromo && product.prixPromo > 0 && (
+                      <OriginalPrice>{formatPrice(product.prix)}</OriginalPrice>
+                    )}
+                  </ProductPrice>
+                  
+                  <ProductActions>
+                    <ActionButton
+                      as={Link}
+                      to={`/products/${product.id}`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <FiShoppingCart size={16} />
+                      Voir les détails
+                    </ActionButton>
+                    <WishlistButton
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        handleToggleWishlist(product, e)
+                      }}
+                      $isInWishlist={isInWishlist(product.id)}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      <FiHeart size={16} />
+                    </WishlistButton>
+                  </ProductActions>
+                </ProductCard>
               ))}
             </ProductsGrid>
           </Container>
