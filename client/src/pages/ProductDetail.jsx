@@ -1149,7 +1149,7 @@ const ProductDetail = () => {
     return reviews
   }
   
-  // Utiliser les vrais avis de la base de données s'ils existent, sinon générer des avis fictifs
+  // Utiliser les vrais avis de la base de données
   const realReviews = productData.avis && productData.avis.length > 0 
     ? productData.avis.map(avis => ({
         id: avis.id,
@@ -1160,10 +1160,16 @@ const ProductDetail = () => {
       }))
     : []
   
-  // Si on a des avis réels, les utiliser, sinon générer des avis fictifs
-  const reviews = realReviews.length > 0 
-    ? realReviews 
-    : generateReviews(productData.id, productData.noteMoyenne || 4.5, productData.nombreAvis || 5)
+  // Combiner les vrais avis avec des avis fictifs pour avoir toujours un minimum d'avis
+  // On affiche d'abord les vrais avis, puis on complète avec des avis fictifs si nécessaire
+  const minReviews = 5 // Nombre minimum d'avis à afficher
+  const fakeReviewsNeeded = Math.max(0, minReviews - realReviews.length)
+  const fakeReviews = fakeReviewsNeeded > 0 
+    ? generateReviews(productData.id, productData.noteMoyenne || 4.5, fakeReviewsNeeded)
+    : []
+  
+  // Combiner : vrais avis en premier, puis avis fictifs
+  const reviews = [...realReviews, ...fakeReviews]
 
   // Données fictives détaillées pour chaque produit
   const productDetails = {
