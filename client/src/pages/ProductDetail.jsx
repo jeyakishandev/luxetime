@@ -781,7 +781,7 @@ const productImages = {
 const ProductDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { data: product, isLoading } = useProduct(id)
+  const { data: product, isLoading, error } = useProduct(id)
   const { addToCart, isAddingToCart } = useCart()
   const { isAuthenticated } = useAuth()
   const { addToWishlist, removeFromWishlist, isInWishlist, isAddingToWishlist } = useWishlist()
@@ -789,10 +789,29 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   
+  // Debug
+  React.useEffect(() => {
+    if (id) {
+      console.log('🔍 ProductDetail - ID from URL:', id, typeof id)
+    }
+    if (product) {
+      console.log('🔍 ProductDetail - Product response:', product)
+      console.log('🔍 ProductDetail - product.data:', product.data)
+      console.log('🔍 ProductDetail - product.data?.data:', product.data?.data)
+    }
+    if (error) {
+      console.error('❌ ProductDetail - Error:', error)
+    }
+  }, [id, product, error])
+  
   // Reset selectedImage when product changes
   React.useEffect(() => {
-    setSelectedImage(0)
-  }, [product?.data?.data?.id])
+    const apiResponse = product?.data?.data
+    const productData = apiResponse?.data || apiResponse
+    if (productData?.id) {
+      setSelectedImage(0)
+    }
+  }, [product])
 
   const handleAddToCart = () => {
     if (product?.data?.data) {
@@ -801,7 +820,9 @@ const ProductDetail = () => {
   }
 
   const handleQuantityChange = (newQuantity) => {
-    if (newQuantity >= 1 && newQuantity <= (product?.data?.stock || 10)) {
+    const apiResponse = product?.data?.data
+    const productData = apiResponse?.data || apiResponse
+    if (newQuantity >= 1 && newQuantity <= (productData?.stock || 10)) {
       setQuantity(newQuantity)
     }
   }
@@ -813,13 +834,15 @@ const ProductDetail = () => {
       return
     }
     
-    if (!product?.data?.data?.id) return
+    const apiResponse = product?.data?.data
+    const productData = apiResponse?.data || apiResponse
+    if (!productData?.id) return
     
     try {
-      if (isInWishlist(product.data.data.id)) {
-        await removeFromWishlist(product.data.data.id)
+      if (isInWishlist(productData.id)) {
+        await removeFromWishlist(productData.id)
       } else {
-        await addToWishlist(product.data.data.id)
+        await addToWishlist(productData.id)
       }
     } catch (error) {
       console.error('Erreur lors de la gestion des favoris:', error)
@@ -836,10 +859,40 @@ const ProductDetail = () => {
     )
   }
 
+  // Gestion de l'erreur si le produit n'est pas trouvé
+  // React Query met les erreurs dans product.error
+  // Et la réponse API est dans product.data (qui est la réponse axios complète)
+  // product.data.data = le body de la réponse API = { success: true, data: product }
+  if (product?.error || (product?.data?.data && !product.data.data.success)) {
+    return (
+      <ProductDetailContainer>
+        <Container>
+          <motion.div 
+            style={{ textAlign: 'center', padding: '4rem 0' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 style={{ color: '#ef4444', marginBottom: '1rem' }}>Produit non trouvé</h1>
+            <p style={{ color: '#9ca3af' }}>Ce produit n'existe pas ou a été supprimé.</p>
+            <Button 
+              onClick={() => navigate('/products')}
+              style={{ marginTop: '2rem' }}
+            >
+              Retour aux produits
+            </Button>
+          </motion.div>
+        </Container>
+      </ProductDetailContainer>
+    )
+  }
+
   // La réponse de l'API est : { success: true, data: product }
-  // Donc product.data = { success: true, data: product }
-  // Et product.data.data = le produit lui-même
-  const productData = product?.data?.data || product?.data
+  // React Query retourne : product.data = réponse axios complète
+  // product.data.data = le body de la réponse = { success: true, data: product }
+  // product.data.data.data = le produit lui-même
+  const apiResponse = product?.data?.data
+  const productData = apiResponse?.data || apiResponse
   
   if (!productData || !productData.id) {
     return (
