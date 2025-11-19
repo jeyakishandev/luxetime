@@ -328,6 +328,12 @@ const StarsContainer = styled.div`
 const Star = styled.div`
   color: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
   font-size: ${props => props.theme.fontSizes.lg};
+  
+  svg {
+    fill: ${props => props.filled ? props.theme.colors.primary : 'none'};
+    stroke: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+    stroke-width: ${props => props.filled ? '0' : '1.5'};
+  }
 `
 
 const RatingText = styled.span`
@@ -711,6 +717,12 @@ const ReviewRating = styled.div`
 const ReviewStar = styled.div`
   color: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
   font-size: ${props => props.theme.fontSizes.sm};
+  
+  svg {
+    fill: ${props => props.filled ? props.theme.colors.primary : 'none'};
+    stroke: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+    stroke-width: ${props => props.filled ? '0' : '1.5'};
+  }
 `
 
 const ReviewComment = styled.p`
