@@ -1397,7 +1397,7 @@ const ProductDetail = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                {details.description || productData.description}
+                {details?.description || productData?.description}
               </ProductSubtitle>
 
               <ProductBadges
@@ -1667,7 +1667,7 @@ const ProductDetail = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            {details.story}
+            {details?.story}
           </motion.p>
           <motion.p
             style={{
@@ -1681,7 +1681,7 @@ const ProductDetail = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            {details.description}
+            {details?.description}
           </motion.p>
         </DetailsCard>
 
