@@ -5,13 +5,55 @@ const { promisify } = require('util');
 const execAsync = promisify(exec);
 const { initDatabase } = require('../utils/initDB');
 
+const { prisma } = require('../config/database');
+
+// Endpoint pour réinitialiser la base de données (supprime et recrée tout)
+router.post('/reset-db', async (req, res) => {
+  try {
+    const { secret } = req.body;
+    
+    const INIT_SECRET = process.env.INIT_DB_SECRET || 'luxetime-init-2024';
+    
+    if (secret !== INIT_SECRET) {
+      return res.status(401).json({
+        success: false,
+        message: 'Clé secrète invalide'
+      });
+    }
+
+    console.log('🔄 Réinitialisation complète de la base de données...');
+    
+    // Supprimer toutes les données
+    await prisma.avis.deleteMany();
+    await prisma.image_produits.deleteMany();
+    await prisma.produit.deleteMany();
+    await prisma.user.deleteMany();
+    
+    console.log('🗑️ Données supprimées');
+    
+    // Réinitialiser
+    await initDatabase();
+    
+    res.json({
+      success: true,
+      message: 'Base de données réinitialisée avec succès (6 produits créés)'
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors de la réinitialisation',
+      error: error.message
+    });
+  }
+});
+
 // Endpoint pour initialiser la base de données (à appeler une seule fois)
-// Protégé par une clé secrète simple
 router.post('/init-db', async (req, res) => {
   try {
     const { secret } = req.body;
     
-    // Vérification simple (vous pouvez changer cette clé)
     const INIT_SECRET = process.env.INIT_DB_SECRET || 'luxetime-init-2024';
     
     if (secret !== INIT_SECRET) {
