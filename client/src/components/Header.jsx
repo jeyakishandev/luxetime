@@ -13,7 +13,8 @@ import {
   FiShoppingCart, 
   FiUser, 
   FiHeart,
-  FiLogOut
+  FiLogOut,
+  FiShield
 } from 'react-icons/fi'
 import { formatPrice, getImageUrl } from '../utils/format'
 
@@ -439,6 +440,13 @@ const Header = () => {
                     <UserMenuItem as={Link} to="/orders">
                       Mes commandes
                     </UserMenuItem>
+                    
+                    {user?.role === 'ADMIN' && (
+                      <UserMenuItem as={Link} to="/admin">
+                        <FiShield size={16} />
+                        Administration
+                      </UserMenuItem>
+                    )}
                     
                     <UserMenuItem onClick={handleLogout}>
                       <FiLogOut size={16} />
