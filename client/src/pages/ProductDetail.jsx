@@ -1137,10 +1137,11 @@ const ProductDetail = () => {
         name: `${avis.user?.prenom || ''} ${avis.user?.nom || ''}`.trim() || 'Client',
         rating: avis.note,
         comment: avis.commentaire || 'Aucun commentaire',
-        date: new Date(avis.createdAt).toLocaleDateString('fr-FR')
+        date: avis.createdAt ? new Date(avis.createdAt).toLocaleDateString('fr-FR') : new Date().toLocaleDateString('fr-FR')
       }))
     : []
   
+  // Si on a des avis réels, les utiliser, sinon générer des avis fictifs
   const reviews = realReviews.length > 0 
     ? realReviews 
     : generateReviews(productData.id, productData.noteMoyenne || 4.5, productData.nombreAvis || 5)
