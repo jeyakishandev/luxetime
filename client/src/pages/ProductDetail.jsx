@@ -798,6 +798,12 @@ const ProductDetail = () => {
       console.log('🔍 ProductDetail - Product response:', product)
       console.log('🔍 ProductDetail - product.data:', product.data)
       console.log('🔍 ProductDetail - product.data?.data:', product.data?.data)
+      const apiResponse = product?.data?.data
+      const productData = apiResponse?.data || apiResponse
+      console.log('🔍 ProductDetail - apiResponse:', apiResponse)
+      console.log('🔍 ProductDetail - productData:', productData)
+      console.log('🔍 ProductDetail - productData?.id:', productData?.id)
+      console.log('🔍 ProductDetail - productData?.nom:', productData?.nom)
     }
     if (error) {
       console.error('❌ ProductDetail - Error:', error)
