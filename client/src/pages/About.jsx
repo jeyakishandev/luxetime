@@ -125,7 +125,8 @@ const StoryImage = styled(motion.div)`
     object-fit: cover;
     object-position: center;
     transition: transform 0.6s ease, opacity 0.5s ease;
-    opacity: ${props => props.loaded ? 1 : 0.3};
+    opacity: ${props => props.loaded ? 1 : 0.7};
+    display: block;
   }
   
   &:hover img {
