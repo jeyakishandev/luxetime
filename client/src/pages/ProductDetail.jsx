@@ -1095,80 +1095,77 @@ const ProductDetail = () => {
     ? productData.images.map(img => getImageUrl(img.url))
     : (productImages[productData.id]?.gallery || productImages[1]?.gallery)
   
-  // Avis dynamiques - générer des avis réalistes basés sur les données
-  // Générer des avis fictifs avec des dates fixes (basées sur l'ID du produit pour la stabilité)
-  const generateReviews = useMemo(() => {
-    return (productId, noteMoyenne, nombreAvis) => {
-      const reviews = []
-      const names = ['Jean-Pierre', 'Marie-Claire', 'Antoine', 'Sophie', 'Pierre', 'Isabelle', 'Michel', 'Catherine']
-      const comments = [
-        'Excellente qualité, finition impeccable !',
-        'Très satisfait de mon achat, je recommande.',
-        'Montre magnifique, conforme à mes attentes.',
-        'Service client au top, livraison rapide.',
-        'Un vrai bijou, je ne regrette pas mon choix.',
-        'Qualité exceptionnelle pour ce prix.',
-        'Parfait pour les occasions spéciales.',
-        'Design élégant et intemporel.'
-      ]
-      
-      const count = Math.max(1, Math.min(nombreAvis || 5, 8)) // Au moins 1 avis
-      const targetAverage = noteMoyenne || 4.5
-      
-      // Utiliser l'ID du produit comme seed pour avoir des dates fixes
-      const seed = productId || 1
-      
-      // Générer des notes qui donnent une moyenne proche de noteMoyenne
-      const ratings = []
-      let totalRating = 0
-      
-      // Fonction pseudo-aléatoire basée sur le seed pour avoir des valeurs stables
-      const seededRandom = (index) => {
-        const x = Math.sin((seed + index) * 12.9898) * 43758.5453
-        return x - Math.floor(x)
-      }
-      
-      for (let i = 0; i < count; i++) {
-        // Calculer la note cible pour maintenir la moyenne
-        const remaining = count - i
-        const randomOffset = (seededRandom(i) - 0.5) * 0.5 // Entre -0.25 et 0.25
-        const targetForThis = remaining > 0 
-          ? Math.max(1, Math.min(5, (targetAverage * count - totalRating) / remaining + randomOffset))
-          : Math.max(1, Math.min(5, targetAverage * count - totalRating))
-        
-        const rating = Math.round(targetForThis * 2) / 2 // Arrondir à 0.5 près
-        ratings.push(rating)
-        totalRating += rating
-      }
-      
-      // Ajuster la dernière note pour que la moyenne soit exacte
-      if (ratings.length > 0) {
-        const currentAverage = totalRating / count
-        const adjustment = (targetAverage - currentAverage) * count
-        ratings[ratings.length - 1] = Math.max(1, Math.min(5, ratings[ratings.length - 1] + adjustment))
-      }
-      
-      // Dates fixes basées sur le seed (jours passés depuis aujourd'hui)
-      const baseDate = new Date()
-      const daysAgo = [25, 18, 12, 8, 5, 3, 2, 1] // Dates fixes en jours passés
-      
-      for (let i = 0; i < count; i++) {
-        const daysOffset = daysAgo[i % daysAgo.length] || (count - i)
-        const reviewDate = new Date(baseDate)
-        reviewDate.setDate(reviewDate.getDate() - daysOffset)
-        
-        reviews.push({
-          id: `fake-${productId}-${i + 1}`, // ID unique pour les avis fictifs
-          name: names[i % names.length],
-          rating: ratings[i] || Math.round(targetAverage),
-          comment: comments[i % comments.length],
-          date: reviewDate.toLocaleDateString('fr-FR')
-        })
-      }
-      
-      return reviews
+  // Fonction pour générer des avis fictifs avec des dates fixes (basées sur l'ID du produit pour la stabilité)
+  const generateReviews = (productId, noteMoyenne, nombreAvis) => {
+    const reviews = []
+    const names = ['Jean-Pierre', 'Marie-Claire', 'Antoine', 'Sophie', 'Pierre', 'Isabelle', 'Michel', 'Catherine']
+    const comments = [
+      'Excellente qualité, finition impeccable !',
+      'Très satisfait de mon achat, je recommande.',
+      'Montre magnifique, conforme à mes attentes.',
+      'Service client au top, livraison rapide.',
+      'Un vrai bijou, je ne regrette pas mon choix.',
+      'Qualité exceptionnelle pour ce prix.',
+      'Parfait pour les occasions spéciales.',
+      'Design élégant et intemporel.'
+    ]
+    
+    const count = Math.max(1, Math.min(nombreAvis || 5, 8)) // Au moins 1 avis
+    const targetAverage = noteMoyenne || 4.5
+    
+    // Utiliser l'ID du produit comme seed pour avoir des dates fixes
+    const seed = productId || 1
+    
+    // Générer des notes qui donnent une moyenne proche de noteMoyenne
+    const ratings = []
+    let totalRating = 0
+    
+    // Fonction pseudo-aléatoire basée sur le seed pour avoir des valeurs stables
+    const seededRandom = (index) => {
+      const x = Math.sin((seed + index) * 12.9898) * 43758.5453
+      return x - Math.floor(x)
     }
-  }, [])
+    
+    for (let i = 0; i < count; i++) {
+      // Calculer la note cible pour maintenir la moyenne
+      const remaining = count - i
+      const randomOffset = (seededRandom(i) - 0.5) * 0.5 // Entre -0.25 et 0.25
+      const targetForThis = remaining > 0 
+        ? Math.max(1, Math.min(5, (targetAverage * count - totalRating) / remaining + randomOffset))
+        : Math.max(1, Math.min(5, targetAverage * count - totalRating))
+      
+      const rating = Math.round(targetForThis * 2) / 2 // Arrondir à 0.5 près
+      ratings.push(rating)
+      totalRating += rating
+    }
+    
+    // Ajuster la dernière note pour que la moyenne soit exacte
+    if (ratings.length > 0) {
+      const currentAverage = totalRating / count
+      const adjustment = (targetAverage - currentAverage) * count
+      ratings[ratings.length - 1] = Math.max(1, Math.min(5, ratings[ratings.length - 1] + adjustment))
+    }
+    
+    // Dates fixes basées sur le seed (jours passés depuis aujourd'hui)
+    const baseDate = new Date()
+    const daysAgo = [25, 18, 12, 8, 5, 3, 2, 1] // Dates fixes en jours passés
+    
+    for (let i = 0; i < count; i++) {
+      const daysOffset = daysAgo[i % daysAgo.length] || (count - i)
+      const reviewDate = new Date(baseDate)
+      reviewDate.setDate(reviewDate.getDate() - daysOffset)
+      
+      reviews.push({
+        id: `fake-${productId}-${i + 1}`, // ID unique pour les avis fictifs
+        name: names[i % names.length],
+        rating: ratings[i] || Math.round(targetAverage),
+        comment: comments[i % comments.length],
+        date: reviewDate.toLocaleDateString('fr-FR')
+      })
+    }
+    
+    return reviews
+  }
   
   // Utiliser les vrais avis de la base de données
   const realReviews = useMemo(() => {
@@ -1200,7 +1197,7 @@ const ProductDetail = () => {
       productData.noteMoyenne || 4.5, 
       fakeReviewsNeeded
     )
-  }, [productData?.id, productData?.noteMoyenne, realReviews.length, generateReviews])
+  }, [productData?.id, productData?.noteMoyenne, realReviews.length])
   
   // Combiner : vrais avis en premier, puis avis fictifs
   const reviews = useMemo(() => {
