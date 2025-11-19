@@ -1092,6 +1092,9 @@ const ProductDetail = () => {
 
   const details = productDetails[productData.id] || productDetails[1]
 
+  console.log('✅ ProductDetail - Rendu du produit:', productData.nom, 'ID:', productData.id)
+  console.log('✅ ProductDetail - Images:', productData.images)
+
   return (
     <ProductDetailContainer>
       <Container>
