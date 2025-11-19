@@ -40,14 +40,16 @@ const corsOptions = {
     
     // En production, accepter :
     // 1. L'URL du frontend configurée
-    // 2. Tous les domaines Vercel (*.vercel.app)
+    // 2. TOUS les domaines Vercel (*.vercel.app)
     // 3. Les requêtes sans origine (Postman, curl, etc.)
     if (!origin || 
         origin === process.env.FRONTEND_URL ||
-        origin.includes('luxetime-three.vercel.app') ||
-        origin.includes('.vercel.app')) {
+        origin.endsWith('.vercel.app') ||
+        origin.includes('vercel.app')) {
       callback(null, true)
     } else {
+      // Log pour debug
+      console.log('⚠️ CORS bloqué pour:', origin);
       callback(new Error('Not allowed by CORS'))
     }
   },
