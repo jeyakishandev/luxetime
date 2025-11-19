@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button, Card, PageLoading } from '../components/ui'
-import { FiShoppingCart, FiHeart, FiFilter, FiStar, FiEye, FiTrendingUp, FiAward, FiClock } from 'react-icons/fi'
+import { FiShoppingCart, FiHeart, FiFilter, FiStar, FiEye, FiTrendingUp, FiAward, FiClock, FiArrowDown, FiArrowUp } from 'react-icons/fi'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useAuth } from '../contexts/AuthContext'
@@ -439,6 +439,8 @@ const Products = () => {
     search: '',
     page: 1,
     limit: 12,
+    tri: 'createdAt',
+    ordre: 'desc',
   })
 
   useEffect(() => {
@@ -468,6 +470,12 @@ const Products = () => {
       }
       if (filters.search) {
         queryParams.search = filters.search
+      }
+      if (filters.tri) {
+        queryParams.tri = filters.tri
+      }
+      if (filters.ordre) {
+        queryParams.ordre = filters.ordre
       }
       
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
@@ -538,6 +546,16 @@ const Products = () => {
     setFilters(prev => ({
       ...prev,
       [filterType]: value,
+      page: 1
+    }))
+  }
+
+  const handleSortChange = (e) => {
+    const [tri, ordre] = e.target.value.split('-')
+    setFilters(prev => ({
+      ...prev,
+      tri,
+      ordre,
       page: 1
     }))
   }
@@ -654,6 +672,30 @@ const Products = () => {
             Vintage
           </FilterButton>
         </FiltersContainer>
+
+        <SortContainer
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.9 }}
+        >
+          <SortLabel htmlFor="sort-select">
+            Trier par :
+          </SortLabel>
+          <SortSelect
+            id="sort-select"
+            value={`${filters.tri}-${filters.ordre}`}
+            onChange={handleSortChange}
+          >
+            <option value="createdAt-desc">Plus récents</option>
+            <option value="createdAt-asc">Plus anciens</option>
+            <option value="prix-asc">Prix croissant</option>
+            <option value="prix-desc">Prix décroissant</option>
+            <option value="noteMoyenne-desc">Mieux notés</option>
+            <option value="nom-asc">Nom (A-Z)</option>
+            <option value="nom-desc">Nom (Z-A)</option>
+            <option value="vues-desc">Plus populaires</option>
+          </SortSelect>
+        </SortContainer>
 
         <ProductsGrid
           initial={{ opacity: 0 }}
