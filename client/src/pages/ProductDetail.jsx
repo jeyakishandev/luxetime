@@ -868,8 +868,9 @@ const ProductDetail = () => {
   // Gestion de l'erreur si le produit n'est pas trouvé
   // React Query met les erreurs dans product.error
   // Et la réponse API est dans product.data (qui est la réponse axios complète)
-  // product.data.data = le body de la réponse API = { success: true, data: product }
-  if (product?.error || (product?.data?.data && !product.data.data.success)) {
+  // product.data = { success: true, data: product }
+  // product.data.data = le produit lui-même
+  if (product?.error || (product?.data && !product.data.success)) {
     return (
       <ProductDetailContainer>
         <Container>
