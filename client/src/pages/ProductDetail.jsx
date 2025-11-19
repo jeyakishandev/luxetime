@@ -904,6 +904,22 @@ const ProductDetail = () => {
     )
   }
   
+  // Valeurs par défaut pour noteMoyenne et nombreAvis si elles sont manquantes ou à 0
+  const noteMoyenne = productData.noteMoyenne && productData.noteMoyenne > 0 
+    ? productData.noteMoyenne 
+    : 4.5 // Valeur par défaut
+  const nombreAvis = productData.nombreAvis && productData.nombreAvis > 0 
+    ? productData.nombreAvis 
+    : 5 // Valeur par défaut
+  
+  // Mettre à jour productData avec les valeurs par défaut si nécessaire
+  if (!productData.noteMoyenne || productData.noteMoyenne === 0) {
+    productData.noteMoyenne = noteMoyenne
+  }
+  if (!productData.nombreAvis || productData.nombreAvis === 0) {
+    productData.nombreAvis = nombreAvis
+  }
+  
   // Prix dynamiques
   const currentPrice = productData.prixPromo && productData.prixPromo > 0 
     ? productData.prixPromo 
@@ -933,7 +949,7 @@ const ProductDetail = () => {
       'Design élégant et intemporel.'
     ]
     
-    const count = Math.min(nombreAvis, 8)
+    const count = Math.max(1, Math.min(nombreAvis || 5, 8)) // Au moins 1 avis
     const targetAverage = noteMoyenne || 4.5
     
     // Générer des notes qui donnent une moyenne proche de noteMoyenne
