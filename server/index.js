@@ -29,8 +29,11 @@ app.set('trust proxy', 1);
 // Connexion à la base de données
 connectDB();
 
-// Middleware de sécurité
-app.use(helmet());
+// Middleware de sécurité avec configuration CORS-friendly
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false
+}));
 
 // Configuration CORS
 const corsOptions = {
@@ -43,23 +46,46 @@ const corsOptions = {
     
     // En production, accepter :
     // 1. L'URL du frontend configurée
-    // 2. TOUS les domaines Vercel (*.vercel.app)
+    // 2. TOUS les domaines Vercel (*.vercel.app et previews)
     // 3. Les requêtes sans origine (Postman, curl, etc.)
-    if (!origin || 
-        origin === process.env.FRONTEND_URL ||
-        origin.endsWith('.vercel.app') ||
-        origin.includes('vercel.app')) {
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+      /^https:\/\/.*\.vercel\.app$/,
+      /^https:\/\/luxetime.*\.vercel\.app$/
+    ]
+    
+    if (!origin) {
+      // Requêtes sans origine (Postman, curl, etc.)
+      callback(null, true)
+      return
+    }
+    
+    // Vérifier si l'origine est autorisée
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') {
+        return origin === allowed
+      }
+      if (allowed instanceof RegExp) {
+        return allowed.test(origin)
+      }
+      return false
+    }) || origin.endsWith('.vercel.app') || origin.includes('vercel.app')
+    
+    if (isAllowed) {
       callback(null, true)
     } else {
       // Log pour debug
       console.log('⚠️ CORS bloqué pour:', origin);
+      console.log('✅ Origines autorisées:', process.env.FRONTEND_URL);
       callback(new Error('Not allowed by CORS'))
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }
 
 app.use(cors(corsOptions));
@@ -117,6 +143,24 @@ app.use('/assets', (req, res, next) => {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   }
 }));
+
+// Middleware CORS supplémentaire pour toutes les routes API
+app.use('/api', (req, res, next) => {
+  const origin = req.headers.origin
+  if (origin && (origin.includes('vercel.app') || origin === process.env.FRONTEND_URL)) {
+    res.setHeader('Access-Control-Allow-Origin', origin)
+  } else if (!origin || process.env.NODE_ENV !== 'production') {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept')
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204)
+  }
+  next()
+})
 
 // Routes API
 app.use('/api/auth', authRoutes);
