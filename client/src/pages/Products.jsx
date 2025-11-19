@@ -134,6 +134,55 @@ const FilterButton = styled(motion.button)`
   }
 `
 
+const SortContainer = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+  margin-bottom: ${props => props.theme.spacing[8]};
+  justify-content: flex-end;
+  
+  ${props => props.theme.media.mobile} {
+    justify-content: center;
+    margin-bottom: ${props => props.theme.spacing[6]};
+  }
+`
+
+const SortLabel = styled.label`
+  color: ${props => props.theme.colors.gray[300]};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  white-space: nowrap;
+`
+
+const SortSelect = styled.select`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[4]};
+  color: ${props => props.theme.colors.white};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  cursor: pointer;
+  transition: all ${props => props.theme.transitions.base};
+  min-width: 200px;
+  
+  &:hover {
+    border-color: ${props => props.theme.colors.primary};
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  }
+  
+  option {
+    background: #1a1a1a;
+    color: ${props => props.theme.colors.white};
+  }
+`
+
 const ProductsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
