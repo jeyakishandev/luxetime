@@ -230,23 +230,21 @@ export const getImageUrl = (imageUrl) => {
   }
   
   // En production, servir les images depuis le backend (Render)
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-  const isProduction = import.meta.env.PROD
+  const API_URL = import.meta.env.VITE_API_URL || ''
+  const isProduction = import.meta.env.PROD || import.meta.env.MODE === 'production'
   
   // Si c'est un chemin relatif qui commence par /
   if (imageUrl.startsWith('/')) {
-    // En production, pointer vers le backend
-    if (isProduction && API_URL) {
-      // Enlever le slash initial pour éviter les doubles slashes
-      const cleanPath = imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl
-      return `${API_URL}/${cleanPath}`
+    // En production, pointer vers le backend si VITE_API_URL est défini
+    if (isProduction && API_URL && API_URL !== 'http://localhost:5000') {
+      return `${API_URL}${imageUrl}`
     }
     return imageUrl
   }
   
   // Sinon, on ajoute /assets/images/ au début
   const fullPath = `/assets/images/${imageUrl}`
-  if (isProduction && API_URL) {
+  if (isProduction && API_URL && API_URL !== 'http://localhost:5000') {
     return `${API_URL}${fullPath}`
   }
   return fullPath
