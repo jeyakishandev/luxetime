@@ -59,18 +59,49 @@ router.post('/reset-db', async (req, res) => {
     console.log('🗑️ Données supprimées');
     
     // Réinitialiser les séquences PostgreSQL pour que les IDs recommencent à 1
+    // Utiliser une requête SQL dynamique pour trouver et réinitialiser toutes les séquences
     try {
-      await prisma.$executeRaw`ALTER SEQUENCE "produits_id_seq" RESTART WITH 1;`;
-      await prisma.$executeRaw`ALTER SEQUENCE "users_id_seq" RESTART WITH 1;`;
-      await prisma.$executeRaw`ALTER SEQUENCE "image_produits_id_seq" RESTART WITH 1;`;
-      await prisma.$executeRaw`ALTER SEQUENCE "panier_items_id_seq" RESTART WITH 1;`;
-      await prisma.$executeRaw`ALTER SEQUENCE "commandes_id_seq" RESTART WITH 1;`;
-      await prisma.$executeRaw`ALTER SEQUENCE "commande_items_id_seq" RESTART WITH 1;`;
-      await prisma.$executeRaw`ALTER SEQUENCE "avis_id_seq" RESTART WITH 1;`;
-      await prisma.$executeRaw`ALTER SEQUENCE "favoris_id_seq" RESTART WITH 1;`;
+      // Méthode 1 : Réinitialiser les séquences connues
+      const sequences = [
+        'produits_id_seq',
+        'users_id_seq',
+        'image_produits_id_seq',
+        'panier_items_id_seq',
+        'commandes_id_seq',
+        'commande_items_id_seq',
+        'avis_id_seq',
+        'favoris_id_seq'
+      ];
+      
+      for (const seq of sequences) {
+        try {
+          await prisma.$executeRawUnsafe(`SELECT setval('${seq}', 1, false);`);
+        } catch (e) {
+          // Si la séquence n'existe pas, essayer avec le nom de table différent
+          console.log(`⚠️ Séquence ${seq} non trouvée, tentative alternative...`);
+        }
+      }
+      
+      // Méthode 2 : Trouver et réinitialiser toutes les séquences automatiquement
+      const allSequences = await prisma.$queryRaw`
+        SELECT sequence_name 
+        FROM information_schema.sequences 
+        WHERE sequence_schema = 'public' 
+        AND sequence_name LIKE '%_id_seq'
+      `;
+      
+      for (const seq of allSequences) {
+        try {
+          await prisma.$executeRawUnsafe(`SELECT setval('${seq.sequence_name}', 1, false);`);
+          console.log(`✅ Séquence ${seq.sequence_name} réinitialisée`);
+        } catch (e) {
+          console.log(`⚠️ Impossible de réinitialiser ${seq.sequence_name}:`, e.message);
+        }
+      }
+      
       console.log('🔄 Séquences PostgreSQL réinitialisées');
     } catch (error) {
-      console.log('⚠️ Erreur lors de la réinitialisation des séquences (peut-être déjà fait):', error.message);
+      console.log('⚠️ Erreur lors de la réinitialisation des séquences:', error.message);
     }
     
     // Réinitialiser
