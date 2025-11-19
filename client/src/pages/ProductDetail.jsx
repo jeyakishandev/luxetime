@@ -1003,10 +1003,10 @@ const ProductDetail = () => {
   const productData = apiResponse?.data || apiResponse
   
   // Valeurs par défaut pour noteMoyenne et nombreAvis si elles sont manquantes ou à 0
-  const noteMoyenne = (productData?.noteMoyenne && productData.noteMoyenne > 0) 
+  const noteMoyenne = productData && productData.noteMoyenne && productData.noteMoyenne > 0
     ? productData.noteMoyenne 
     : 4.5 // Valeur par défaut
-  const nombreAvis = (productData?.nombreAvis && productData.nombreAvis > 0) 
+  const nombreAvis = productData && productData.nombreAvis && productData.nombreAvis > 0
     ? productData.nombreAvis 
     : 5 // Valeur par défaut
   
