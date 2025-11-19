@@ -87,8 +87,16 @@ class ProductService {
   // Récupérer un produit par ID
   static async getProductById(id) {
     try {
+      // Convertir l'ID en nombre
+      const productId = parseInt(id);
+      
+      // Vérifier que l'ID est valide
+      if (isNaN(productId) || productId <= 0) {
+        throw new Error('ID de produit invalide');
+      }
+      
       const product = await prisma.produit.findUnique({
-        where: { id: parseInt(id) },
+        where: { id: productId },
         include: {
           images: {
             orderBy: { estPrincipale: 'desc' }
