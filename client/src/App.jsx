@@ -58,7 +58,8 @@ function App() {
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </Suspense>
       </Layout>
     </ThemeProvider>
   )
