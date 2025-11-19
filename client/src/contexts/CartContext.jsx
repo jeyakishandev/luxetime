@@ -170,7 +170,6 @@ export const CartProvider = ({ children }) => {
         }
       },
       onError: (error) => {
-        console.log('❌ Erreur updateQuantity:', error)
         const message = error.response?.data?.message || 'Erreur lors de la mise à jour'
         toast.error(message)
       }
@@ -180,14 +179,11 @@ export const CartProvider = ({ children }) => {
   // Supprimer du panier
   const removeFromCart = useMutation(
     async (produitId) => {
-      console.log('🗑️ Suppression produit:', produitId)
       const response = await cartAPI.removeFromCart(produitId)
-      console.log('🗑️ Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
-        console.log('✅ Succès removeFromCart:', data)
         if (data.success) {
           queryClient.invalidateQueries(['cart'])
           refetchCart() // Forcer le refetch immédiat
@@ -195,7 +191,6 @@ export const CartProvider = ({ children }) => {
         }
       },
       onError: (error) => {
-        console.log('❌ Erreur removeFromCart:', error)
         const message = error.response?.data?.message || 'Erreur lors de la suppression'
         toast.error(message)
       }
@@ -205,14 +200,11 @@ export const CartProvider = ({ children }) => {
   // Vider le panier
   const clearCart = useMutation(
     async () => {
-      console.log('🧹 Vidage du panier')
       const response = await cartAPI.clearCart()
-      console.log('🧹 Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
-        console.log('✅ Succès clearCart:', data)
         if (data.success) {
           queryClient.invalidateQueries(['cart'])
           refetchCart() // Forcer le refetch immédiat
@@ -220,7 +212,6 @@ export const CartProvider = ({ children }) => {
         }
       },
       onError: (error) => {
-        console.log('❌ Erreur clearCart:', error)
         const message = error.response?.data?.message || 'Erreur lors du vidage'
         toast.error(message)
       }

@@ -129,19 +129,16 @@ export const AuthProvider = ({ children }) => {
             await fetchUserProfile(token)
           } else {
             // Token expiré
-            console.log('❌ Token expiré')
             localStorage.removeItem('luxetime_token')
             dispatch({ type: authActions.LOGOUT })
           }
         } catch (error) {
           // Token invalide
-          console.log('❌ Token invalide:', error)
           localStorage.removeItem('luxetime_token')
           dispatch({ type: authActions.LOGOUT })
         }
       } else {
         // Pas de token, s'assurer que l'état est cohérent
-        console.log('❌ Pas de token')
         dispatch({ type: authActions.LOGOUT })
       }
     }
@@ -152,14 +149,11 @@ export const AuthProvider = ({ children }) => {
   // Connexion
   const login = useMutation(
     async ({ email, motDePasse }) => {
-      console.log('🔐 Tentative de connexion...', { email })
       const response = await authAPI.login(email, motDePasse)
-      console.log('🔐 Réponse API:', response.data)
       return response.data
     },
     {
       onSuccess: (data) => {
-        console.log('✅ Succès login:', data)
         if (data.success) {
           localStorage.setItem('luxetime_token', data.data.token)
           dispatch({
@@ -168,12 +162,10 @@ export const AuthProvider = ({ children }) => {
           })
           toast.success('Connexion réussie !')
         } else {
-          console.log('❌ Login failed:', data.message)
           toast.error(data.message || 'Erreur de connexion')
         }
       },
       onError: (error) => {
-        console.log('❌ Erreur login:', error)
         const message = error.response?.data?.message || 'Erreur de connexion'
         dispatch({
           type: authActions.LOGIN_ERROR,

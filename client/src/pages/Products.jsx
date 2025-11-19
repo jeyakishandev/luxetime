@@ -672,7 +672,6 @@ const Products = () => {
                   whileHover={{ y: -8 }}
                   layout
                   onClick={() => {
-                    console.log('🖱️ Clic sur produit:', product.id)
                     navigate(`/products/${product.id}`)
                   }}
                 >

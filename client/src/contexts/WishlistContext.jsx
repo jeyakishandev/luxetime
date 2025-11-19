@@ -86,7 +86,6 @@ export const WishlistProvider = ({ children }) => {
   const { data: wishlistData, isLoading: isLoadingWishlist, refetch: refetchWishlist } = useQuery(
     ['wishlist'],
     () => {
-      console.log('❤️ WishlistContext - Récupération des favoris...')
       return wishlistAPI.getWishlist()
     },
     {
@@ -108,9 +107,7 @@ export const WishlistProvider = ({ children }) => {
     }
     
     if (wishlistData) {
-      console.log('❤️ WishlistContext - Données reçues:', wishlistData)
       if (wishlistData.data?.success) {
-        console.log('❤️ WishlistContext - Dispatch SET_WISHLIST avec:', wishlistData.data.data)
         dispatch({
           type: wishlistActions.SET_WISHLIST,
           payload: wishlistData.data.data
@@ -122,9 +119,7 @@ export const WishlistProvider = ({ children }) => {
   // Ajouter aux favoris
   const addToWishlist = useMutation(
     async (produitId) => {
-      console.log('❤️ Ajout aux favoris:', produitId)
       const response = await wishlistAPI.addToWishlist(produitId)
-      console.log('❤️ Réponse API:', response.data)
       return response.data
     },
     {
@@ -145,9 +140,7 @@ export const WishlistProvider = ({ children }) => {
   // Supprimer des favoris
   const removeFromWishlist = useMutation(
     async (produitId) => {
-      console.log('❤️ Suppression des favoris:', produitId)
       const response = await wishlistAPI.removeFromWishlist(produitId)
-      console.log('❤️ Réponse API:', response.data)
       return response.data
     },
     {
@@ -168,9 +161,7 @@ export const WishlistProvider = ({ children }) => {
   // Vider les favoris
   const clearWishlist = useMutation(
     async () => {
-      console.log('❤️ Vidage des favoris')
       const response = await wishlistAPI.clearWishlist()
-      console.log('❤️ Réponse API:', response.data)
       return response.data
     },
     {
