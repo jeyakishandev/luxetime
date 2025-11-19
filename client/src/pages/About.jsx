@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { Card } from '../components/ui'
 import { FiAward, FiUsers, FiHeart, FiShield, FiTrendingUp, FiStar, FiGlobe, FiWatch } from 'react-icons/fi'
+import { getImageUrl } from '../utils/format'
 
 const AboutContainer = styled.div`
   min-height: 100vh;
@@ -112,18 +113,32 @@ const StoryImage = styled(motion.div)`
   width: 100%;
   height: 500px;
   border-radius: ${props => props.theme.borderRadius.xl};
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
   border: 1px solid rgba(212, 175, 55, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   
-  &::before {
-    content: '⌚';
-    font-size: 120px;
-    opacity: 0.3;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.6s ease;
+  }
+  
+  &:hover img {
+    transform: scale(1.05);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+    pointer-events: none;
   }
   
   ${props => props.theme.media.mobile} {
@@ -462,7 +477,13 @@ const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-            />
+            >
+              <img 
+                src={getImageUrl('/assets/images/horloger-artisan.jpg')} 
+                alt="Artisan horloger travaillant sur une montre de luxe"
+                loading="lazy"
+              />
+            </StoryImage>
             <StoryContent
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
