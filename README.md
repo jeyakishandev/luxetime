@@ -238,7 +238,7 @@ NODE_ENV=development
 
 Développeur Web Full-Stack | React, Node.js, SQL | Paris
 
-- Portfolio : *En construction* 🚧
+- Portfolio : [portfolio-kishan-brown.vercel.app](https://portfolio-kishan-brown.vercel.app/)
 - LinkedIn : [linkedin.com/in/jeya-kishan-karunanithy](https://www.linkedin.com/in/jeya-kishan-karunanithy)
 - GitHub : [@jeyakishandev](https://github.com/jeyakishandev)
 
