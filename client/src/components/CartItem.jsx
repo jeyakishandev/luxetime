@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useCart } from '../contexts/CartContext'
 import { Button, Card } from './ui'
 import { FiTrash2, FiMinus, FiPlus } from 'react-icons/fi'
-import { formatPrice } from '../utils/format'
+import { formatPrice, getImageUrl } from '../utils/format'
 
 const CartItemContainer = styled(Card)`
   display: flex;
@@ -312,7 +312,7 @@ const CartItem = ({ item, onUpdate, onRemove }) => {
       <CartItemContainer>
         <ImageContainer>
           <ProductImage
-            src={item.produit.images?.[0]?.url || '/placeholder-watch.jpg'}
+            src={getImageUrl(item.produit.images?.[0]?.url)}
             alt={item.produit.nom}
             loading="lazy"
           />

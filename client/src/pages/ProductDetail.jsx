@@ -7,7 +7,7 @@ import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { Button, Card, PageLoading } from '../components/ui'
-import { formatPrice } from '../utils/format'
+import { formatPrice, getImageUrl } from '../utils/format'
 import { 
   FiStar, 
   FiTruck, 
@@ -887,7 +887,7 @@ const ProductDetail = () => {
   
   // Images dynamiques - utiliser les vraies images du produit ou fallback
   const productImagesData = productData.images && productData.images.length > 0 
-    ? productData.images.map(img => img.url)
+    ? productData.images.map(img => getImageUrl(img.url))
     : (productImages[productData.id]?.gallery || productImages[1]?.gallery)
   
   // Avis dynamiques - générer des avis réalistes basés sur les données
@@ -1064,7 +1064,7 @@ const ProductDetail = () => {
               transition={{ duration: 0.6 }}
             >
               <ProductImage
-                src={productImagesData[selectedImage] || productImagesData[0]}
+                src={getImageUrl(productImagesData[selectedImage] || productImagesData[0])}
                 alt={productData.nom}
               />
               <ImageOverlay>

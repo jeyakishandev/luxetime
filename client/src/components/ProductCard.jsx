@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { Button, Card } from './ui'
 import { FiHeart, FiShoppingCart, FiEye } from 'react-icons/fi'
-import { formatPrice } from '../utils/format'
+import { formatPrice, getImageUrl } from '../utils/format'
 import toast from 'react-hot-toast'
 
 const ProductCardContainer = styled(Card)`
@@ -326,7 +326,7 @@ const ProductCard = ({
           )}
           
           <ProductImage
-            src={product.images?.[0]?.url || '/placeholder-watch.jpg'}
+            src={getImageUrl(product.images?.[0]?.url)}
             alt={product.nom}
             loading="lazy"
           />

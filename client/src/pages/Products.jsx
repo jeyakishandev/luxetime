@@ -8,6 +8,7 @@ import axios from 'axios'
 import { useAuth } from '../contexts/AuthContext'
 import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
+import { getImageUrl } from '../utils/format'
 import toast from 'react-hot-toast'
 
 const ProductsContainer = styled.div`
@@ -682,7 +683,7 @@ const Products = () => {
                     navigate(`/products/${product.id}`)
                   }}
                 >
-                  <ProductImage bgImage={product.images?.[0]?.url || '/assets/images/analog-watch-1845547_1280.jpg'}>
+                  <ProductImage bgImage={getImageUrl(product.images?.[0]?.url)}>
                     {product.nom}
                   </ProductImage>
                   

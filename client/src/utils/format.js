@@ -217,6 +217,24 @@ export const formatEmail = (email) => {
   return email.toLowerCase().trim()
 }
 
+// Normalisation des URLs d'images
+export const getImageUrl = (imageUrl) => {
+  if (!imageUrl) return '/assets/images/analog-watch-1845547_1280.jpg'
+  
+  // Si c'est déjà une URL complète (http/https), on la retourne telle quelle
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl
+  }
+  
+  // Si c'est un chemin relatif qui commence par /, on le retourne tel quel
+  if (imageUrl.startsWith('/')) {
+    return imageUrl
+  }
+  
+  // Sinon, on ajoute /assets/images/ au début
+  return `/assets/images/${imageUrl}`
+}
+
 // Validation des formats
 export const isValidEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
