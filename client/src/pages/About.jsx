@@ -117,13 +117,15 @@ const StoryImage = styled(motion.div)`
   overflow: hidden;
   position: relative;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
   
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    transition: transform 0.6s ease;
+    transition: transform 0.6s ease, opacity 0.3s ease;
+    opacity: ${props => props.loaded ? 1 : 0};
   }
   
   &:hover img {
@@ -139,6 +141,8 @@ const StoryImage = styled(motion.div)`
     bottom: 0;
     background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
     pointer-events: none;
+    opacity: ${props => props.loaded ? 1 : 0};
+    transition: opacity 0.3s ease;
   }
   
   ${props => props.theme.media.mobile} {
@@ -387,6 +391,8 @@ const TimelineDot = styled.div`
 `
 
 const About = () => {
+  const [imageLoaded, setImageLoaded] = React.useState(false)
+
   const values = [
     {
       icon: <FiAward size={32} />,
@@ -477,11 +483,20 @@ const About = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              loaded={imageLoaded}
             >
               <img 
                 src={getImageUrl('/assets/images/horloger-artisan.jpg')} 
                 alt="Artisan horloger travaillant sur une montre de luxe"
                 loading="lazy"
+                decoding="async"
+                onLoad={() => setImageLoaded(true)}
+                style={{ 
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
               />
             </StoryImage>
             <StoryContent
@@ -514,16 +529,16 @@ const About = () => {
           <SectionTitle
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.4 }}
           >
             Nos Valeurs
           </SectionTitle>
           <SectionSubtitle
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.4, delay: 0.05 }}
           >
             Les principes qui guident notre passion et notre engagement envers l'excellence
           </SectionSubtitle>
@@ -532,10 +547,10 @@ const About = () => {
             {values.map((value, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
               >
                 <ValueCard>
                   <ValueIcon>{value.icon}</ValueIcon>
@@ -551,10 +566,10 @@ const About = () => {
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
               >
                 <StatCard>
                   <StatNumber>{stat.number}</StatNumber>
@@ -572,16 +587,16 @@ const About = () => {
           <SectionTitle
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.4 }}
           >
             Notre Parcours
           </SectionTitle>
           <SectionSubtitle
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.4, delay: 0.05 }}
           >
             15 années d'excellence et d'innovation dans l'horlogerie de luxe
           </SectionSubtitle>
@@ -590,10 +605,10 @@ const About = () => {
             {timeline.map((item, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
               >
                 <TimelineItem>
                   <TimelineDot />
