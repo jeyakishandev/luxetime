@@ -46,9 +46,14 @@ const FooterContent = styled.div`
 
 const FooterGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: ${props => props.theme.spacing[8]};
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: ${props => props.theme.spacing[10]};
   margin-bottom: ${props => props.theme.spacing[8]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(2, 1fr);
+    gap: ${props => props.theme.spacing[8]};
+  }
   
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
@@ -187,12 +192,16 @@ const FooterBottom = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   gap: ${props => props.theme.spacing[4]};
+  
+  ${props => props.theme.media.tablet} {
+    flex-wrap: wrap;
+  }
   
   ${props => props.theme.media.mobile} {
     flex-direction: column;
     text-align: center;
+    gap: ${props => props.theme.spacing[3]};
   }
 `
 
@@ -205,10 +214,12 @@ const Copyright = styled.p`
 const LegalLinks = styled.div`
   display: flex;
   gap: ${props => props.theme.spacing[4]};
+  flex-wrap: wrap;
   
   ${props => props.theme.media.mobile} {
     flex-direction: column;
     gap: ${props => props.theme.spacing[2]};
+    width: 100%;
   }
 `
 
