@@ -10,6 +10,7 @@ import { Button, Card, PageLoading } from '../components/ui'
 import { formatPrice, getImageUrl } from '../utils/format'
 import { reviewAPI } from '../services/api'
 import { useQueryClient } from 'react-query'
+import toast from 'react-hot-toast'
 import { 
   FiStar, 
   FiTruck, 
@@ -947,20 +948,29 @@ const ProductDetail = () => {
       const response = await reviewAPI.createOrUpdateReview(
         productData.id,
         reviewNote,
-        reviewComment
+        reviewComment || undefined
       )
       
-      if (response.data.success) {
+      // La réponse axios a la structure : response.data = { success: true, message: ..., data: ... }
+      if (response.data && response.data.success) {
         toast.success('Votre avis a été enregistré !')
         setReviewNote(0)
         setReviewComment('')
         // Recharger les données du produit pour mettre à jour les avis
         queryClient.invalidateQueries(['product', id])
+        // Attendre un peu pour que la requête se termine
+        setTimeout(() => {
+          queryClient.refetchQueries(['product', id])
+        }, 500)
       } else {
-        toast.error(response.data.message || 'Erreur lors de l\'enregistrement de l\'avis')
+        toast.error(response.data?.message || 'Erreur lors de l\'enregistrement de l\'avis')
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de l\'enregistrement de l\'avis')
+      console.error('Erreur lors de l\'enregistrement de l\'avis:', error)
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Erreur lors de l\'enregistrement de l\'avis'
+      toast.error(errorMessage)
     } finally {
       setIsSubmittingReview(false)
     }
