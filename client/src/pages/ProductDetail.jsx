@@ -995,75 +995,12 @@ const ProductDetail = () => {
     }
   }
 
-  if (isLoading) {
-    return (
-      <ProductDetailContainer>
-        <Container>
-          <PageLoading text="Chargement du produit..." />
-        </Container>
-      </ProductDetailContainer>
-    )
-  }
-
-  // Gestion de l'erreur si le produit n'est pas trouvé
-  // React Query met les erreurs dans product.error
-  // Et la réponse API est dans product.data (qui est la réponse axios complète)
-  // product.data = { success: true, data: product }
-  // product.data.data = le produit lui-même
-  if (product?.error || (product?.data && !product.data.success)) {
-    return (
-      <ProductDetailContainer>
-        <Container>
-          <motion.div 
-            style={{ textAlign: 'center', padding: '4rem 0' }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 style={{ color: '#ef4444', marginBottom: '1rem' }}>Produit non trouvé</h1>
-            <p style={{ color: '#9ca3af' }}>Ce produit n'existe pas ou a été supprimé.</p>
-            <Button 
-              onClick={() => navigate('/products')}
-              style={{ marginTop: '2rem' }}
-            >
-              Retour aux produits
-            </Button>
-          </motion.div>
-        </Container>
-      </ProductDetailContainer>
-    )
-  }
-
   // La réponse de l'API est : { success: true, data: product }
   // React Query retourne : product.data = réponse axios complète
   // product.data.data = le body de la réponse = { success: true, data: product }
   // product.data.data.data = le produit lui-même
   const apiResponse = product?.data?.data
   const productData = apiResponse?.data || apiResponse
-  
-  if (!productData || !productData.id) {
-    return (
-      <ProductDetailContainer>
-        <Container>
-          <motion.div 
-            style={{ textAlign: 'center', padding: '4rem 0' }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 style={{ color: '#ef4444', marginBottom: '1rem' }}>Produit non trouvé</h1>
-            <p style={{ color: '#9ca3af' }}>Ce produit n'existe pas ou a été supprimé.</p>
-            <Button 
-              onClick={() => navigate('/products')}
-              style={{ marginTop: '2rem' }}
-            >
-              Retour aux produits
-            </Button>
-          </motion.div>
-        </Container>
-      </ProductDetailContainer>
-    )
-  }
   
   // Valeurs par défaut pour noteMoyenne et nombreAvis si elles sont manquantes ou à 0
   const noteMoyenne = productData.noteMoyenne && productData.noteMoyenne > 0 
@@ -1167,7 +1104,7 @@ const ProductDetail = () => {
     return reviews
   }
   
-  // Utiliser les vrais avis de la base de données
+  // Utiliser les vrais avis de la base de données (mémorisés)
   const realReviews = useMemo(() => {
     if (!productData?.avis || productData.avis.length === 0) {
       return []
@@ -1203,6 +1140,66 @@ const ProductDetail = () => {
   const reviews = useMemo(() => {
     return [...realReviews, ...fakeReviews]
   }, [realReviews, fakeReviews])
+  
+  // Retours conditionnels APRÈS tous les hooks
+  if (isLoading) {
+    return (
+      <ProductDetailContainer>
+        <Container>
+          <PageLoading text="Chargement du produit..." />
+        </Container>
+      </ProductDetailContainer>
+    )
+  }
+
+  // Gestion de l'erreur si le produit n'est pas trouvé
+  if (product?.error || (product?.data && !product.data.success)) {
+    return (
+      <ProductDetailContainer>
+        <Container>
+          <motion.div 
+            style={{ textAlign: 'center', padding: '4rem 0' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 style={{ color: '#ef4444', marginBottom: '1rem' }}>Produit non trouvé</h1>
+            <p style={{ color: '#9ca3af' }}>Ce produit n'existe pas ou a été supprimé.</p>
+            <Button 
+              onClick={() => navigate('/products')}
+              style={{ marginTop: '2rem' }}
+            >
+              Retour aux produits
+            </Button>
+          </motion.div>
+        </Container>
+      </ProductDetailContainer>
+    )
+  }
+  
+  if (!productData || !productData.id) {
+    return (
+      <ProductDetailContainer>
+        <Container>
+          <motion.div 
+            style={{ textAlign: 'center', padding: '4rem 0' }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 style={{ color: '#ef4444', marginBottom: '1rem' }}>Produit non trouvé</h1>
+            <p style={{ color: '#9ca3af' }}>Ce produit n'existe pas ou a été supprimé.</p>
+            <Button 
+              onClick={() => navigate('/products')}
+              style={{ marginTop: '2rem' }}
+            >
+              Retour aux produits
+            </Button>
+          </motion.div>
+        </Container>
+      </ProductDetailContainer>
+    )
+  }
 
   // Données fictives détaillées pour chaque produit
   const productDetails = {
