@@ -844,7 +844,18 @@ const ProductDetail = () => {
     )
   }
 
-  if (!product?.data) {
+  // Debug de la structure de la réponse
+  console.log('🔍 Product response:', product)
+  console.log('🔍 Product.data:', product?.data)
+  console.log('🔍 Product.data?.data:', product?.data?.data)
+  console.log('🔍 Product.data?.success:', product?.data?.success)
+  
+  // La réponse de l'API est : { success: true, data: product }
+  // Donc product.data = { success: true, data: product }
+  // Et product.data.data = le produit lui-même
+  const productData = product?.data?.data || product?.data
+  
+  if (!productData || !productData.id) {
     return (
       <ProductDetailContainer>
         <Container>
@@ -867,8 +878,6 @@ const ProductDetail = () => {
       </ProductDetailContainer>
     )
   }
-
-  const productData = product.data.data || product.data
   
   // Debug des données
   console.log('🔍 ProductData:', productData)
