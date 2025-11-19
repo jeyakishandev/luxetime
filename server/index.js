@@ -3,7 +3,11 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-require('dotenv').config({ path: './config.env' });
+
+// Charger les variables d'environnement seulement en développement
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: './config.env' });
+}
 
 const { connectDB } = require('./config/database');
 
@@ -25,7 +29,7 @@ app.use(helmet());
 // Configuration CORS
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://votre-domaine.com'] 
+    ? [process.env.FRONTEND_URL || 'https://luxetime.vercel.app'] 
     : ['http://localhost:3000'],
   credentials: true
 }));
