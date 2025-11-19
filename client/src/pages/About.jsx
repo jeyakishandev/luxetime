@@ -124,8 +124,8 @@ const StoryImage = styled(motion.div)`
     height: 100%;
     object-fit: cover;
     object-position: center;
-    transition: transform 0.6s ease, opacity 0.3s ease;
-    opacity: ${props => props.loaded ? 1 : 0};
+    transition: transform 0.6s ease, opacity 0.5s ease;
+    opacity: ${props => props.loaded ? 1 : 0.3};
   }
   
   &:hover img {
@@ -392,6 +392,8 @@ const TimelineDot = styled.div`
 
 const About = () => {
   const [imageLoaded, setImageLoaded] = React.useState(false)
+  const [imageError, setImageError] = React.useState(false)
+  const imgRef = React.useRef(null)
 
   const values = [
     {
@@ -486,11 +488,20 @@ const About = () => {
               loaded={imageLoaded}
             >
               <img 
+                ref={imgRef}
                 src={getImageUrl('/assets/images/horloger-artisan.jpg')} 
                 alt="Artisan horloger travaillant sur une montre de luxe"
                 loading="lazy"
                 decoding="async"
-                onLoad={() => setImageLoaded(true)}
+                onLoad={() => {
+                  setImageLoaded(true)
+                  setImageError(false)
+                }}
+                onError={() => {
+                  setImageError(true)
+                  setImageLoaded(true) // Afficher quand même pour éviter le blocage
+                  console.error('Erreur de chargement de l\'image horloger-artisan.jpg')
+                }}
                 style={{ 
                   width: '100%',
                   height: '100%',
@@ -498,6 +509,20 @@ const About = () => {
                   objectPosition: 'center'
                 }}
               />
+              {imageError && (
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  color: '#d4af37',
+                  fontSize: '1.2rem',
+                  textAlign: 'center',
+                  padding: '1rem'
+                }}>
+                  Image non disponible
+                </div>
+              )}
             </StoryImage>
             <StoryContent
               initial={{ opacity: 0, x: 50 }}
