@@ -945,29 +945,48 @@ const ProductDetail = () => {
 
     setIsSubmittingReview(true)
     try {
+      // Préparer les données à envoyer
+      const reviewData = {
+        produitId: productData.id,
+        note: reviewNote,
+        commentaire: reviewComment && reviewComment.trim() ? reviewComment.trim() : undefined
+      }
+      
+      console.log('📝 Envoi de l\'avis:', reviewData)
+      
       const response = await reviewAPI.createOrUpdateReview(
-        productData.id,
-        reviewNote,
-        reviewComment || undefined
+        reviewData.produitId,
+        reviewData.note,
+        reviewData.commentaire
       )
       
+      console.log('📝 Réponse API:', response)
+      
       // La réponse axios a la structure : response.data = { success: true, message: ..., data: ... }
-      if (response.data && response.data.success) {
+      if (response && response.data && response.data.success) {
         toast.success('Votre avis a été enregistré !')
         setReviewNote(0)
         setReviewComment('')
         // Recharger les données du produit pour mettre à jour les avis
         queryClient.invalidateQueries(['product', id])
-        // Attendre un peu pour que la requête se termine
-        setTimeout(() => {
-          queryClient.refetchQueries(['product', id])
-        }, 500)
+        // Forcer le refetch immédiat
+        setTimeout(async () => {
+          await queryClient.refetchQueries(['product', id])
+        }, 300)
       } else {
-        toast.error(response.data?.message || 'Erreur lors de l\'enregistrement de l\'avis')
+        const errorMsg = response?.data?.message || 'Erreur lors de l\'enregistrement de l\'avis'
+        console.error('❌ Erreur dans la réponse:', response)
+        toast.error(errorMsg)
       }
     } catch (error) {
-      console.error('Erreur lors de l\'enregistrement de l\'avis:', error)
+      console.error('❌ Erreur lors de l\'enregistrement de l\'avis:', error)
+      console.error('❌ Détails de l\'erreur:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      })
       const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.errors?.[0]?.msg ||
                           error.message || 
                           'Erreur lors de l\'enregistrement de l\'avis'
       toast.error(errorMessage)
