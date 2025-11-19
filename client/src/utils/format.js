@@ -229,14 +229,23 @@ export const getImageUrl = (imageUrl) => {
     return imageUrl
   }
   
-  // En production, servir les images depuis le backend (Render)
-  const API_URL = import.meta.env.VITE_API_URL || ''
-  const isProduction = import.meta.env.PROD || import.meta.env.MODE === 'production'
+  // Détecter si on est en production (sur Vercel ou autre)
+  const isProduction = import.meta.env.PROD || 
+                       import.meta.env.MODE === 'production' ||
+                       (typeof window !== 'undefined' && !window.location.hostname.includes('localhost'))
+  
+  // URL du backend Render (utiliser VITE_API_URL si défini, sinon utiliser l'URL par défaut en production)
+  let API_URL = import.meta.env.VITE_API_URL
+  
+  // Si VITE_API_URL n'est pas défini mais qu'on est en production, utiliser l'URL Render par défaut
+  if (isProduction && (!API_URL || API_URL === 'http://localhost:5000')) {
+    API_URL = 'https://luxetime.onrender.com'
+  }
   
   // Si c'est un chemin relatif qui commence par /
   if (imageUrl.startsWith('/')) {
-    // En production, pointer vers le backend si VITE_API_URL est défini
-    if (isProduction && API_URL && API_URL !== 'http://localhost:5000') {
+    // En production, toujours pointer vers le backend Render
+    if (isProduction && API_URL) {
       return `${API_URL}${imageUrl}`
     }
     return imageUrl
@@ -244,7 +253,7 @@ export const getImageUrl = (imageUrl) => {
   
   // Sinon, on ajoute /assets/images/ au début
   const fullPath = `/assets/images/${imageUrl}`
-  if (isProduction && API_URL && API_URL !== 'http://localhost:5000') {
+  if (isProduction && API_URL) {
     return `${API_URL}${fullPath}`
   }
   return fullPath
