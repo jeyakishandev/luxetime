@@ -30,12 +30,34 @@ connectDB();
 app.use(helmet());
 
 // Configuration CORS
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.FRONTEND_URL || 'https://luxetime-three.vercel.app'] 
-    : ['http://localhost:3000'],
-  credentials: true
-}));
+const corsOptions = {
+  origin: function (origin, callback) {
+    // En développement, accepter localhost
+    if (process.env.NODE_ENV !== 'production') {
+      callback(null, true)
+      return
+    }
+    
+    // En production, accepter :
+    // 1. L'URL du frontend configurée
+    // 2. Tous les domaines Vercel (*.vercel.app)
+    // 3. Les requêtes sans origine (Postman, curl, etc.)
+    if (!origin || 
+        origin === process.env.FRONTEND_URL ||
+        origin.includes('luxetime-three.vercel.app') ||
+        origin.includes('.vercel.app')) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
+}
+
+app.use(cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -56,8 +78,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Servir les fichiers statiques (images uploadées)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Servir les assets statiques (images, logos, etc.)
-app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
+// Servir les assets statiques (images, logos, etc.) avec CORS
+app.use('/assets', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET');
+  next();
+}, express.static(path.join(__dirname, 'public', 'assets')));
 
 // Routes API
 app.use('/api/auth', authRoutes);
