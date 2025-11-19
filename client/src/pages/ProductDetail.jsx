@@ -1195,11 +1195,20 @@ const ProductDetail = () => {
 
               <RatingSection>
                 <StarsContainer>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} filled={star <= Math.round(productData.noteMoyenne || 4.5)}>
-                      <FiStar />
-                    </Star>
-                  ))}
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const noteMoyenne = productData.noteMoyenne || 4.5
+                    // Étoile pleine si sa valeur est <= à la note moyenne arrondie
+                    // Exemples :
+                    // - Note 4.3 → Math.round(4.3) = 4 → 4 étoiles pleines
+                    // - Note 4.5 → Math.round(4.5) = 5 → 5 étoiles pleines
+                    // - Note 4.7 → Math.round(4.7) = 5 → 5 étoiles pleines
+                    const isFilled = star <= Math.round(noteMoyenne)
+                    return (
+                      <Star key={star} filled={isFilled}>
+                        <FiStar />
+                      </Star>
+                    )
+                  })}
                 </StarsContainer>
                 <RatingText>
                   {productData.noteMoyenne?.toFixed(1) || '4.5'}/5 ({productData.nombreAvis || reviews.length} avis)
@@ -1551,11 +1560,15 @@ const ProductDetail = () => {
               <AverageRating>
                 <RatingNumber>{productData.noteMoyenne?.toFixed(1) || '4.5'}</RatingNumber>
                 <StarsContainer>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} filled={star <= Math.round(productData.noteMoyenne || 4.5)}>
-                      <FiStar />
-                    </Star>
-                  ))}
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const noteMoyenne = productData.noteMoyenne || 4.5
+                    const isFilled = star <= Math.round(noteMoyenne)
+                    return (
+                      <Star key={star} filled={isFilled}>
+                        <FiStar />
+                      </Star>
+                    )
+                  })}
                 </StarsContainer>
               </AverageRating>
               <ReviewsCount>
