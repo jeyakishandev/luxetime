@@ -396,12 +396,31 @@ const About = () => {
   const [imageError, setImageError] = React.useState(false)
   const imgRef = React.useRef(null)
 
-  // Vérifier si l'image est déjà chargée (cache)
+  // Vérifier si l'image est déjà chargée (cache) et forcer l'affichage
   React.useEffect(() => {
-    if (imgRef.current && imgRef.current.complete) {
-      setImageLoaded(true)
+    const checkImage = () => {
+      if (imgRef.current) {
+        if (imgRef.current.complete && imgRef.current.naturalHeight !== 0) {
+          setImageLoaded(true)
+        } else {
+          // Forcer l'affichage après un court délai même si onLoad ne s'est pas déclenché
+          const timeout = setTimeout(() => {
+            setImageLoaded(true)
+          }, 300)
+          return () => clearTimeout(timeout)
+        }
+      }
     }
-  }, [])
+    // Vérifier immédiatement
+    checkImage()
+    // Vérifier aussi après un court délai
+    const delayedCheck = setTimeout(() => {
+      if (imgRef.current && !imageLoaded) {
+        setImageLoaded(true)
+      }
+    }, 500)
+    return () => clearTimeout(delayedCheck)
+  }, [imageLoaded])
 
   const values = [
     {
