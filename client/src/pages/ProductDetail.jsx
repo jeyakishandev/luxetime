@@ -8,6 +8,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { Button, Card, PageLoading } from '../components/ui'
 import { formatPrice, getImageUrl } from '../utils/format'
+import { reviewAPI } from '../services/api'
+import { useQueryClient } from 'react-query'
 import { 
   FiStar, 
   FiTruck, 
@@ -797,9 +799,13 @@ const ProductDetail = () => {
   const { addToCart, isAddingToCart } = useCart()
   const { isAuthenticated } = useAuth()
   const { addToWishlist, removeFromWishlist, isInWishlist, isAddingToWishlist } = useWishlist()
+  const queryClient = useQueryClient()
   
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [reviewNote, setReviewNote] = useState(0)
+  const [reviewComment, setReviewComment] = useState('')
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
   
   // Reset selectedImage when product changes
   React.useEffect(() => {
@@ -843,6 +849,46 @@ const ProductDetail = () => {
       }
     } catch (error) {
       console.error('Erreur lors de la gestion des favoris:', error)
+    }
+  }
+
+  const handleSubmitReview = async () => {
+    if (!isAuthenticated) {
+      toast.error('Vous devez être connecté pour laisser un avis')
+      navigate('/login')
+      return
+    }
+
+    if (reviewNote === 0) {
+      toast.error('Veuillez sélectionner une note')
+      return
+    }
+
+    const apiResponse = product?.data?.data
+    const productData = apiResponse?.data || apiResponse
+    if (!productData?.id) return
+
+    setIsSubmittingReview(true)
+    try {
+      const response = await reviewAPI.createOrUpdateReview(
+        productData.id,
+        reviewNote,
+        reviewComment
+      )
+      
+      if (response.data.success) {
+        toast.success('Votre avis a été enregistré !')
+        setReviewNote(0)
+        setReviewComment('')
+        // Recharger les données du produit pour mettre à jour les avis
+        queryClient.invalidateQueries(['product', id])
+      } else {
+        toast.error(response.data.message || 'Erreur lors de l\'enregistrement de l\'avis')
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Erreur lors de l\'enregistrement de l\'avis')
+    } finally {
+      setIsSubmittingReview(false)
     }
   }
 
@@ -1644,6 +1690,64 @@ const ProductDetail = () => {
               </ReviewsCount>
             </ReviewsStats>
           </ReviewsHeader>
+
+          {/* Formulaire pour laisser un avis */}
+          {isAuthenticated && (
+            <ReviewFormCard
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <ReviewFormTitle>Laisser un avis</ReviewFormTitle>
+              <StarRatingInput>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <StarButton
+                    key={star}
+                    type="button"
+                    onClick={() => setReviewNote(star)}
+                    $active={reviewNote >= star}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <FiStar />
+                  </StarButton>
+                ))}
+              </StarRatingInput>
+              <ReviewTextarea
+                placeholder="Partagez votre expérience avec ce produit..."
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                rows={4}
+              />
+              <Button
+                onClick={handleSubmitReview}
+                disabled={isSubmittingReview || reviewNote === 0}
+                variant="primary"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {isSubmittingReview ? 'Envoi...' : 'Publier mon avis'}
+              </Button>
+            </ReviewFormCard>
+          )}
+
+          {!isAuthenticated && (
+            <ReviewFormCard
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <ReviewFormTitle>Connectez-vous pour laisser un avis</ReviewFormTitle>
+              <Button
+                onClick={() => navigate('/login')}
+                variant="outline"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Se connecter
+              </Button>
+            </ReviewFormCard>
+          )}
 
           <ReviewsGrid>
             {reviews.map((review, index) => (
