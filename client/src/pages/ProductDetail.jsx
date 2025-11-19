@@ -734,6 +734,80 @@ const ReviewComment = styled.p`
   margin: 0;
 `
 
+const ReviewFormCard = styled(motion.div)`
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: ${props => props.theme.spacing[6]};
+  margin-bottom: ${props => props.theme.spacing[8]};
+`
+
+const ReviewFormTitle = styled.h3`
+  font-size: ${props => props.theme.fontSizes.xl};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  color: ${props => props.theme.colors.white};
+  margin-bottom: ${props => props.theme.spacing[4]};
+`
+
+const StarRatingInput = styled.div`
+  display: flex;
+  gap: ${props => props.theme.spacing[2]};
+  margin-bottom: ${props => props.theme.spacing[4]};
+`
+
+const StarButton = styled(motion.button)`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: ${props => props.$active ? props.theme.colors.primary : props.theme.colors.gray[600]};
+  font-size: ${props => props.theme.fontSizes['2xl']};
+  padding: ${props => props.theme.spacing[1]};
+  transition: all ${props => props.theme.transitions.base};
+  
+  svg {
+    fill: ${props => props.$active ? props.theme.colors.primary : 'none'};
+    stroke: ${props => props.$active ? props.theme.colors.primary : props.theme.colors.gray[600]};
+    stroke-width: ${props => props.$active ? '0' : '1.5'};
+  }
+  
+  &:hover {
+    color: ${props => props.theme.colors.primary};
+    svg {
+      fill: ${props => props.theme.colors.primary};
+      stroke: ${props => props.theme.colors.primary};
+    }
+  }
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`
+
+const ReviewTextarea = styled.textarea`
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing[4]};
+  color: ${props => props.theme.colors.white};
+  font-size: ${props => props.theme.fontSizes.base};
+  font-family: ${props => props.theme.fonts.body};
+  margin-bottom: ${props => props.theme.spacing[4]};
+  resize: vertical;
+  min-height: 100px;
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+  }
+  
+  &::placeholder {
+    color: ${props => props.theme.colors.gray[500]};
+  }
+`
+
 // Mapping des images pour chaque produit avec galeries complètes
 const productImages = {
   1: {
