@@ -520,20 +520,16 @@ const About = () => {
                 alt="Artisan horloger travaillant sur une montre de luxe"
                 loading="lazy"
                 decoding="async"
+                crossOrigin="anonymous"
                 onLoad={() => {
                   setImageLoaded(true)
                   setImageError(false)
                 }}
-                onError={() => {
+                onError={(e) => {
                   setImageError(true)
                   setImageLoaded(true) // Afficher quand même pour éviter le blocage
-                  console.error('Erreur de chargement de l\'image horloger-artisan.jpg')
-                }}
-                style={{ 
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'center'
+                  console.error('Erreur de chargement de l\'image horloger-artisan.jpg', e)
+                  console.error('URL tentée:', getImageUrl('/assets/images/horloger-artisan.jpg'))
                 }}
               />
               {imageError && (
