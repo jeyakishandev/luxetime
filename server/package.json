@@ -7,7 +7,6 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "build": "npx prisma generate",
-    "postbuild": "npx prisma db push",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
