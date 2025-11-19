@@ -1003,11 +1003,11 @@ const ProductDetail = () => {
   const productData = apiResponse?.data || apiResponse
   
   // Valeurs par défaut pour noteMoyenne et nombreAvis si elles sont manquantes ou à 0
-  const noteMoyenne = productData?.noteMoyenne && productData.noteMoyenne > 0 
-    ? productData.noteMoyenne 
+  const noteMoyenne = productData?.noteMoyenne && productData?.noteMoyenne > 0 
+    ? productData?.noteMoyenne 
     : 4.5 // Valeur par défaut
-  const nombreAvis = productData?.nombreAvis && productData.nombreAvis > 0 
-    ? productData.nombreAvis 
+  const nombreAvis = productData?.nombreAvis && productData?.nombreAvis > 0 
+    ? productData?.nombreAvis 
     : 5 // Valeur par défaut
   
   // Mettre à jour productData avec les valeurs par défaut si nécessaire
@@ -1019,17 +1019,17 @@ const ProductDetail = () => {
   }
   
   // Prix dynamiques
-  const currentPrice = productData?.prixPromo && productData.prixPromo > 0 
-    ? productData.prixPromo 
+  const currentPrice = productData?.prixPromo && productData?.prixPromo > 0 
+    ? productData?.prixPromo 
     : productData?.prix || 0
-  const originalPrice = productData?.prixPromo && productData.prixPromo > 0 
-    ? productData.prix 
+  const originalPrice = productData?.prixPromo && productData?.prixPromo > 0 
+    ? productData?.prix 
     : null
   const discount = originalPrice ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100) : 0
   
   // Images dynamiques - utiliser les vraies images du produit ou fallback
-  const productImagesData = productData?.images && productData.images.length > 0 
-    ? productData.images.map(img => getImageUrl(img.url))
+  const productImagesData = productData?.images && productData?.images.length > 0 
+    ? productData?.images.map(img => getImageUrl(img.url))
     : (productImages[productData?.id]?.gallery || productImages[1]?.gallery)
   
   // Fonction pour générer des avis fictifs avec des dates fixes (basées sur l'ID du produit pour la stabilité)
