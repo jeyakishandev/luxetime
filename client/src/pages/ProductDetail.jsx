@@ -933,15 +933,42 @@ const ProductDetail = () => {
       'Design élégant et intemporel.'
     ]
     
-    for (let i = 0; i < Math.min(nombreAvis, 8); i++) {
+    const count = Math.min(nombreAvis, 8)
+    const targetAverage = noteMoyenne || 4.5
+    
+    // Générer des notes qui donnent une moyenne proche de noteMoyenne
+    const ratings = []
+    let totalRating = 0
+    
+    for (let i = 0; i < count; i++) {
+      // Calculer la note cible pour maintenir la moyenne
+      const remaining = count - i
+      const targetForThis = remaining > 0 
+        ? Math.max(1, Math.min(5, (targetAverage * count - totalRating) / remaining + (Math.random() - 0.5) * 0.5))
+        : Math.max(1, Math.min(5, targetAverage * count - totalRating))
+      
+      const rating = Math.round(targetForThis * 2) / 2 // Arrondir à 0.5 près
+      ratings.push(rating)
+      totalRating += rating
+    }
+    
+    // Ajuster la dernière note pour que la moyenne soit exacte
+    if (ratings.length > 0) {
+      const currentAverage = totalRating / count
+      const adjustment = (targetAverage - currentAverage) * count
+      ratings[ratings.length - 1] = Math.max(1, Math.min(5, ratings[ratings.length - 1] + adjustment))
+    }
+    
+    for (let i = 0; i < count; i++) {
       reviews.push({
         id: i + 1,
         name: names[i % names.length],
-        rating: Math.floor(Math.random() * 2) + Math.floor(noteMoyenne), // Entre noteMoyenne et noteMoyenne+1
+        rating: ratings[i] || Math.round(targetAverage),
         comment: comments[i % comments.length],
         date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR')
       })
     }
+    
     return reviews
   }
   
