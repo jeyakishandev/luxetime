@@ -78,7 +78,10 @@ dist
 .cache/
 public
 # Mais on garde les assets du serveur
+!server/public/
+server/public/*
 !server/public/assets/
+!server/public/assets/**
 
 # Storybook build outputs
 .out
