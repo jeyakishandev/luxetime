@@ -10,7 +10,7 @@ import { useCart } from '../contexts/CartContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed'
 import { getImageUrl } from '../utils/format'
-import ProductCard from '../components/ProductCard'
+import ProductCardComponent from '../components/ProductCard'
 import toast from 'react-hot-toast'
 
 const HomeContainer = styled.div`
