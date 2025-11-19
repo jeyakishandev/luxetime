@@ -261,12 +261,23 @@ const initDatabase = async () => {
       }
     ];
 
+    let createdCount = 0;
     for (const product of products) {
-      await prisma.produit.create({ data: product });
+      try {
+        await prisma.produit.create({ data: product });
+        createdCount++;
+      } catch (error) {
+        console.error(`❌ Erreur lors de la création du produit "${product.nom}":`, error.message);
+        // Continuer avec les autres produits même en cas d'erreur
+      }
     }
     
-    console.log(`✅ ${products.length} produits créés`);
-    console.log('✅ Base de données initialisée avec succès !');
+    console.log(`✅ ${createdCount}/${products.length} produits créés`);
+    if (createdCount === products.length) {
+      console.log('✅ Base de données initialisée avec succès !');
+    } else {
+      console.log(`⚠️ ${products.length - createdCount} produits n'ont pas pu être créés`);
+    }
     
   } catch (error) {
     console.error('❌ Erreur lors de l\'initialisation:', error);

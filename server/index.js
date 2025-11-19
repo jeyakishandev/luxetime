@@ -20,6 +20,9 @@ const orderRoutes = require('./routes/orders');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy pour Render (nécessaire pour rate limiting)
+app.set('trust proxy', 1);
+
 // Connexion à la base de données
 connectDB();
 
