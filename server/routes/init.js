@@ -23,11 +23,38 @@ router.post('/reset-db', async (req, res) => {
 
     console.log('🔄 Réinitialisation complète de la base de données...');
     
-    // Supprimer toutes les données
-    await prisma.avis.deleteMany();
-    await prisma.image_produits.deleteMany();
-    await prisma.produit.deleteMany();
-    await prisma.user.deleteMany();
+    // Supprimer toutes les données (dans l'ordre pour respecter les contraintes de clés étrangères)
+    try {
+      await prisma.favori.deleteMany();
+    } catch (e) { console.log('⚠️ Favoris:', e.message); }
+    
+    try {
+      await prisma.avis.deleteMany();
+    } catch (e) { console.log('⚠️ Avis:', e.message); }
+    
+    try {
+      await prisma.commandeItem.deleteMany();
+    } catch (e) { console.log('⚠️ CommandeItems:', e.message); }
+    
+    try {
+      await prisma.commande.deleteMany();
+    } catch (e) { console.log('⚠️ Commandes:', e.message); }
+    
+    try {
+      await prisma.panierItem.deleteMany();
+    } catch (e) { console.log('⚠️ PanierItems:', e.message); }
+    
+    try {
+      await prisma.imageProduit.deleteMany();
+    } catch (e) { console.log('⚠️ ImageProduits:', e.message); }
+    
+    try {
+      await prisma.produit.deleteMany();
+    } catch (e) { console.log('⚠️ Produits:', e.message); }
+    
+    try {
+      await prisma.user.deleteMany();
+    } catch (e) { console.log('⚠️ Users:', e.message); }
     
     console.log('🗑️ Données supprimées');
     
