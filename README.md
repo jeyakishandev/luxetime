@@ -8,13 +8,19 @@ Application e-commerce fullstack pour la vente de montres de luxe, développée 
 
 ## ✨ Fonctionnalités principales
 
-- 🔐 Authentification utilisateur (JWT)
-- 🛍️ Catalogue de produits avec filtres
-- 🛒 Gestion du panier d'achat
-- 📦 Système de commandes
-- 👤 Gestion du profil utilisateur
-- 📱 Design responsive
-- 🎨 Interface moderne avec animations
+- 🔐 **Authentification sécurisée** (JWT, bcrypt, reset password)
+- 🛍️ **Catalogue complet** avec filtres, tri et recherche
+- 🛒 **Gestion du panier** avec calcul en temps réel
+- 📦 **Système de commandes** complet avec suivi
+- ⭐ **Système d'avis et notes** avec moyenne calculée
+- ❤️ **Wishlist** (liste de souhaits)
+- 👤 **Profil utilisateur** avec historique des commandes
+- 🔍 **Produits récemment consultés** (localStorage)
+- 👨‍💼 **Panel administrateur** (gestion produits & commandes)
+- 📱 **Design responsive** (mobile-first)
+- 🎨 **Animations fluides** (Framer Motion)
+- 🚀 **Lazy loading** pour optimiser les performances
+- 🔒 **Sécurité** (Helmet, CORS, Rate Limiting)
 
 ## 🛠 Technologies utilisées
 
@@ -223,14 +229,14 @@ NODE_ENV=development
 
 ## 🎯 Améliorations futures
 
-- [ ] Intégration Stripe pour les paiements
-- [ ] Système d'avis et de notes
-- [ ] Wishlist
-- [ ] Notifications email
-- [ ] Dashboard administrateur
+- [ ] Intégration Stripe pour les paiements réels
+- [ ] Notifications email (confirmation commande, reset password)
 - [ ] Tests E2E avec Cypress
 - [ ] CI/CD avec GitHub Actions
-- [ ] Déploiement sur AWS/Vercel
+- [ ] Documentation API (Swagger/OpenAPI)
+- [ ] Analytics et métriques
+- [ ] Mode sombre/clair
+- [ ] Internationalisation (i18n)
 
 ## 👨‍💻 Auteur
 
