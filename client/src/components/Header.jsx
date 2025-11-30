@@ -340,9 +340,30 @@ const LoginButton = styled(Button)`
 // MENU MOBILE
 // ============================================
 
-const MobileMenuButton = styled(IconButton)`
+const HamburgerContainer = styled.button`
   display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: ${props => props.theme.spacing[2]};
   z-index: 10;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
   
   /* Desktop */
   @media (min-width: 768px) {
@@ -350,16 +371,77 @@ const MobileMenuButton = styled(IconButton)`
   }
 `
 
+const HamburgerLine = styled(motion.span)`
+  width: 100%;
+  height: 2px;
+  background: ${props => props.theme.colors.gray[300]};
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  
+  ${HamburgerContainer}:hover & {
+    background: ${props => props.theme.colors.primary};
+  }
+`
+
+const HamburgerButton = ({ isOpen, onClick, ...props }) => (
+  <HamburgerContainer
+    onClick={onClick}
+    aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
+    aria-expanded={isOpen}
+    data-mobile-menu-button
+    {...props}
+  >
+    <HamburgerLine
+      animate={isOpen ? { 
+        rotate: 45, 
+        y: 7,
+        backgroundColor: '#d4af37'
+      } : { 
+        rotate: 0, 
+        y: 0,
+        backgroundColor: ''
+      }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+    />
+    <HamburgerLine
+      animate={isOpen ? { 
+        opacity: 0, 
+        x: -20,
+        backgroundColor: '#d4af37'
+      } : { 
+        opacity: 1, 
+        x: 0,
+        backgroundColor: ''
+      }}
+      transition={{ duration: 0.2, ease: 'easeInOut' }}
+    />
+    <HamburgerLine
+      animate={isOpen ? { 
+        rotate: -45, 
+        y: -7,
+        backgroundColor: '#d4af37'
+      } : { 
+        rotate: 0, 
+        y: 0,
+        backgroundColor: ''
+      }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+    />
+  </HamburgerContainer>
+)
+
 const MobileMenuOverlay = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: ${props => props.theme.zIndex.modal};
   display: block;
+  cursor: pointer;
   
   /* Desktop */
   @media (min-width: 768px) {
@@ -374,14 +456,27 @@ const MobileMenuPanel = styled(motion.div)`
   bottom: 0;
   width: 85%;
   max-width: 400px;
-  background: ${props => props.theme.colors.gray[900]};
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, ${props => props.theme.colors.gray[900]} 0%, ${props => props.theme.colors.gray[800]} 100%);
+  border-left: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: -4px 0 30px rgba(0, 0, 0, 0.6);
   z-index: ${props => props.theme.zIndex.modal + 1};
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  
+  /* Effet de brillance subtil */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+    pointer-events: none;
+  }
   
   /* Desktop */
   @media (min-width: 768px) {
@@ -389,13 +484,18 @@ const MobileMenuPanel = styled(motion.div)`
   }
 `
 
-const MobileMenuHeader = styled.div`
+const MobileMenuHeader = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: ${props => props.theme.spacing[4]};
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   min-height: 60px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 1;
 `
 
 const MobileMenuTitle = styled.h3`
@@ -410,7 +510,7 @@ const MobileMenuContent = styled.div`
   padding: ${props => props.theme.spacing[4]};
 `
 
-const MobileSearchContainer = styled.div`
+const MobileSearchContainer = styled(motion.div)`
   margin-bottom: ${props => props.theme.spacing[6]};
   
   /* Desktop */
@@ -447,7 +547,7 @@ const MobileNav = styled.nav`
   margin-bottom: ${props => props.theme.spacing[6]};
 `
 
-const MobileNavLink = styled(Link)`
+const MobileNavLink = styled(motion(Link))`
   display: flex;
   align-items: center;
   gap: ${props => props.theme.spacing[3]};
@@ -459,22 +559,67 @@ const MobileNavLink = styled(Link)`
   border-radius: ${props => props.theme.borderRadius.lg};
   transition: all 0.3s ease;
   min-height: 44px;
+  position: relative;
+  overflow: hidden;
   
   svg {
     width: 20px;
     height: 20px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.1), transparent);
+    transition: width 0.3s ease;
   }
   
   &:hover {
     background: rgba(255, 255, 255, 0.05);
     color: ${props => props.theme.colors.primary};
+    transform: translateX(4px);
+    
+    &::before {
+      width: 4px;
+    }
+    
+    svg {
+      transform: scale(1.1);
+      color: ${props => props.theme.colors.primary};
+    }
+  }
+  
+  &:active {
+    transform: translateX(2px);
   }
   
   &.active {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(212, 175, 55, 0.15);
     color: ${props => props.theme.colors.primary};
     border-left: 3px solid ${props => props.theme.colors.primary};
+    
+    &::before {
+      width: 3px;
+      background: ${props => props.theme.colors.primary};
+    }
+    
+    svg {
+      color: ${props => props.theme.colors.primary};
+    }
   }
+`
+
+const MobileNavButton = styled(MobileNavLink).attrs({ as: 'button' })`
+  width: 100%;
+  text-align: left;
+  border: none;
+  cursor: pointer;
 `
 
 const MobileDivider = styled.div`
@@ -598,7 +743,7 @@ const Header = () => {
     }
   }, [isUserMenuOpen])
 
-  // Fermer le menu mobile au clic extérieur
+  // Fermer le menu mobile au clic extérieur et avec Escape
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
@@ -608,8 +753,15 @@ const Header = () => {
       }
     }
 
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
     if (isMobileMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleEscape)
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
@@ -617,6 +769,7 @@ const Header = () => {
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = ''
     }
   }, [isMobileMenuOpen])
@@ -780,14 +933,10 @@ const Header = () => {
             )}
 
             {/* Menu Mobile Button */}
-            <MobileMenuButton
+            <HamburgerButton
+              isOpen={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-              aria-expanded={isMobileMenuOpen}
-              data-mobile-menu-button
-            >
-              {isMobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
-            </MobileMenuButton>
+            />
           </ActionsGroup>
         </HeaderContent>
       </HeaderWrapper>
@@ -804,12 +953,16 @@ const Header = () => {
             />
             <MobileMenuPanel
               ref={mobileMenuRef}
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              initial={{ x: '100%', opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300, mass: 0.8 }}
             >
-              <MobileMenuHeader>
+              <MobileMenuHeader
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.1, duration: 0.3 }}
+              >
                 <MobileMenuTitle>Menu</MobileMenuTitle>
                 <IconButton
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -821,7 +974,11 @@ const Header = () => {
 
               <MobileMenuContent>
                 {/* Recherche Mobile */}
-                <MobileSearchContainer>
+                <MobileSearchContainer
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
+                >
                   <SearchForm onSubmit={handleSearch}>
                     <SearchIcon />
                     <MobileSearchInput
@@ -830,13 +987,14 @@ const Header = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       aria-label="Rechercher"
+                      autoFocus={false}
                     />
                   </SearchForm>
                 </MobileSearchContainer>
 
                 {/* Navigation Mobile */}
                 <MobileNav>
-                  {navItems.map((item) => {
+                  {navItems.map((item, index) => {
                     const Icon = item.icon
                     return (
                       <MobileNavLink
@@ -844,6 +1002,9 @@ const Header = () => {
                         to={item.path}
                         className={location.pathname === item.path ? 'active' : ''}
                         onClick={() => setIsMobileMenuOpen(false)}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.15 + index * 0.05, duration: 0.3 }}
                       >
                         {Icon && <Icon />}
                         {item.label}
@@ -860,6 +1021,9 @@ const Header = () => {
                     <MobileNavLink 
                       to="/login"
                       onClick={() => setIsMobileMenuOpen(false)}
+                      initial={{ x: 50, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.35, duration: 0.3 }}
                     >
                       <FiUser />
                       Connexion
@@ -872,6 +1036,9 @@ const Header = () => {
                   <MobileNavLink 
                     to="/wishlist"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.25, duration: 0.3 }}
                   >
                     <FiHeart />
                     Liste de souhaits
@@ -883,6 +1050,9 @@ const Header = () => {
                   <MobileNavLink 
                     to="/cart"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 0.3 }}
                   >
                     <FiShoppingCart />
                     Panier
@@ -902,6 +1072,9 @@ const Header = () => {
                       <MobileNavLink 
                         to="/profile"
                         onClick={() => setIsMobileMenuOpen(false)}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.35, duration: 0.3 }}
                       >
                         <FiUser />
                         Mon profil
@@ -910,6 +1083,9 @@ const Header = () => {
                       <MobileNavLink 
                         to="/orders"
                         onClick={() => setIsMobileMenuOpen(false)}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.4, duration: 0.3 }}
                       >
                         Mes commandes
                       </MobileNavLink>
@@ -917,6 +1093,9 @@ const Header = () => {
                       <MobileNavLink 
                         to="/certificates"
                         onClick={() => setIsMobileMenuOpen(false)}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.45, duration: 0.3 }}
                       >
                         <FiAward />
                         Mes certificats
@@ -925,6 +1104,9 @@ const Header = () => {
                       <MobileNavLink 
                         to="/warranties"
                         onClick={() => setIsMobileMenuOpen(false)}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 0.3 }}
                       >
                         <FiShield />
                         Mes garanties
@@ -934,20 +1116,26 @@ const Header = () => {
                         <MobileNavLink 
                           to="/admin"
                           onClick={() => setIsMobileMenuOpen(false)}
+                          initial={{ x: 50, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          transition={{ delay: 0.55, duration: 0.3 }}
                         >
                           <FiShield />
                           Administration
                         </MobileNavLink>
                       )}
                       
-                      <MobileNavLink 
-                        as="button"
+                      <MobileNavButton
                         onClick={handleLogout}
                         style={{ color: '#ef4444' }}
+                        initial={{ x: 50, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: user?.role === 'ADMIN' ? 0.6 : 0.55, duration: 0.3 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         <FiLogOut />
                         Déconnexion
-                      </MobileNavLink>
+                      </MobileNavButton>
                     </MobileNav>
                   </>
                 )}
