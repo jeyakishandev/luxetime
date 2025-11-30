@@ -871,6 +871,7 @@ const Home = () => {
         </Container>
       </Section>
     </HomeContainer>
+    </>
   )
 }
 

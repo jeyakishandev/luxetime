@@ -705,8 +705,10 @@ const Products = () => {
   }
 
   return (
-    <ProductsContainer>
-      <Container>
+    <>
+      <SEO title="Montres" description="Découvrez notre collection complète de montres de luxe. Filtrez par catégorie, prix et marque pour trouver la montre parfaite." />
+      <ProductsContainer>
+        <Container>
         <PageHeader
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -901,6 +903,7 @@ const Products = () => {
         </ProductsGrid>
       </Container>
     </ProductsContainer>
+    </>
   )
 }
 
