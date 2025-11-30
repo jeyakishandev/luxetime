@@ -2,6 +2,10 @@
 
 Application e-commerce fullstack pour la vente de montres de luxe, développée avec React, Node.js et PostgreSQL.
 
+🌐 **Application en ligne** : [https://luxetime-three.vercel.app/](https://luxetime-three.vercel.app/)
+
+⚠️ **Note :** Lors du premier chargement, le backend peut prendre 30-60 secondes à démarrer. Un message informatif s'affichera automatiquement.
+
 ## 📋 À propos du projet
 
 **Luxetime** est une application e-commerce complète que j'ai développée pour démontrer mes compétences en développement fullstack. Le projet comprend une interface utilisateur moderne, une API REST sécurisée et une base de données PostgreSQL.
@@ -102,6 +106,8 @@ Application e-commerce fullstack pour la vente de montres de luxe, développée 
 7. **Accéder à l'application**
    - Frontend : http://localhost:3000
    - Backend : http://localhost:5000
+
+   ⚠️ **Note importante :** Lors du premier chargement ou après une période d'inactivité, le backend peut prendre 30-60 secondes à démarrer (cold start). Veuillez patienter, cela est normal pour les services serverless. Un message informatif s'affichera automatiquement.
 
 ### Compte de test
 

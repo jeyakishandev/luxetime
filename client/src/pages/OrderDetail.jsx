@@ -576,6 +576,9 @@ const OrderDetail = () => {
                     </div>
                     <div style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.5' }}>
                       Créé automatiquement lors de votre commande. Document officiel prouvant l'authenticité de votre produit.
+                      <br /><strong style={{ color: '#3b82f6', marginTop: '0.5rem', display: 'block' }}>📍 Pour accéder à vos certificats :</strong>
+                      <span style={{ fontSize: '0.8125rem' }}>1. Cliquez sur "Mes Certificats" dans le menu utilisateur (en haut à droite) OU</span>
+                      <span style={{ fontSize: '0.8125rem', display: 'block', marginTop: '0.25rem' }}>2. Utilisez le bouton "Mes Certificats" ci-dessous sur chaque produit</span>
                     </div>
                   </div>
                 </div>
@@ -587,6 +590,9 @@ const OrderDetail = () => {
                     </div>
                     <div style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.5' }}>
                       Créée automatiquement avec votre commande. Protection incluse contre les défauts de fabrication (2 ans).
+                      <br /><strong style={{ color: '#3b82f6', marginTop: '0.5rem', display: 'block' }}>📍 Pour accéder à vos garanties :</strong>
+                      <span style={{ fontSize: '0.8125rem' }}>1. Cliquez sur "Mes Garanties" dans le menu utilisateur (en haut à droite) OU</span>
+                      <span style={{ fontSize: '0.8125rem', display: 'block', marginTop: '0.25rem' }}>2. Utilisez le bouton "Mes Garanties" ci-dessous sur chaque produit</span>
                     </div>
                   </div>
                 </div>
@@ -611,26 +617,20 @@ const OrderDetail = () => {
                           <span>Quantité: {item.quantite}</span>
                           <span>Réf: {item.produit?.reference}</span>
                         </ItemDetails>
-                        {(item.certificat || item.garantie) && (
-                          <ItemActions>
-                            {item.certificat && (
-                              <ItemActionButton
-                                onClick={() => navigate(`/certificates/${item.certificat.id}`)}
-                              >
-                                <FiAward size={16} style={{ marginRight: '0.5rem' }} />
-                                Voir Certificat
-                              </ItemActionButton>
-                            )}
-                            {item.garantie && (
-                              <ItemActionButton
-                                onClick={() => navigate(`/warranties/${item.garantie.id}`)}
-                              >
-                                <FiShield size={16} style={{ marginRight: '0.5rem' }} />
-                                Voir Garantie
-                              </ItemActionButton>
-                            )}
-                          </ItemActions>
-                        )}
+                        <ItemActions>
+                          <ItemActionButton
+                            onClick={() => navigate('/certificates')}
+                          >
+                            <FiAward size={16} style={{ marginRight: '0.5rem' }} />
+                            {item.certificat ? 'Voir Certificat' : 'Mes Certificats'}
+                          </ItemActionButton>
+                          <ItemActionButton
+                            onClick={() => navigate('/warranties')}
+                          >
+                            <FiShield size={16} style={{ marginRight: '0.5rem' }} />
+                            {item.garantie ? 'Voir Garantie' : 'Mes Garanties'}
+                          </ItemActionButton>
+                        </ItemActions>
                       </ItemInfo>
                       <ItemPrice>{formatPrice(item.prixUnitaire)}</ItemPrice>
                     </ItemCard>

@@ -107,6 +107,26 @@ const LoadingText = styled.p`
   margin: 0;
 `
 
+const BackendInfo = styled.div`
+  margin-top: ${props => props.theme.spacing[4]};
+  padding: ${props => props.theme.spacing[4]};
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: ${props => props.theme.borderRadius.md};
+  max-width: 500px;
+  
+  p {
+    color: #9ca3af;
+    font-size: ${props => props.theme.fontSizes.sm};
+    margin: 0;
+    line-height: 1.6;
+    
+    strong {
+      color: #3b82f6;
+    }
+  }
+`
+
 // Spinner simple
 export const Spinner = ({ size = 'md', color, className }) => (
   <StyledSpinner size={size} color={color} className={className} />
@@ -150,10 +170,18 @@ export const ButtonSpinner = ({ size = 'sm', color }) => (
 )
 
 // Loading pour les pages
-export const PageLoading = ({ text = 'Chargement de la page...' }) => (
+export const PageLoading = ({ text = 'Chargement de la page...', showBackendInfo = true }) => (
   <LoadingContainer style={{ minHeight: '50vh' }}>
     <Spinner size="lg" />
     <LoadingText>{text}</LoadingText>
+    {showBackendInfo && (
+      <BackendInfo>
+        <p>
+          💡 <strong>Note :</strong> Le backend peut prendre 30-60 secondes à démarrer lors du premier chargement.
+          <br />Veuillez patienter, cela peut prendre un peu de temps...
+        </p>
+      </BackendInfo>
+    )}
   </LoadingContainer>
 )
 

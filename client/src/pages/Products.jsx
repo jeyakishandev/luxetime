@@ -469,6 +469,33 @@ const ErrorMessage = styled.div`
   text-align: center;
   padding: 4rem 0;
   color: ${props => props.theme.colors.error};
+  
+  p {
+    margin: ${props => props.theme.spacing[2]} 0;
+    line-height: 1.6;
+  }
+`
+
+const BackendInfoBox = styled.div`
+  margin-top: ${props => props.theme.spacing[6]};
+  padding: ${props => props.theme.spacing[4]};
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: ${props => props.theme.borderRadius.md};
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  p {
+    color: #9ca3af;
+    font-size: ${props => props.theme.fontSizes.sm};
+    margin: 0;
+    line-height: 1.6;
+    
+    strong {
+      color: #3b82f6;
+    }
+  }
 `
 
 // Mapping des images pour chaque produit
@@ -538,7 +565,7 @@ const Products = () => {
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
       const response = await axios.get(`${API_URL}/api/products`, {
         params: queryParams,
-        timeout: 10000
+        timeout: 30000 // 30 secondes - le backend peut prendre du temps à démarrer
       })
       
       if (response.data.success) {
@@ -549,10 +576,10 @@ const Products = () => {
       }
     } catch (err) {
       console.error('❌ Erreur API:', err)
-      if (err.code === 'ECONNREFUSED') {
-        setError('Serveur non disponible. Vérifiez que le backend est démarré.')
-      } else if (err.code === 'NETWORK_ERROR') {
-        setError('Erreur réseau. Vérifiez votre connexion.')
+      if (err.code === 'ECONNREFUSED' || err.code === 'ECONNABORTED') {
+        setError('Le serveur est en cours de démarrage. Cela peut prendre 30-60 secondes lors du premier chargement. Veuillez patienter et réessayer dans quelques instants...')
+      } else if (err.code === 'NETWORK_ERROR' || !err.response) {
+        setError('Le backend prend un peu de temps à répondre. Veuillez patienter quelques instants...')
       } else {
         setError(`Erreur de connexion à l'API: ${err.message}`)
       }
@@ -632,20 +659,31 @@ const Products = () => {
     return (
       <ProductsContainer>
         <Container>
-          <PageLoading text="Chargement des produits..." />
+          <PageLoading text="Chargement des produits..." showBackendInfo={true} />
         </Container>
       </ProductsContainer>
     )
   }
 
   if (error) {
+    const isBackendSlowError = error.includes('démarrage') || error.includes('patienter')
+    
     return (
       <ProductsContainer>
         <Container>
           <ErrorMessage>
-            <h3>Erreur</h3>
+            <h3>Erreur de chargement</h3>
             <p>{error}</p>
-            <Button onClick={fetchProducts} style={{ marginTop: '1rem' }}>
+            {isBackendSlowError && (
+              <BackendInfoBox>
+                <p>
+                  💡 <strong>Information :</strong> Le backend est en cours de démarrage. 
+                  Cela peut prendre 30-60 secondes lors du premier chargement ou après une période d'inactivité. 
+                  Veuillez patienter et réessayer dans quelques instants.
+                </p>
+              </BackendInfoBox>
+            )}
+            <Button onClick={fetchProducts} style={{ marginTop: '1.5rem' }}>
               Réessayer
             </Button>
           </ErrorMessage>

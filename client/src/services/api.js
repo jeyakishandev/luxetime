@@ -12,7 +12,7 @@ if (API_BASE_URL && !API_BASE_URL.endsWith('/api')) {
 // Instance axios principale
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000, // 30 secondes - le backend peut prendre du temps à démarrer (cold start)
   headers: {
     'Content-Type': 'application/json',
   },
@@ -38,6 +38,13 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
+    // Gérer les erreurs de timeout ou de connexion
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      error.backendSlowMessage = 'Le backend prend un peu de temps à répondre. Veuillez patienter quelques instants...'
+    } else if (error.code === 'ECONNREFUSED' || !error.response) {
+      error.backendSlowMessage = 'Le serveur est en cours de démarrage. Cela peut prendre 30-60 secondes lors du premier chargement. Veuillez patienter...'
+    }
+    
     if (error.response?.status === 401) {
       // Token expiré ou invalide
       localStorage.removeItem('luxetime_token')
