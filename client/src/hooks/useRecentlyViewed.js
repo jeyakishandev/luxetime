@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 const STORAGE_KEY = 'luxetime_recently_viewed'
 const MAX_ITEMS = 10
@@ -20,8 +20,8 @@ export const useRecentlyViewed = () => {
     }
   }, [])
 
-  // Ajouter un produit à l'historique
-  const addToRecentlyViewed = (product) => {
+  // Ajouter un produit à l'historique (mémorisé avec useCallback)
+  const addToRecentlyViewed = useCallback((product) => {
     if (!product || !product.id) return
 
     setRecentlyViewed(prev => {
@@ -49,7 +49,7 @@ export const useRecentlyViewed = () => {
       
       return updated
     })
-  }
+  }, [])
 
   // Supprimer un produit de l'historique
   const removeFromRecentlyViewed = (productId) => {

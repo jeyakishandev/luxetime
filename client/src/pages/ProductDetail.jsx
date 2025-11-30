@@ -406,13 +406,13 @@ const StarsContainer = styled.div`
 `
 
 const Star = styled.div`
-  color: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+  color: ${props => props.$filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
   font-size: ${props => props.theme.fontSizes.lg};
   
   svg {
-    fill: ${props => props.filled ? props.theme.colors.primary : 'none'};
-    stroke: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
-    stroke-width: ${props => props.filled ? '0' : '1.5'};
+    fill: ${props => props.$filled ? props.theme.colors.primary : 'none'};
+    stroke: ${props => props.$filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+    stroke-width: ${props => props.$filled ? '0' : '1.5'};
   }
 `
 
@@ -912,13 +912,13 @@ const ReviewRating = styled.div`
 `
 
 const ReviewStar = styled.div`
-  color: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+  color: ${props => props.$filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
   font-size: ${props => props.theme.fontSizes.sm};
   
   svg {
-    fill: ${props => props.filled ? props.theme.colors.primary : 'none'};
-    stroke: ${props => props.filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
-    stroke-width: ${props => props.filled ? '0' : '1.5'};
+    fill: ${props => props.$filled ? props.theme.colors.primary : 'none'};
+    stroke: ${props => props.$filled ? props.theme.colors.primary : props.theme.colors.gray[600]};
+    stroke-width: ${props => props.$filled ? '0' : '1.5'};
   }
 `
 
@@ -1220,7 +1220,8 @@ const ProductDetail = () => {
     if (productData && productData.id) {
       addToRecentlyViewed(productData)
     }
-  }, [productData?.id, addToRecentlyViewed])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productData?.id]) // addToRecentlyViewed est mémorisé avec useCallback
   
   // Valeurs par défaut pour noteMoyenne et nombreAvis si elles sont manquantes ou à 0
   // (utilisées uniquement pour la génération des avis fictifs)
@@ -1705,7 +1706,7 @@ const ProductDetail = () => {
                     // - Note 4.7 → Math.round(4.7) = 5 → 5 étoiles pleines
                     const isFilled = star <= Math.round(noteMoyenne)
                     return (
-                      <Star key={star} filled={isFilled}>
+                      <Star key={star} $filled={isFilled}>
                         <FiStar />
                       </Star>
                     )
@@ -2065,7 +2066,7 @@ const ProductDetail = () => {
                     const noteMoyenne = combinedNoteMoyenne
                     const isFilled = star <= Math.round(noteMoyenne)
                     return (
-                      <Star key={star} filled={isFilled}>
+                      <Star key={star} $filled={isFilled}>
                         <FiStar />
                       </Star>
                     )
@@ -2152,7 +2153,7 @@ const ProductDetail = () => {
                 </ReviewHeader>
                 <ReviewRating>
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <ReviewStar key={star} filled={star <= review.rating}>
+                    <ReviewStar key={star} $filled={star <= review.rating}>
                       <FiStar />
                     </ReviewStar>
                   ))}

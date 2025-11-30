@@ -220,7 +220,7 @@ const ProductImage = styled.div`
   margin-bottom: ${props => props.theme.spacing[6]};
   color: ${props => props.theme.colors.gray[400]};
   font-size: ${props => props.theme.fontSizes.lg};
-  background-image: url(${props => props.bgImage});
+  background-image: url(${props => props.$bgImage});
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -830,7 +830,7 @@ const Products = () => {
                     navigate(`/products/${product.id}`)
                   }}
                 >
-                  <ProductImage bgImage={getImageUrl(product.images?.[0]?.url)}>
+                  <ProductImage $bgImage={getImageUrl(product.images?.[0]?.url)}>
                     {product.nom}
                   </ProductImage>
                   

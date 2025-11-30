@@ -206,7 +206,7 @@ const ProductImage = styled.div`
   margin-bottom: ${props => props.theme.spacing[6]};
   color: ${props => props.theme.colors.gray[400]};
   font-size: ${props => props.theme.fontSizes.lg};
-  background-image: url(${props => props.bgImage});
+  background-image: url(${props => props.$bgImage});
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -365,14 +365,14 @@ const Badge = styled.div`
   align-items: center;
   gap: ${props => props.theme.spacing[1]};
   padding: ${props => props.theme.spacing[1]} ${props => props.theme.spacing[3]};
-  background: ${props => props.variant === 'new' 
+  background: ${props => props.$variant === 'new' 
     ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1))'
     : 'linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1))'};
-  border: 1px solid ${props => props.variant === 'new' 
+  border: 1px solid ${props => props.$variant === 'new' 
     ? 'rgba(34, 197, 94, 0.3)'
     : 'rgba(212, 175, 55, 0.3)'};
   border-radius: ${props => props.theme.borderRadius.full};
-  color: ${props => props.variant === 'new' ? '#22c55e' : props.theme.colors.primary};
+  color: ${props => props.$variant === 'new' ? '#22c55e' : props.theme.colors.primary};
   font-size: ${props => props.theme.fontSizes.xs};
   font-weight: ${props => props.theme.fontWeights.semibold};
   text-transform: uppercase;
@@ -679,15 +679,14 @@ const Home = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                     whileHover={{ y: -8 }}
-                    layout
                   >
-                    <ProductImage bgImage={getImageUrl(product.images?.[0]?.url)}>
+                    <ProductImage $bgImage={getImageUrl(product.images?.[0]?.url)}>
                       {product.nom}
                     </ProductImage>
                     
                     <ProductBadges>
                       {product.estNouveau && (
-                        <Badge variant="new">
+                        <Badge $variant="new">
                           <FiStar size={12} />
                           Nouveau
                         </Badge>
@@ -771,9 +770,8 @@ const Home = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
                   whileHover={{ y: -8 }}
-                  layout
                 >
-                  <ProductImage bgImage={getImageUrl(product.images?.[0]?.url)}>
+                  <ProductImage $bgImage={getImageUrl(product.images?.[0]?.url)}>
                     {product.nom}
                   </ProductImage>
                   
@@ -800,8 +798,11 @@ const Home = () => {
                   
                   <ProductActions>
                     <ActionButton
-                      as={Link}
-                      to={`/products/${product.id}`}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        navigate(`/products/${product.id}`)
+                      }}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
