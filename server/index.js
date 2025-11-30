@@ -24,6 +24,10 @@ const warrantyRoutes = require('./routes/warranties');
 const shippingRoutes = require('./routes/shipping');
 const returnRoutes = require('./routes/returns');
 
+// Swagger documentation
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./config/swagger');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -179,7 +183,39 @@ app.use('/api/warranties', warrantyRoutes);
 app.use('/api/shipping', shippingRoutes);
 app.use('/api/returns', returnRoutes);
 
-// Route de santé
+// Documentation API Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Luxetime API Documentation'
+}));
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Vérifier l'état de l'API
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: API fonctionnelle
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: API Luxetime fonctionnelle
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                 environment:
+ *                   type: string
+ *                   example: production
+ */
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,

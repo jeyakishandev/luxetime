@@ -1,5 +1,12 @@
 # 🕰️ Luxetime - Boutique de Montres de Luxe
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
+![React](https://img.shields.io/badge/React-18-blue.svg)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue.svg)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)
+![Deployed](https://img.shields.io/badge/Deployed-Vercel-black?logo=vercel)
+
 Application e-commerce fullstack pour la vente de montres de luxe, développée avec React, Node.js et PostgreSQL.
 
 🌐 **Application en ligne** : [https://luxetime-three.vercel.app/](https://luxetime-three.vercel.app/)
@@ -143,6 +150,19 @@ docker-compose down         # Arrêter les conteneurs
 docker-compose restart      # Redémarrer
 ```
 
+## 📚 Documentation API
+
+La documentation complète de l'API REST est disponible via Swagger UI :
+
+- **Local** : http://localhost:5000/api-docs
+- **Production** : https://luxetime-three.vercel.app/api-docs
+
+La documentation interactive permet de :
+- 📖 Voir tous les endpoints disponibles
+- 🧪 Tester les endpoints directement depuis le navigateur
+- 🔑 Authentification JWT intégrée
+- 📝 Schémas de données détaillés
+
 ## 🧪 Tests
 
 Le projet inclut des tests unitaires pour assurer la qualité du code.
@@ -240,8 +260,8 @@ NODE_ENV=development
 - [ ] Services backend pour certificats d'authenticité, garanties, livraisons, retours
 - [ ] Interfaces frontend pour les fonctionnalités luxe
 - [ ] Tests E2E avec Cypress
-- [ ] CI/CD avec GitHub Actions
-- [ ] Documentation API (Swagger/OpenAPI)
+- [x] ~~CI/CD avec GitHub Actions~~ ✅ **IMPLÉMENTÉ**
+- [x] ~~Documentation API (Swagger/OpenAPI)~~ ✅ **IMPLÉMENTÉ**
 - [ ] Analytics et métriques
 - [ ] Mode sombre/clair
 - [ ] Internationalisation (i18n)
