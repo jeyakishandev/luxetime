@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Button, Input, Card } from '../components/ui'
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight, FiShield, FiZap } from 'react-icons/fi'
@@ -283,6 +283,7 @@ const FeatureText = styled.span`
 
 const Login = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const { login, isLoading } = useAuth()
   const [formData, setFormData] = useState({
     email: '',
@@ -290,6 +291,11 @@ const Login = () => {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState({})
+  
+  // Récupérer la page d'origine depuis location.state ou URL params
+  const urlParams = new URLSearchParams(window.location.search)
+  const fromParam = urlParams.get('from')
+  const from = location.state?.from || fromParam || '/'
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -339,7 +345,13 @@ const Login = () => {
         motDePasse: formData.password 
       })
       toast.success('Connexion réussie ! Bienvenue chez Luxetime')
-      navigate('/')
+      
+      // Rediriger vers la page d'origine ou la page d'accueil
+      if (location.state?.from) {
+        navigate(location.state.from)
+      } else {
+        navigate('/')
+      }
     } catch (error) {
       console.error('Erreur de connexion:', error)
       toast.error(error.response?.data?.message || 'Erreur de connexion')

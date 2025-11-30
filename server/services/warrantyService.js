@@ -87,6 +87,74 @@ class WarrantyService {
     }
   }
 
+  // Créer une garantie automatiquement lors de la création de commande (sans vérification userId)
+  static async createWarrantyForOrder(commandeItemId, userId, typeGarantie = 'FABRICANT') {
+    try {
+      // Vérifier que l'item existe
+      const commandeItem = await prisma.commandeItem.findUnique({
+        where: { id: commandeItemId },
+        include: {
+          commande: true
+        }
+      });
+
+      if (!commandeItem) {
+        throw new Error('Item de commande non trouvé');
+      }
+
+      // Vérifier qu'il n'existe pas déjà une garantie
+      const existingWarranty = await prisma.garantie.findUnique({
+        where: { commandeItemId }
+      });
+
+      if (existingWarranty) {
+        return { success: true, data: existingWarranty }; // Déjà créée
+      }
+
+      // Déterminer la durée selon le type
+      let dureeMois;
+      switch (typeGarantie) {
+        case 'FABRICANT':
+          dureeMois = 24; // 2 ans
+          break;
+        case 'ETENDUE_3_ANS':
+          dureeMois = 36; // 3 ans
+          break;
+        case 'ETENDUE_5_ANS':
+          dureeMois = 60; // 5 ans
+          break;
+        default:
+          dureeMois = 24;
+      }
+
+      // Date de début = date de commande
+      const dateDebut = commandeItem.commande.createdAt;
+      const dateFin = new Date(dateDebut);
+      dateFin.setMonth(dateFin.getMonth() + dureeMois);
+
+      // Créer la garantie
+      const garantie = await prisma.garantie.create({
+        data: {
+          typeGarantie: typeGarantie,
+          dureeMois,
+          dateDebut,
+          dateFin,
+          commandeItemId,
+          userId,
+          estActive: true,
+          notes: `Garantie ${typeGarantie === 'FABRICANT' ? 'fabricant' : 'étendue'} incluse avec l'achat`
+        }
+      });
+
+      return {
+        success: true,
+        data: garantie
+      };
+    } catch (error) {
+      throw new Error(`Erreur lors de la création automatique de la garantie: ${error.message}`);
+    }
+  }
+
   // Récupérer les garanties d'un utilisateur
   static async getUserWarranties(userId, filters = {}) {
     try {

@@ -242,7 +242,9 @@ const ProductCard = ({
     
     if (!isAuthenticated) {
       toast.error('Vous devez être connecté pour ajouter des produits au panier')
-      navigate('/login')
+      navigate('/login', { 
+        state: { from: window.location.pathname, message: 'Connectez-vous pour ajouter ce produit au panier' }
+      })
       return
     }
     
@@ -267,7 +269,9 @@ const ProductCard = ({
     
     if (!isAuthenticated) {
       toast.error('Vous devez être connecté pour ajouter aux favoris')
-      navigate('/login')
+      navigate('/login', { 
+        state: { from: window.location.pathname, message: 'Connectez-vous pour ajouter aux favoris' }
+      })
       return
     }
     

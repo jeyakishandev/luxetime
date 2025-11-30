@@ -381,7 +381,9 @@ const Cart = () => {
     if (isAuthenticated) {
       navigate('/checkout')
     } else {
-      navigate('/login')
+      navigate('/login', { 
+        state: { from: '/cart', message: 'Connectez-vous pour finaliser votre commande' }
+      })
     }
   }
 

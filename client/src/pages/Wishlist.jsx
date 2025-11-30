@@ -233,7 +233,9 @@ const Wishlist = () => {
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
       toast.error('Vous devez être connecté pour ajouter au panier')
-      navigate('/login')
+      navigate('/login', { 
+        state: { from: '/wishlist', message: 'Connectez-vous pour ajouter ce produit au panier' }
+      })
       return
     }
     

@@ -41,7 +41,12 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expiré ou invalide
       localStorage.removeItem('luxetime_token')
-      window.location.href = '/login'
+      
+      // Ne rediriger que si on n'est pas déjà sur la page de login
+      if (window.location.pathname !== '/login') {
+        const currentPath = window.location.pathname + window.location.search
+        window.location.href = `/login?from=${encodeURIComponent(currentPath)}`
+      }
     }
     return Promise.reject(error)
   }

@@ -126,6 +126,83 @@ class CertificateService {
     }
   }
 
+  // Créer un certificat automatiquement lors de la création de commande (sans vérification userId)
+  static async createCertificateForOrder(commandeItemId, userId) {
+    try {
+      // Vérifier que l'item existe
+      const commandeItem = await prisma.commandeItem.findUnique({
+        where: { id: commandeItemId },
+        include: {
+          commande: {
+            include: {
+              client: {
+                select: {
+                  id: true,
+                  nom: true,
+                  prenom: true,
+                  email: true
+                }
+              }
+            }
+          },
+          produit: true
+        }
+      });
+
+      if (!commandeItem) {
+        throw new Error('Item de commande non trouvé');
+      }
+
+      // Vérifier qu'il n'existe pas déjà un certificat
+      const existingCert = await prisma.certificatAuthenticite.findUnique({
+        where: { commandeItemId }
+      });
+
+      if (existingCert) {
+        return { success: true, data: existingCert }; // Déjà créé
+      }
+
+      // Générer le numéro de certificat
+      const numeroCertificat = this.generateCertificateNumber();
+
+      // Générer un numéro de série unique pour l'item si pas déjà défini
+      if (!commandeItem.numeroSerie) {
+        const numeroSerie = `SN-${commandeItem.produit.reference}-${Date.now()}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+        
+        // Mettre à jour l'item avec le numéro de série
+        await prisma.commandeItem.update({
+          where: { id: commandeItemId },
+          data: { numeroSerie }
+        });
+      }
+
+      // Créer le certificat
+      const certificat = await prisma.certificatAuthenticite.create({
+        data: {
+          numeroCertificat,
+          commandeItemId,
+          userId,
+          qrCode: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/certificates/verify/${numeroCertificat}`,
+          historiqueProprietaires: [
+            {
+              date: new Date().toISOString(),
+              nom: `${commandeItem.commande.client.prenom} ${commandeItem.commande.client.nom}`,
+              email: commandeItem.commande.client.email,
+              type: 'Achat initial'
+            }
+          ]
+        }
+      });
+
+      return {
+        success: true,
+        data: certificat
+      };
+    } catch (error) {
+      throw new Error(`Erreur lors de la création automatique du certificat: ${error.message}`);
+    }
+  }
+
   // Récupérer un certificat par numéro
   static async getCertificateByNumber(numeroCertificat) {
     try {

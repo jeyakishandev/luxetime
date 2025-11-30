@@ -22,7 +22,7 @@ import {
   FiAward,
   FiShield
 } from 'react-icons/fi'
-import { orderAPI, certificateAPI, warrantyAPI } from '../services/api'
+import { orderAPI } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 import { formatPrice, formatDate, getImageUrl } from '../utils/format'
 import toast from 'react-hot-toast'
@@ -256,23 +256,37 @@ const ItemPrice = styled.div`
 
 const ItemActions = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: ${props => props.theme.spacing[2]};
+  flex-direction: row;
+  gap: ${props => props.theme.spacing[3]};
+  margin-top: ${props => props.theme.spacing[4]};
+  padding-top: ${props => props.theme.spacing[4]};
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
   
   ${props => props.theme.media.mobile} {
-    flex-direction: row;
+    flex-direction: column;
     width: 100%;
-    margin-top: ${props => props.theme.spacing[3]};
   }
 `
 
 const ItemActionButton = styled(Button)`
-  font-size: ${props => props.theme.fontSizes.xs};
-  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
+  font-size: ${props => props.theme.fontSizes.sm};
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
   white-space: nowrap;
+  flex: 1;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: ${props => props.theme.colors.primary};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  
+  &:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+    border-color: ${props => props.theme.colors.primary};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  }
   
   ${props => props.theme.media.mobile} {
-    flex: 1;
+    width: 100%;
   }
 `
 
@@ -399,48 +413,6 @@ const OrderDetail = () => {
     }
   }
 
-  // Gérer la création/affichage du certificat
-  const handleCertificate = async (itemId) => {
-    try {
-      // Essayer de créer le certificat (s'il existe déjà, on récupère l'erreur)
-      const response = await certificateAPI.createCertificate(itemId)
-      if (response.data.success) {
-        toast.success('Certificat d\'authenticité créé !')
-        navigate('/certificates')
-      }
-    } catch (error) {
-      if (error.response?.data?.message?.includes('existe déjà')) {
-        // Le certificat existe déjà, rediriger vers la page des certificats
-        toast.success('Redirection vers vos certificats...')
-        navigate('/certificates')
-      } else {
-        toast.error(error.response?.data?.message || 'Erreur lors de la création du certificat')
-      }
-    }
-  }
-
-  // Gérer la création/affichage de la garantie
-  const handleWarranty = async (itemId) => {
-    try {
-      // Créer une garantie fabricant par défaut
-      const response = await warrantyAPI.createWarranty(itemId, 'FABRICANT')
-      if (response.data.success) {
-        toast.success('Garantie créée !')
-        navigate('/warranties')
-      }
-    } catch (error) {
-      if (error.response?.data?.message?.includes('existe déjà')) {
-        // La garantie existe déjà, rediriger vers la page des garanties
-        toast.success('Redirection vers vos garanties...')
-        navigate('/warranties')
-      } else {
-        toast.error(error.response?.data?.message || 'Erreur lors de la création de la garantie')
-      }
-    }
-  }
-
-  // Vérifier si on peut créer certificat/garantie (commande confirmée ou livrée)
-  const canCreateDocuments = order && (order.statut === 'CONFIRMEE' || order.statut === 'LIVREE' || order.statut === 'EXPEDIEE')
 
   const getStatusText = (status) => {
     switch (status) {
@@ -579,6 +551,47 @@ const OrderDetail = () => {
                 <FiShoppingCart size={20} />
                 Articles commandés
               </SectionTitle>
+              
+              {/* Section explicative pour certificats et garanties */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
+                style={{
+                  padding: '1rem',
+                  marginBottom: '1.5rem',
+                  background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  borderRadius: '0.75rem',
+                  display: 'flex',
+                  gap: '1rem',
+                  alignItems: 'flex-start'
+                }}
+              >
+                <div style={{ display: 'flex', gap: '0.5rem', flex: 1 }}>
+                  <FiAward size={20} color="#3b82f6" style={{ marginTop: '0.125rem', flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: '600', color: '#fff', marginBottom: '0.25rem' }}>
+                      🏆 Certificat d'authenticité
+                    </div>
+                    <div style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.5' }}>
+                      Créé automatiquement lors de votre commande. Document officiel prouvant l'authenticité de votre produit.
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', flex: 1 }}>
+                  <FiShield size={20} color="#3b82f6" style={{ marginTop: '0.125rem', flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: '600', color: '#fff', marginBottom: '0.25rem' }}>
+                      🛡️ Garantie Fabricant
+                    </div>
+                    <div style={{ fontSize: '0.875rem', color: '#9ca3af', lineHeight: '1.5' }}>
+                      Créée automatiquement avec votre commande. Protection incluse contre les défauts de fabrication (2 ans).
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+              
               <ItemsList>
                 {order.items?.map((item, index) => (
                   <motion.div
@@ -598,24 +611,24 @@ const OrderDetail = () => {
                           <span>Quantité: {item.quantite}</span>
                           <span>Réf: {item.produit?.reference}</span>
                         </ItemDetails>
-                        {canCreateDocuments && (
-                          <ItemActions style={{ marginTop: '0.5rem' }}>
-                            <ItemActionButton
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleCertificate(item.id)}
-                            >
-                              <FiAward size={14} style={{ marginRight: '0.25rem' }} />
-                              Certificat
-                            </ItemActionButton>
-                            <ItemActionButton
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleWarranty(item.id)}
-                            >
-                              <FiShield size={14} style={{ marginRight: '0.25rem' }} />
-                              Garantie
-                            </ItemActionButton>
+                        {(item.certificat || item.garantie) && (
+                          <ItemActions>
+                            {item.certificat && (
+                              <ItemActionButton
+                                onClick={() => navigate(`/certificates/${item.certificat.id}`)}
+                              >
+                                <FiAward size={16} style={{ marginRight: '0.5rem' }} />
+                                Voir Certificat
+                              </ItemActionButton>
+                            )}
+                            {item.garantie && (
+                              <ItemActionButton
+                                onClick={() => navigate(`/warranties/${item.garantie.id}`)}
+                              >
+                                <FiShield size={16} style={{ marginRight: '0.5rem' }} />
+                                Voir Garantie
+                              </ItemActionButton>
+                            )}
                           </ItemActions>
                         )}
                       </ItemInfo>

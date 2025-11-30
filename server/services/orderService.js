@@ -1,5 +1,7 @@
 const { prisma } = require('../config/database');
 const EmailService = require('./emailService');
+const CertificateService = require('./certificateService');
+const WarrantyService = require('./warrantyService');
 
 class OrderService {
   // Créer une nouvelle commande
@@ -130,6 +132,25 @@ class OrderService {
         where: { userId }
       });
 
+      // Créer automatiquement les certificats d'authenticité et garanties pour chaque produit de luxe
+      // (car les paiements sont simulés, la commande est considérée comme confirmée immédiatement)
+      for (const item of commande.items) {
+        try {
+          // Créer le certificat d'authenticité
+          await CertificateService.createCertificateForOrder(item.id, userId).catch(err => {
+            console.log(`⚠️ Certificat non créé pour item ${item.id}:`, err.message);
+          });
+
+          // Créer la garantie fabricant
+          await WarrantyService.createWarrantyForOrder(item.id, userId, 'FABRICANT').catch(err => {
+            console.log(`⚠️ Garantie non créée pour item ${item.id}:`, err.message);
+          });
+        } catch (error) {
+          console.error(`Erreur création documents pour item ${item.id}:`, error);
+          // On continue même si erreur, pour ne pas bloquer la création de commande
+        }
+      }
+
       // Envoyer l'email de confirmation (en arrière-plan, ne pas bloquer)
       EmailService.sendOrderConfirmation(commande, commande.client).catch(err => {
         console.error('Erreur envoi email confirmation commande:', err);
@@ -223,6 +244,19 @@ class OrderService {
                   images: {
                     where: { estPrincipale: true }
                   }
+                }
+              },
+              certificat: {
+                select: {
+                  id: true,
+                  numeroCertificat: true
+                }
+              },
+              garantie: {
+                select: {
+                  id: true,
+                  typeGarantie: true,
+                  dateFin: true
                 }
               }
             }

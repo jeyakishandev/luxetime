@@ -905,6 +905,16 @@ const ProductDetail = () => {
   }, [product])
 
   const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      toast.error('Vous devez être connecté pour ajouter au panier')
+      const productId = product?.data?.data?.id || product?.data?.data?.data?.id
+      const currentPath = productId ? `/products/${productId}` : window.location.pathname
+      navigate('/login', { 
+        state: { from: currentPath, message: 'Connectez-vous pour ajouter ce produit au panier' }
+      })
+      return
+    }
+    
     if (product?.data?.data) {
       addToCart({ produitId: product.data.data.id, quantite: quantity })
     }
@@ -921,7 +931,11 @@ const ProductDetail = () => {
   const toggleWishlist = async () => {
     if (!isAuthenticated) {
       toast.error('Vous devez être connecté pour ajouter aux favoris')
-      navigate('/login')
+      const productId = product?.data?.data?.id || product?.data?.data?.data?.id
+      const currentPath = productId ? `/products/${productId}` : window.location.pathname
+      navigate('/login', { 
+        state: { from: currentPath, message: 'Connectez-vous pour ajouter aux favoris' }
+      })
       return
     }
     
@@ -943,7 +957,11 @@ const ProductDetail = () => {
   const handleSubmitReview = async () => {
     if (!isAuthenticated) {
       toast.error('Vous devez être connecté pour laisser un avis')
-      navigate('/login')
+      const productId = product?.data?.data?.id || product?.data?.data?.data?.id
+      const currentPath = productId ? `/products/${productId}` : window.location.pathname
+      navigate('/login', { 
+        state: { from: currentPath, message: 'Connectez-vous pour laisser un avis' }
+      })
       return
     }
 
