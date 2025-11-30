@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
@@ -16,23 +16,29 @@ import {
   FiLogOut,
   FiShield,
   FiAward,
-  FiShield as FiShieldIcon
+  FiHome,
+  FiInfo,
+  FiMail
 } from 'react-icons/fi'
-import { formatPrice, getImageUrl } from '../utils/format'
+import { getImageUrl } from '../utils/format'
+
+// ============================================
+// MOBILE-FIRST STYLES (Base mobile)
+// ============================================
 
 const HeaderContainer = styled.header`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(10, 10, 10, 0.85);
+  background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   z-index: ${props => props.theme.zIndex.sticky};
-  transition: all ${props => props.theme.transitions.base};
-  
+  transition: all 0.3s ease;
+
   /* Effet de brillance subtil */
   &::before {
     content: '';
@@ -42,23 +48,37 @@ const HeaderContainer = styled.header`
     right: 0;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+    pointer-events: none;
+  }
+`
+
+const HeaderWrapper = styled.div`
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 ${props => props.theme.spacing[3]};
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    padding: 0 ${props => props.theme.spacing[6]};
   }
 `
 
 const HeaderContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 ${props => props.theme.spacing[4]};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 70px;
+  height: 60px;
+  position: relative;
   
-  ${props => props.theme.media.mobile} {
-    padding: 0 ${props => props.theme.spacing[3]};
-    height: 60px;
+  /* Desktop */
+  @media (min-width: 768px) {
+    height: 70px;
   }
 `
+
+// ============================================
+// LOGO
+// ============================================
 
 const Logo = styled(Link)`
   display: flex;
@@ -67,42 +87,63 @@ const Logo = styled(Link)`
   text-decoration: none;
   color: ${props => props.theme.colors.white};
   font-family: 'Playfair Display', serif;
-  font-size: ${props => props.theme.fontSizes['2xl']};
+  font-size: ${props => props.theme.fontSizes.xl};
   font-weight: ${props => props.theme.fontWeights.extrabold};
   letter-spacing: -0.02em;
-  transition: all ${props => props.theme.transitions.base};
+  transition: transform 0.3s ease;
+  z-index: 10;
   
   &:hover {
+    transform: scale(1.05);
     background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    transform: scale(1.05);
   }
   
-  ${props => props.theme.media.mobile} {
-    font-size: ${props => props.theme.fontSizes.xl};
+  &:active {
+    transform: scale(0.98);
+  }
+
+  /* Desktop */
+  @media (min-width: 768px) {
+    font-size: ${props => props.theme.fontSizes['2xl']};
+    gap: ${props => props.theme.spacing[3]};
   }
 `
 
 const LogoImage = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
+  object-fit: cover;
   
-  ${props => props.theme.media.mobile} {
-    width: 32px;
-    height: 32px;
+  /* Desktop */
+  @media (min-width: 768px) {
+    width: 40px;
+    height: 40px;
   }
 `
 
-const Navigation = styled.nav`
-  display: flex;
+// ============================================
+// NAVIGATION DESKTOP
+// ============================================
+
+const DesktopNav = styled.nav`
+  display: none;
   align-items: center;
   gap: ${props => props.theme.spacing[6]};
+  margin: 0 ${props => props.theme.spacing[6]};
   
-  ${props => props.theme.media.mobile} {
-    display: none;
+  /* Desktop */
+  @media (min-width: 768px) {
+    display: flex;
+  }
+  
+  /* Large desktop */
+  @media (min-width: 1024px) {
+    gap: ${props => props.theme.spacing[8]};
+    margin: 0 ${props => props.theme.spacing[8]};
   }
 `
 
@@ -113,27 +154,29 @@ const NavLink = styled(Link)`
   font-size: ${props => props.theme.fontSizes.sm};
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   position: relative;
+  padding: ${props => props.theme.spacing[2]} 0;
+  white-space: nowrap;
   
   &::after {
     content: '';
     position: absolute;
-    bottom: -8px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%) scaleX(0);
-    width: 20px;
-    height: 1px;
+    width: 0;
+    height: 2px;
     background: linear-gradient(90deg, transparent, ${props => props.theme.colors.primary}, transparent);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
   }
   
   &:hover {
     color: ${props => props.theme.colors.primary};
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
     
     &::after {
       transform: translateX(-50%) scaleX(1);
+      width: 100%;
     }
   }
   
@@ -142,44 +185,57 @@ const NavLink = styled(Link)`
     
     &::after {
       transform: translateX(-50%) scaleX(1);
-      width: 30px;
+      width: 100%;
     }
   }
 `
 
+// ============================================
+// RECHERCHE
+// ============================================
+
 const SearchContainer = styled.div`
+  display: none;
   position: relative;
   flex: 1;
   max-width: 400px;
   margin: 0 ${props => props.theme.spacing[4]};
   
-  ${props => props.theme.media.tablet} {
-    max-width: 300px;
+  /* Desktop */
+  @media (min-width: 768px) {
+    display: block;
   }
   
-  ${props => props.theme.media.mobile} {
-    display: none;
+  /* Large desktop */
+  @media (min-width: 1024px) {
+    max-width: 500px;
   }
+`
+
+const SearchForm = styled.form`
+  position: relative;
+  width: 100%;
 `
 
 const SearchInput = styled.input`
   width: 100%;
   padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]} ${props => props.theme.spacing[2]} ${props => props.theme.spacing[10]};
-  background: ${props => props.theme.colors.gray[800]};
-  border: 1px solid ${props => props.theme.colors.gray[600]};
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: ${props => props.theme.borderRadius.lg};
   color: ${props => props.theme.colors.white};
   font-size: ${props => props.theme.fontSizes.sm};
-  transition: all ${props => props.theme.transitions.base};
+  transition: all 0.3s ease;
+  
+  &::placeholder {
+    color: ${props => props.theme.colors.gray[500]};
+  }
   
   &:focus {
     outline: none;
     border-color: ${props => props.theme.colors.primary};
+    background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-  }
-  
-  &::placeholder {
-    color: ${props => props.theme.colors.gray[400]};
   }
 `
 
@@ -190,18 +246,31 @@ const SearchIcon = styled(FiSearch)`
   transform: translateY(-50%);
   color: ${props => props.theme.colors.gray[400]};
   pointer-events: none;
+  width: 18px;
+  height: 18px;
 `
 
-const ActionsContainer = styled.div`
+// ============================================
+// ACTIONS (Cart, Wishlist, User)
+// ============================================
+
+const ActionsGroup = styled.div`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[3]};
+  gap: ${props => props.theme.spacing[2]};
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    gap: ${props => props.theme.spacing[3]};
+  }
 `
 
-const ActionButton = styled.button`
+const IconButton = styled.button`
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border: none;
   background: transparent;
   color: ${props => props.theme.colors.gray[300]};
@@ -210,93 +279,37 @@ const ActionButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all ${props => props.theme.transitions.base};
+  transition: all 0.3s ease;
   
   &:hover {
-    background: ${props => props.theme.colors.gray[700]};
+    background: rgba(255, 255, 255, 0.1);
     color: ${props => props.theme.colors.primary};
+    transform: scale(1.1);
   }
   
-  ${props => props.theme.media.mobile} {
-    width: 36px;
-    height: 36px;
-  }
-`
-
-const CartBadge = styled.div`
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background: ${props => props.theme.colors.primary};
-  color: ${props => props.theme.colors.black};
-  font-size: ${props => props.theme.fontSizes.xs};
-  font-weight: ${props => props.theme.fontWeights.bold};
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-`
-
-const MobileMenuButton = styled(ActionButton)`
-  display: none;
-  
-  ${props => props.theme.media.mobile} {
-    display: flex;
-  }
-`
-
-const MobileMenu = styled(motion.div)`
-  position: fixed;
-  top: 60px;
-  left: 0;
-  right: 0;
-  background: ${props => props.theme.colors.gray[800]};
-  border-bottom: 1px solid ${props => props.theme.colors.gray[700]};
-  padding: ${props => props.theme.spacing[4]};
-  z-index: ${props => props.theme.zIndex.dropdown};
-  max-height: calc(100vh - 60px);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-`
-
-const MobileNav = styled.nav`
-  display: flex;
-  flex-direction: column;
-  gap: ${props => props.theme.spacing[4]};
-`
-
-const MobileNavLink = styled(Link)`
-  color: ${props => props.theme.colors.gray[300]};
-  text-decoration: none;
-  font-weight: ${props => props.theme.fontWeights.medium};
-  padding: ${props => props.theme.spacing[3]};
-  border-radius: ${props => props.theme.borderRadius.lg};
-  transition: all ${props => props.theme.transitions.base};
-  
-  &:hover {
-    background: ${props => props.theme.colors.gray[700]};
-    color: ${props => props.theme.colors.primary};
+  &:active {
+    transform: scale(0.95);
   }
   
-  &.active {
-    background: ${props => props.theme.colors.primary};
-    color: ${props => props.theme.colors.black};
+  /* Desktop */
+  @media (min-width: 768px) {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
   }
 `
 
 const Badge = styled.span`
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: 2px;
+  right: 2px;
   background: ${props => props.theme.colors.error};
   color: ${props => props.theme.colors.white};
   font-size: 10px;
   font-weight: ${props => props.theme.fontWeights.bold};
   padding: 2px 6px;
-  border-radius: 50%;
+  border-radius: 10px;
   min-width: 18px;
   height: 18px;
   display: flex;
@@ -304,53 +317,246 @@ const Badge = styled.span`
   justify-content: center;
   line-height: 1;
   border: 2px solid ${props => props.theme.colors.gray[900]};
+  box-sizing: border-box;
 `
 
-const UserMenu = styled(motion.div)`
-  position: absolute;
-  top: 100%;
+const CartBadge = styled(Badge)`
+  background: ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.black};
+  top: 0;
   right: 0;
-  background: ${props => props.theme.colors.gray[800]};
-  border: 1px solid ${props => props.theme.colors.gray[700]};
-  border-radius: ${props => props.theme.borderRadius.lg};
-  box-shadow: ${props => props.theme.shadows.lg};
-  min-width: 200px;
-  z-index: ${props => props.theme.zIndex.dropdown};
-  overflow: hidden;
 `
 
-const UserMenuItem = styled.button`
-  width: 100%;
-  padding: ${props => props.theme.spacing[3]};
-  background: none;
-  border: none;
-  color: ${props => props.theme.colors.gray[300]};
-  text-align: left;
-  cursor: pointer;
-  transition: background ${props => props.theme.transitions.base};
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing[2]};
+const LoginButton = styled(Button)`
+  display: none;
   
-  &:hover {
-    background: ${props => props.theme.colors.gray[700]};
+  /* Desktop */
+  @media (min-width: 768px) {
+    display: inline-flex;
   }
 `
 
-const UserInfo = styled.div`
-  padding: ${props => props.theme.spacing[3]};
-  border-bottom: 1px solid ${props => props.theme.colors.gray[700]};
+// ============================================
+// MENU MOBILE
+// ============================================
+
+const MobileMenuButton = styled(IconButton)`
+  display: flex;
+  z-index: 10;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    display: none;
+  }
+`
+
+const MobileMenuOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: ${props => props.theme.zIndex.modal};
+  display: block;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    display: none;
+  }
+`
+
+const MobileMenuPanel = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 85%;
+  max-width: 400px;
+  background: ${props => props.theme.colors.gray[900]};
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+  z-index: ${props => props.theme.zIndex.modal + 1};
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    display: none;
+  }
+`
+
+const MobileMenuHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${props => props.theme.spacing[4]};
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 60px;
+`
+
+const MobileMenuTitle = styled.h3`
+  font-size: ${props => props.theme.fontSizes.lg};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  color: ${props => props.theme.colors.white};
+  margin: 0;
+`
+
+const MobileMenuContent = styled.div`
+  flex: 1;
+  padding: ${props => props.theme.spacing[4]};
+`
+
+const MobileSearchContainer = styled.div`
+  margin-bottom: ${props => props.theme.spacing[6]};
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    display: none;
+  }
+`
+
+const MobileSearchInput = styled.input`
+  width: 100%;
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[3]} ${props => props.theme.spacing[3]} ${props => props.theme.spacing[10]};
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  color: ${props => props.theme.colors.white};
+  font-size: ${props => props.theme.fontSizes.base};
+  transition: all 0.3s ease;
+  
+  &::placeholder {
+    color: ${props => props.theme.colors.gray[500]};
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.primary};
+    background: rgba(255, 255, 255, 0.08);
+  }
+`
+
+const MobileNav = styled.nav`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[2]};
+  margin-bottom: ${props => props.theme.spacing[6]};
+`
+
+const MobileNavLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
+  color: ${props => props.theme.colors.gray[300]};
+  text-decoration: none;
+  font-weight: ${props => props.theme.fontWeights.medium};
+  font-size: ${props => props.theme.fontSizes.base};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  transition: all 0.3s ease;
+  min-height: 44px;
+  
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: ${props => props.theme.colors.primary};
+  }
+  
+  &.active {
+    background: rgba(212, 175, 55, 0.1);
+    color: ${props => props.theme.colors.primary};
+    border-left: 3px solid ${props => props.theme.colors.primary};
+  }
+`
+
+const MobileDivider = styled.div`
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: ${props => props.theme.spacing[4]} 0;
+`
+
+// ============================================
+// USER MENU
+// ============================================
+
+const UserMenuContainer = styled.div`
+  position: relative;
+`
+
+const UserMenuDropdown = styled(motion.div)`
+  position: absolute;
+  top: calc(100% + ${props => props.theme.spacing[2]});
+  right: 0;
+  background: ${props => props.theme.colors.gray[800]};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  min-width: 220px;
+  z-index: ${props => props.theme.zIndex.dropdown};
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+`
+
+const UserMenuHeader = styled.div`
+  padding: ${props => props.theme.spacing[4]};
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
 `
 
 const UserName = styled.div`
-  font-weight: ${props => props.theme.fontWeights.medium};
+  font-weight: ${props => props.theme.fontWeights.semibold};
   color: ${props => props.theme.colors.white};
+  font-size: ${props => props.theme.fontSizes.base};
+  margin-bottom: ${props => props.theme.spacing[1]};
 `
 
 const UserEmail = styled.div`
   font-size: ${props => props.theme.fontSizes.sm};
   color: ${props => props.theme.colors.gray[400]};
 `
+
+const UserMenuItem = styled.button`
+  width: 100%;
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[4]};
+  background: none;
+  border: none;
+  color: ${props => props.theme.colors.gray[300]};
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  min-height: 44px;
+  
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: ${props => props.theme.colors.primary};
+  }
+  
+  &:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+`
+
+// ============================================
+// COMPOSANT PRINCIPAL
+// ============================================
 
 const Header = () => {
   const { user, isAuthenticated, logout } = useAuth()
@@ -361,181 +567,393 @@ const Header = () => {
   
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  
+  const userMenuRef = useRef(null)
+  const mobileMenuRef = useRef(null)
 
   // Fermer le menu mobile lors du changement de route
   useEffect(() => {
     setIsMobileMenuOpen(false)
   }, [location])
 
+  // Fermer le menu utilisateur au clic extérieur
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false)
+      }
+    }
+
+    if (isUserMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.body.style.overflow = ''
+    }
+  }, [isUserMenuOpen])
+
+  // Fermer le menu mobile au clic extérieur
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        if (!event.target.closest('[data-mobile-menu-button]')) {
+          setIsMobileMenuOpen(false)
+        }
+      }
+    }
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
+
   const handleSearch = (e) => {
     e.preventDefault()
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
       setSearchQuery('')
+      setIsMobileMenuOpen(false)
     }
   }
 
   const handleLogout = () => {
     logout()
     setIsUserMenuOpen(false)
+    setIsMobileMenuOpen(false)
     navigate('/')
   }
 
   const navItems = [
-    { path: '/', label: 'Accueil' },
-    { path: '/products', label: 'Montres' },
-    { path: '/about', label: 'À propos' },
-    { path: '/contact', label: 'Contact' }
+    { path: '/', label: 'Accueil', icon: FiHome },
+    { path: '/products', label: 'Montres', icon: null },
+    { path: '/about', label: 'À propos', icon: FiInfo },
+    { path: '/contact', label: 'Contact', icon: FiMail }
   ]
 
   return (
     <HeaderContainer>
-      <HeaderContent>
-        <Logo to="/">
-          <LogoImage src={getImageUrl("/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png")} alt="Luxetime" />
-          Luxetime
-        </Logo>
-
-        <Navigation>
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={location.pathname === item.path ? 'active' : ''}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </Navigation>
-
-        <SearchContainer>
-          <form onSubmit={handleSearch}>
-            <SearchIcon size={18} />
-            <SearchInput
-              type="text"
-              placeholder="Rechercher une montre..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+      <HeaderWrapper>
+        <HeaderContent>
+          {/* Logo */}
+          <Logo to="/" aria-label="Luxetime - Accueil">
+            <LogoImage 
+              src={getImageUrl("/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png")} 
+              alt="Luxetime Logo" 
             />
-          </form>
-        </SearchContainer>
+            <span>Luxetime</span>
+          </Logo>
 
-        <ActionsContainer>
-          <ActionButton as={Link} to="/wishlist" title="Liste de souhaits">
-            <FiHeart size={20} />
-            {wishlistCount > 0 && (
-              <Badge>{wishlistCount}</Badge>
-            )}
-          </ActionButton>
-
-          <ActionButton as={Link} to="/cart" title="Panier">
-            <FiShoppingCart size={20} />
-            {itemCount > 0 && (
-              <CartBadge>
-                {itemCount > 99 ? '99+' : itemCount}
-              </CartBadge>
-            )}
-          </ActionButton>
-
-          {isAuthenticated ? (
-            <div style={{ position: 'relative' }}>
-              <ActionButton
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                title="Mon compte"
+          {/* Navigation Desktop */}
+          <DesktopNav>
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={location.pathname === item.path ? 'active' : ''}
               >
-                <FiUser size={20} />
-              </ActionButton>
+                {item.label}
+              </NavLink>
+            ))}
+          </DesktopNav>
 
-              <AnimatePresence>
-                {isUserMenuOpen && (
-                  <UserMenu
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                  >
-                    <UserInfo>
-                      <UserName>{user?.prenom} {user?.nom}</UserName>
-                      <UserEmail>{user?.email}</UserEmail>
-                    </UserInfo>
-                    
-                    <UserMenuItem as={Link} to="/profile">
-                      <FiUser size={16} />
-                      Mon profil
-                    </UserMenuItem>
-                    
-                    <UserMenuItem as={Link} to="/orders">
-                      Mes commandes
-                    </UserMenuItem>
-                    
-                    <UserMenuItem as={Link} to="/certificates">
-                      <FiAward size={16} />
-                      Mes certificats
-                    </UserMenuItem>
-                    
-                    <UserMenuItem as={Link} to="/warranties">
-                      <FiShieldIcon size={16} />
-                      Mes garanties
-                    </UserMenuItem>
-                    
-                    {user?.role === 'ADMIN' && (
-                      <UserMenuItem as={Link} to="/admin">
-                        <FiShield size={16} />
-                        Administration
-                      </UserMenuItem>
-                    )}
-                    
-                    <UserMenuItem onClick={handleLogout}>
-                      <FiLogOut size={16} />
-                      Déconnexion
-                    </UserMenuItem>
-                  </UserMenu>
-                )}
-              </AnimatePresence>
-            </div>
-          ) : (
-            <Button
-              as={Link}
-              to="/login"
-              size="sm"
-              variant="outline"
+          {/* Recherche Desktop */}
+          <SearchContainer>
+            <SearchForm onSubmit={handleSearch}>
+              <SearchIcon />
+              <SearchInput
+                type="text"
+                placeholder="Rechercher une montre..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Rechercher"
+              />
+            </SearchForm>
+          </SearchContainer>
+
+          {/* Actions */}
+          <ActionsGroup>
+            {/* Wishlist */}
+            <IconButton 
+              as={Link} 
+              to="/wishlist" 
+              aria-label={`Liste de souhaits${wishlistCount > 0 ? ` (${wishlistCount} articles)` : ''}`}
             >
-              Connexion
-            </Button>
-          )}
+              <FiHeart size={20} />
+              {wishlistCount > 0 && <Badge>{wishlistCount}</Badge>}
+            </IconButton>
 
-          <MobileMenuButton onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
-          </MobileMenuButton>
-        </ActionsContainer>
-      </HeaderContent>
+            {/* Cart */}
+            <IconButton 
+              as={Link} 
+              to="/cart" 
+              aria-label={`Panier${itemCount > 0 ? ` (${itemCount} articles)` : ''}`}
+            >
+              <FiShoppingCart size={20} />
+              {itemCount > 0 && (
+                <CartBadge>
+                  {itemCount > 99 ? '99+' : itemCount}
+                </CartBadge>
+              )}
+            </IconButton>
 
+            {/* User Menu / Login */}
+            {isAuthenticated ? (
+              <UserMenuContainer ref={userMenuRef}>
+                <IconButton
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  aria-label="Menu utilisateur"
+                  aria-expanded={isUserMenuOpen}
+                >
+                  <FiUser size={20} />
+                </IconButton>
+
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <UserMenuDropdown
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <UserMenuHeader>
+                        <UserName>{user?.prenom} {user?.nom}</UserName>
+                        <UserEmail>{user?.email}</UserEmail>
+                      </UserMenuHeader>
+                      
+                      <UserMenuItem as={Link} to="/profile">
+                        <FiUser size={18} />
+                        Mon profil
+                      </UserMenuItem>
+                      
+                      <UserMenuItem as={Link} to="/orders">
+                        Mes commandes
+                      </UserMenuItem>
+                      
+                      <UserMenuItem as={Link} to="/certificates">
+                        <FiAward size={18} />
+                        Mes certificats
+                      </UserMenuItem>
+                      
+                      <UserMenuItem as={Link} to="/warranties">
+                        <FiShield size={18} />
+                        Mes garanties
+                      </UserMenuItem>
+                      
+                      {user?.role === 'ADMIN' && (
+                        <UserMenuItem as={Link} to="/admin">
+                          <FiShield size={18} />
+                          Administration
+                        </UserMenuItem>
+                      )}
+                      
+                      <UserMenuItem onClick={handleLogout}>
+                        <FiLogOut size={18} />
+                        Déconnexion
+                      </UserMenuItem>
+                    </UserMenuDropdown>
+                  )}
+                </AnimatePresence>
+              </UserMenuContainer>
+            ) : (
+              <LoginButton
+                as={Link}
+                to="/login"
+                size="sm"
+                variant="outline"
+              >
+                Connexion
+              </LoginButton>
+            )}
+
+            {/* Menu Mobile Button */}
+            <MobileMenuButton
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-expanded={isMobileMenuOpen}
+              data-mobile-menu-button
+            >
+              {isMobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+            </MobileMenuButton>
+          </ActionsGroup>
+        </HeaderContent>
+      </HeaderWrapper>
+
+      {/* Menu Mobile */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <MobileMenu
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-          >
-            <MobileNav>
-              {navItems.map((item) => (
-                <MobileNavLink
-                  key={item.path}
-                  to={item.path}
-                  className={location.pathname === item.path ? 'active' : ''}
+          <>
+            <MobileMenuOverlay
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <MobileMenuPanel
+              ref={mobileMenuRef}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            >
+              <MobileMenuHeader>
+                <MobileMenuTitle>Menu</MobileMenuTitle>
+                <IconButton
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Fermer le menu"
                 >
-                  {item.label}
-                </MobileNavLink>
-              ))}
-              
-              {!isAuthenticated && (
-                <MobileNavLink to="/login">
-                  Connexion
-                </MobileNavLink>
-              )}
-            </MobileNav>
-          </MobileMenu>
+                  <FiX size={20} />
+                </IconButton>
+              </MobileMenuHeader>
+
+              <MobileMenuContent>
+                {/* Recherche Mobile */}
+                <MobileSearchContainer>
+                  <SearchForm onSubmit={handleSearch}>
+                    <SearchIcon />
+                    <MobileSearchInput
+                      type="text"
+                      placeholder="Rechercher une montre..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      aria-label="Rechercher"
+                    />
+                  </SearchForm>
+                </MobileSearchContainer>
+
+                {/* Navigation Mobile */}
+                <MobileNav>
+                  {navItems.map((item) => {
+                    const Icon = item.icon
+                    return (
+                      <MobileNavLink
+                        key={item.path}
+                        to={item.path}
+                        className={location.pathname === item.path ? 'active' : ''}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {Icon && <Icon />}
+                        {item.label}
+                      </MobileNavLink>
+                    )
+                  })}
+                </MobileNav>
+
+                <MobileDivider />
+
+                {/* Actions Mobile si non connecté */}
+                {!isAuthenticated && (
+                  <MobileNav>
+                    <MobileNavLink 
+                      to="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <FiUser />
+                      Connexion
+                    </MobileNavLink>
+                  </MobileNav>
+                )}
+
+                {/* Compteurs Mobile */}
+                <MobileNav>
+                  <MobileNavLink 
+                    to="/wishlist"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <FiHeart />
+                    Liste de souhaits
+                    {wishlistCount > 0 && (
+                      <Badge style={{ marginLeft: 'auto' }}>{wishlistCount}</Badge>
+                    )}
+                  </MobileNavLink>
+                  
+                  <MobileNavLink 
+                    to="/cart"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <FiShoppingCart />
+                    Panier
+                    {itemCount > 0 && (
+                      <CartBadge style={{ marginLeft: 'auto' }}>
+                        {itemCount > 99 ? '99+' : itemCount}
+                      </CartBadge>
+                    )}
+                  </MobileNavLink>
+                </MobileNav>
+
+                {/* Menu Utilisateur Mobile */}
+                {isAuthenticated && (
+                  <>
+                    <MobileDivider />
+                    <MobileNav>
+                      <MobileNavLink 
+                        to="/profile"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <FiUser />
+                        Mon profil
+                      </MobileNavLink>
+                      
+                      <MobileNavLink 
+                        to="/orders"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Mes commandes
+                      </MobileNavLink>
+                      
+                      <MobileNavLink 
+                        to="/certificates"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <FiAward />
+                        Mes certificats
+                      </MobileNavLink>
+                      
+                      <MobileNavLink 
+                        to="/warranties"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <FiShield />
+                        Mes garanties
+                      </MobileNavLink>
+                      
+                      {user?.role === 'ADMIN' && (
+                        <MobileNavLink 
+                          to="/admin"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <FiShield />
+                          Administration
+                        </MobileNavLink>
+                      )}
+                      
+                      <MobileNavLink 
+                        as="button"
+                        onClick={handleLogout}
+                        style={{ color: '#ef4444' }}
+                      >
+                        <FiLogOut />
+                        Déconnexion
+                      </MobileNavLink>
+                    </MobileNav>
+                  </>
+                )}
+              </MobileMenuContent>
+            </MobileMenuPanel>
+          </>
         )}
       </AnimatePresence>
     </HeaderContainer>
