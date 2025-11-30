@@ -18,7 +18,8 @@ import {
   FiAward,
   FiHome,
   FiInfo,
-  FiMail
+  FiMail,
+  FiWatch
 } from 'react-icons/fi'
 import { getImageUrl } from '../utils/format'
 
@@ -607,6 +608,7 @@ const MobileNav = styled.nav`
   flex-direction: column;
   gap: ${props => props.theme.spacing[2]};
   margin-bottom: ${props => props.theme.spacing[6]};
+  width: 100%;
 `
 
 const MobileNavLink = styled(motion(Link))`
@@ -623,12 +625,16 @@ const MobileNavLink = styled(motion(Link))`
   min-height: 44px;
   position: relative;
   overflow: hidden;
+  width: 100%;
   
   svg {
     width: 20px;
     height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     transition: transform 0.3s ease;
     flex-shrink: 0;
+    display: block;
   }
   
   &::before {
@@ -854,7 +860,7 @@ const Header = () => {
 
   const navItems = [
     { path: '/', label: 'Accueil', icon: FiHome },
-    { path: '/products', label: 'Montres', icon: null },
+    { path: '/products', label: 'Montres', icon: FiWatch },
     { path: '/about', label: 'À propos', icon: FiInfo },
     { path: '/contact', label: 'Contact', icon: FiMail }
   ]
@@ -1149,7 +1155,7 @@ const Header = () => {
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: 0.15 + index * 0.05, duration: 0.3 }}
                       >
-                        {Icon && <Icon />}
+                        {Icon ? <Icon /> : <span style={{ width: '20px', height: '20px', flexShrink: 0 }} />}
                         {item.label}
                       </MobileNavLink>
                     )
