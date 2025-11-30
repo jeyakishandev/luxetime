@@ -28,11 +28,8 @@ import {
   FiEye,
   FiZap,
   FiDroplet,
-  FiSun,
-  FiMoon,
   FiTrendingUp,
-  FiUsers,
-  FiGift
+  FiUsers
 } from 'react-icons/fi'
 
 const ProductDetailContainer = styled.div`
@@ -1165,15 +1162,11 @@ const ProductDetail = () => {
         commentaire: reviewComment && reviewComment.trim() ? reviewComment.trim() : undefined
       }
       
-      console.log('📝 Envoi de l\'avis:', reviewData)
-      
       const response = await reviewAPI.createOrUpdateReview(
         reviewData.produitId,
         reviewData.note,
         reviewData.commentaire
       )
-      
-      console.log('📝 Réponse API:', response)
       
       // La réponse axios a la structure : response.data = { success: true, message: ..., data: ... }
       if (response && response.data && response.data.success) {
