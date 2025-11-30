@@ -550,6 +550,12 @@ const MobileMenuContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0;
+  position: relative;
+  width: 100%;
+  
+  /* Forcer la visibilité */
+  visibility: visible !important;
+  opacity: 1 !important;
   
   /* Scrollbar personnalisée pour le contenu */
   &::-webkit-scrollbar {
