@@ -249,6 +249,11 @@ const FeaturesGrid = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: ${props => props.theme.spacing[4]};
   
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(2, 1fr);
+    gap: ${props => props.theme.spacing[3]};
+  }
+  
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[3]};

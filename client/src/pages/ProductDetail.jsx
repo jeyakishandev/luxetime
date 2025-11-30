@@ -99,9 +99,15 @@ const ProductGrid = styled.div`
   gap: ${props => props.theme.spacing[12]};
   margin-bottom: ${props => props.theme.spacing[16]};
   
-  ${props => props.theme.media.mobile} {
+  ${props => props.theme.media.tablet} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[8]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[6]};
+    margin-bottom: ${props => props.theme.spacing[12]};
   }
 `
 
@@ -125,6 +131,14 @@ const ProductImage = styled.img`
   height: 600px;
   object-fit: cover;
   transition: transform 0.4s ease;
+  
+  ${props => props.theme.media.tablet} {
+    height: 500px;
+  }
+  
+  ${props => props.theme.media.mobile} {
+    height: 400px;
+  }
   
   &:hover {
     transform: scale(1.05);
@@ -177,6 +191,16 @@ const ThumbnailGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: ${props => props.theme.spacing[3]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(4, 1fr);
+    gap: ${props => props.theme.spacing[2]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: repeat(3, 1fr);
+    gap: ${props => props.theme.spacing[2]};
+  }
 `
 
 const ThumbnailImage = styled(motion.img)`
@@ -530,9 +554,15 @@ const ProductDetails = styled.div`
   gap: ${props => props.theme.spacing[8]};
   margin-top: ${props => props.theme.spacing[16]};
   
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[6]};
+  }
+  
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[6]};
+    margin-top: ${props => props.theme.spacing[12]};
   }
 `
 
@@ -585,6 +615,17 @@ const FeaturesGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: ${props => props.theme.spacing[6]};
   margin-top: ${props => props.theme.spacing[16]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: ${props => props.theme.spacing[5]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: ${props => props.theme.spacing[4]};
+    margin-top: ${props => props.theme.spacing[12]};
+  }
 `
 
 const FeatureCard = styled(motion.div)`
@@ -689,6 +730,16 @@ const ReviewsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: ${props => props.theme.spacing[4]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: ${props => props.theme.spacing[3]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[4]};
+  }
 `
 
 const ReviewCard = styled(motion.div)`

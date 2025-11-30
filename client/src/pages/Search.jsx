@@ -137,8 +137,13 @@ const ProductsGrid = styled(motion.div)`
   gap: ${props => props.theme.spacing[6]};
   margin-top: ${props => props.theme.spacing[8]};
   
-  ${props => props.theme.media.mobile} {
+  ${props => props.theme.media.tablet} {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: ${props => props.theme.spacing[5]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[4]};
   }
 `

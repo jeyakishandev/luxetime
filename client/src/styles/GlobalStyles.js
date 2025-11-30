@@ -190,14 +190,14 @@ const GlobalStyles = createGlobalStyle`
     padding: 0 1rem;
   }
 
-  /* Responsive breakpoints */
-  @media (max-width: 768px) {
+  /* Responsive breakpoints - Mobile First */
+  @media (max-width: 767px) {
     html {
       font-size: 14px;
     }
     
     .container {
-      padding: 0 0.75rem;
+      padding: 0 1rem;
     }
   }
 
@@ -207,7 +207,39 @@ const GlobalStyles = createGlobalStyle`
     }
     
     .container {
+      padding: 0 0.75rem;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    html {
+      font-size: 12px;
+    }
+    
+    .container {
       padding: 0 0.5rem;
+    }
+  }
+  
+  /* Touch-friendly improvements */
+  @media (hover: none) and (pointer: coarse) {
+    /* Augmenter les zones de touch */
+    button, a, input, select, textarea {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Améliorer l'espacement pour les doigts */
+    button + button,
+    a + a {
+      margin-left: 0.5rem;
+    }
+  }
+  
+  /* Amélioration pour les petits écrans */
+  @media (max-width: 360px) {
+    body {
+      font-size: 0.875rem;
     }
   }
 

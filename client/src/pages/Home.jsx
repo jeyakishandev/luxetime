@@ -179,9 +179,14 @@ const SectionSubtitle = styled(motion.p)`
 
 const ProductsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: ${props => props.theme.spacing[8]};
   margin-bottom: ${props => props.theme.spacing[12]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: ${props => props.theme.spacing[6]};
+  }
   
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
@@ -455,6 +460,16 @@ const FeaturesGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: ${props => props.theme.spacing[6]};
   margin-top: ${props => props.theme.spacing[12]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: ${props => props.theme.spacing[5]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[6]};
+  }
 `
 
 const FeatureCard = styled(Card)`

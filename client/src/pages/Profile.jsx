@@ -110,9 +110,14 @@ const FormGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: ${props => props.theme.spacing[4]};
   
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[3]};
+  }
+  
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
-    gap: ${props => props.theme.spacing[4]};
+    gap: ${props => props.theme.spacing[3]};
   }
 `
 

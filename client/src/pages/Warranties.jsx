@@ -33,8 +33,18 @@ const Title = styled(motion.h1)`
 
 const WarrantiesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: ${props => props.theme.spacing[6]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: ${props => props.theme.spacing[5]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[5]};
+  }
 `
 
 const WarrantyCard = styled(Card)`

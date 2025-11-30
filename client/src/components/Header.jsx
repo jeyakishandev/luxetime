@@ -153,6 +153,10 @@ const SearchContainer = styled.div`
   max-width: 400px;
   margin: 0 ${props => props.theme.spacing[4]};
   
+  ${props => props.theme.media.tablet} {
+    max-width: 300px;
+  }
+  
   ${props => props.theme.media.mobile} {
     display: none;
   }
@@ -253,6 +257,9 @@ const MobileMenu = styled(motion.div)`
   border-bottom: 1px solid ${props => props.theme.colors.gray[700]};
   padding: ${props => props.theme.spacing[4]};
   z-index: ${props => props.theme.zIndex.dropdown};
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 `
 
 const MobileNav = styled.nav`
@@ -354,6 +361,7 @@ const Header = () => {
   
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   // Fermer le menu mobile lors du changement de route

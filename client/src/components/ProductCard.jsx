@@ -23,10 +23,23 @@ const ProductCardContainer = styled(Card)`
     border-color: rgba(212, 175, 55, 0.3);
   }
   
+  ${props => props.theme.media.tablet} {
+    &:hover {
+      transform: translateY(-8px);
+    }
+  }
+  
   ${props => props.theme.media.mobile} {
     &:hover {
       transform: none;
       box-shadow: ${props => props.theme.shadows.lg};
+    }
+  }
+  
+  /* Touch devices - pas de hover */
+  @media (hover: none) and (pointer: coarse) {
+    &:hover {
+      transform: none;
     }
   }
 `

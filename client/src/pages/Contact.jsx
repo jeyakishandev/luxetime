@@ -66,6 +66,11 @@ const ContentGrid = styled.div`
   gap: ${props => props.theme.spacing[8]};
   margin-bottom: ${props => props.theme.spacing[12]};
   
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[8]};
+  }
+  
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[6]};

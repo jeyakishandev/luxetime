@@ -97,7 +97,12 @@ const OrderGrid = styled.div`
   grid-template-columns: 1fr 400px;
   gap: ${props => props.theme.spacing[8]};
   
-  @media (max-width: ${props => props.theme.breakpoints.lg}) {
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[8]};
+  }
+  
+  ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[6]};
   }

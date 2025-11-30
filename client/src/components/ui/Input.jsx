@@ -45,22 +45,29 @@ const StyledInput = styled(motion.input)`
     background: ${props => props.theme.colors.gray[700]};
   }
   
+  /* Touch-friendly pour mobile */
+  @media (hover: none) and (pointer: coarse) {
+    min-height: 44px; /* Minimum recommandé pour touch */
+    font-size: 16px; /* Empêche le zoom sur iOS */
+  }
+  
   /* Responsive */
   ${props => props.theme.media.mobile} {
     padding: ${props => {
       switch (props.size) {
-        case 'sm': return `${props.theme.spacing[1]} ${props.theme.spacing[2]}`
+        case 'sm': return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
         case 'lg': return `${props.theme.spacing[3]} ${props.theme.spacing[4]}`
         default: return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
       }
     }};
     font-size: ${props => {
       switch (props.size) {
-        case 'sm': return props.theme.fontSizes.xs
-        case 'lg': return props.theme.fontSizes.base
-        default: return props.theme.fontSizes.sm
+        case 'sm': return '16px' /* Évite zoom iOS */
+        case 'lg': return '16px'
+        default: return '16px'
       }
     }};
+    min-height: 44px; /* Touch-friendly */
   }
 `
 

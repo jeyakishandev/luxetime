@@ -103,6 +103,11 @@ const StoryGrid = styled.div`
   align-items: center;
   margin-bottom: ${props => props.theme.spacing[12]};
   
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[8]};
+  }
+  
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[6]};
@@ -186,6 +191,11 @@ const ValuesGrid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: ${props => props.theme.spacing[6]};
   
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(2, 1fr);
+    gap: ${props => props.theme.spacing[5]};
+  }
+  
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[4]};
@@ -237,6 +247,11 @@ const StatsGrid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: ${props => props.theme.spacing[6]};
   margin-top: ${props => props.theme.spacing[12]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(2, 1fr);
+    gap: ${props => props.theme.spacing[5]};
+  }
   
   ${props => props.theme.media.mobile} {
     grid-template-columns: repeat(2, 1fr);

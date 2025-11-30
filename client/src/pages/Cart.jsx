@@ -149,6 +149,11 @@ const CartContent = styled.div`
   grid-template-columns: 1fr 450px;
   gap: ${props => props.theme.spacing[12]};
   
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: 1fr;
+    gap: ${props => props.theme.spacing[10]};
+  }
+  
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[8]};
@@ -310,6 +315,16 @@ const FeaturesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: ${props => props.theme.spacing[4]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: ${props => props.theme.spacing[3]};
+  }
+  
+  ${props => props.theme.media.mobile} {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: ${props => props.theme.spacing[3]};
+  }
 `
 
 const FeatureCard = styled(motion.div)`

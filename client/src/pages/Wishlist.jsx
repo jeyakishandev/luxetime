@@ -98,9 +98,14 @@ const EmptyText = styled.p`
 
 const WishlistGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: ${props => props.theme.spacing[6]};
   margin-bottom: ${props => props.theme.spacing[8]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: ${props => props.theme.spacing[5]};
+  }
   
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;

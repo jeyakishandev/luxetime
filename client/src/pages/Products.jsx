@@ -193,9 +193,14 @@ const SortSelect = styled.select`
 
 const ProductsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: ${props => props.theme.spacing[8]};
   margin-bottom: ${props => props.theme.spacing[16]};
+  
+  ${props => props.theme.media.tablet} {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: ${props => props.theme.spacing[6]};
+  }
   
   ${props => props.theme.media.mobile} {
     grid-template-columns: 1fr;

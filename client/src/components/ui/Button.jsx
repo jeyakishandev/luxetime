@@ -141,11 +141,24 @@ const StyledButton = styled(motion.button)`
     }
   `}
   
+  /* Touch-friendly pour mobile */
+  @media (hover: none) and (pointer: coarse) {
+    min-height: 44px; /* Minimum recommandé pour touch */
+    padding: ${props => {
+      switch (props.size) {
+        case 'sm': return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
+        case 'lg': return `${props.theme.spacing[3]} ${props.theme.spacing[5]}`
+        case 'xl': return `${props.theme.spacing[4]} ${props.theme.spacing[6]}`
+        default: return `${props.theme.spacing[3]} ${props.theme.spacing[4]}`
+      }
+    }};
+  }
+  
   /* Responsive */
   ${props => props.theme.media.mobile} {
     padding: ${props => {
       switch (props.size) {
-        case 'sm': return `${props.theme.spacing[1]} ${props.theme.spacing[2]}`
+        case 'sm': return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
         case 'lg': return `${props.theme.spacing[3]} ${props.theme.spacing[4]}`
         case 'xl': return `${props.theme.spacing[4]} ${props.theme.spacing[5]}`
         default: return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
@@ -159,6 +172,7 @@ const StyledButton = styled(motion.button)`
         default: return props.theme.fontSizes.sm
       }
     }};
+    min-height: 44px; /* Touch-friendly */
   }
   
   @keyframes spin {
