@@ -456,6 +456,8 @@ const MobileMenuPanel = styled(motion.div)`
   bottom: 0;
   width: 85%;
   max-width: 400px;
+  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, ${props => props.theme.colors.gray[900]} 0%, ${props => props.theme.colors.gray[800]} 100%);
   border-left: 1px solid rgba(212, 175, 55, 0.2);
   box-shadow: -4px 0 30px rgba(0, 0, 0, 0.6);
@@ -552,10 +554,8 @@ const MobileMenuContent = styled.div`
   gap: 0;
   position: relative;
   width: 100%;
-  
-  /* Forcer la visibilité */
-  visibility: visible !important;
-  opacity: 1 !important;
+  height: 100%;
+  max-height: calc(100vh - 64px);
   
   /* Scrollbar personnalisée pour le contenu */
   &::-webkit-scrollbar {
