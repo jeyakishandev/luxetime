@@ -395,38 +395,41 @@ const HamburgerButton = ({ isOpen, onClick, ...props }) => (
     <HamburgerLine
       animate={isOpen ? { 
         rotate: 45, 
-        y: 7,
-        backgroundColor: '#d4af37'
+        y: 7
       } : { 
         rotate: 0, 
-        y: 0,
-        backgroundColor: ''
+        y: 0
       }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
+      style={{
+        backgroundColor: isOpen ? '#d4af37' : undefined
+      }}
     />
     <HamburgerLine
       animate={isOpen ? { 
         opacity: 0, 
-        x: -20,
-        backgroundColor: '#d4af37'
+        x: -20
       } : { 
         opacity: 1, 
-        x: 0,
-        backgroundColor: ''
+        x: 0
       }}
       transition={{ duration: 0.2, ease: 'easeInOut' }}
+      style={{
+        backgroundColor: isOpen ? '#d4af37' : undefined
+      }}
     />
     <HamburgerLine
       animate={isOpen ? { 
         rotate: -45, 
-        y: -7,
-        backgroundColor: '#d4af37'
+        y: -7
       } : { 
         rotate: 0, 
-        y: 0,
-        backgroundColor: ''
+        y: 0
       }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
+      style={{
+        backgroundColor: isOpen ? '#d4af37' : undefined
+      }}
     />
   </HamburgerContainer>
 )

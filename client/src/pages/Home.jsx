@@ -345,6 +345,14 @@ const CurrentPrice = styled.span`
   text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 `
 
+const OriginalPrice = styled.span`
+  font-size: ${props => props.theme.fontSizes.lg};
+  color: ${props => props.theme.colors.gray[500]};
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-left: ${props => props.theme.spacing[3]};
+`
+
 const ProductBadges = styled.div`
   display: flex;
   justify-content: center;

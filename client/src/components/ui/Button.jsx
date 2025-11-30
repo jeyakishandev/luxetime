@@ -8,7 +8,7 @@ const StyledButton = styled(motion.button)`
   justify-content: center;
   gap: ${props => props.theme.spacing[2]};
   padding: ${props => {
-    switch (props.size) {
+    switch (props.$size) {
       case 'sm': return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
       case 'lg': return `${props.theme.spacing[4]} ${props.theme.spacing[6]}`
       case 'xl': return `${props.theme.spacing[5]} ${props.theme.spacing[8]}`
@@ -16,7 +16,7 @@ const StyledButton = styled(motion.button)`
     }
   }};
   font-size: ${props => {
-    switch (props.size) {
+    switch (props.$size) {
       case 'sm': return props.theme.fontSizes.sm
       case 'lg': return props.theme.fontSizes.lg
       case 'xl': return props.theme.fontSizes.xl
@@ -32,17 +32,17 @@ const StyledButton = styled(motion.button)`
   position: relative;
   overflow: hidden;
   min-height: ${props => {
-    switch (props.size) {
+    switch (props.$size) {
       case 'sm': return '32px'
       case 'lg': return '48px'
       case 'xl': return '56px'
       default: return '40px'
     }
   }};
-  width: ${props => props.fullWidth ? '100%' : 'auto'};
+  width: ${props => props.$fullWidth ? '100%' : 'auto'};
   
   /* Variants Premium */
-  ${props => props.variant === 'primary' && `
+  ${props => props.$variant === 'primary' && `
     background: linear-gradient(135deg, ${props.theme.colors.primary} 0%, ${props.theme.colors.primaryLight} 100%);
     color: ${props.theme.colors.black};
     box-shadow: ${props.theme.shadows.gold};
@@ -76,7 +76,7 @@ const StyledButton = styled(motion.button)`
     }
   `}
   
-  ${props => props.variant === 'secondary' && `
+  ${props => props.$variant === 'secondary' && `
     background: transparent;
     color: ${props.theme.colors.primary};
     border: 2px solid ${props.theme.colors.primary};
@@ -87,7 +87,7 @@ const StyledButton = styled(motion.button)`
     }
   `}
   
-  ${props => props.variant === 'outline' && `
+  ${props => props.$variant === 'outline' && `
     background: transparent;
     color: ${props.theme.colors.white};
     border: 1px solid ${props.theme.colors.gray[600]};
@@ -98,7 +98,7 @@ const StyledButton = styled(motion.button)`
     }
   `}
   
-  ${props => props.variant === 'ghost' && `
+  ${props => props.$variant === 'ghost' && `
     background: transparent;
     color: ${props.theme.colors.gray[300]};
     
@@ -108,7 +108,7 @@ const StyledButton = styled(motion.button)`
     }
   `}
   
-  ${props => props.variant === 'danger' && `
+  ${props => props.$variant === 'danger' && `
     background: ${props.theme.colors.error};
     color: ${props.theme.colors.white};
     
@@ -125,7 +125,7 @@ const StyledButton = styled(motion.button)`
   }
   
   /* Loading state */
-  ${props => props.isLoading && `
+  ${props => props.$isLoading && `
     cursor: not-allowed;
     position: relative;
     
@@ -145,7 +145,7 @@ const StyledButton = styled(motion.button)`
   @media (hover: none) and (pointer: coarse) {
     min-height: 44px; /* Minimum recommandé pour touch */
     padding: ${props => {
-      switch (props.size) {
+      switch (props.$size) {
         case 'sm': return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
         case 'lg': return `${props.theme.spacing[3]} ${props.theme.spacing[5]}`
         case 'xl': return `${props.theme.spacing[4]} ${props.theme.spacing[6]}`
@@ -157,7 +157,7 @@ const StyledButton = styled(motion.button)`
   /* Responsive */
   ${props => props.theme.media.mobile} {
     padding: ${props => {
-      switch (props.size) {
+      switch (props.$size) {
         case 'sm': return `${props.theme.spacing[2]} ${props.theme.spacing[3]}`
         case 'lg': return `${props.theme.spacing[3]} ${props.theme.spacing[4]}`
         case 'xl': return `${props.theme.spacing[4]} ${props.theme.spacing[5]}`
@@ -165,7 +165,7 @@ const StyledButton = styled(motion.button)`
       }
     }};
     font-size: ${props => {
-      switch (props.size) {
+      switch (props.$size) {
         case 'sm': return props.theme.fontSizes.xs
         case 'lg': return props.theme.fontSizes.base
         case 'xl': return props.theme.fontSizes.lg
@@ -182,32 +182,35 @@ const StyledButton = styled(motion.button)`
   }
 `
 
-const Button = React.forwardRef(({
-  children,
-  variant = 'primary',
-  size = 'md',
+const Button = React.forwardRef(({ 
+  children, 
+  variant = 'primary', 
+  size = 'md', 
   fullWidth = false,
   isLoading = false,
   disabled = false,
   onClick,
   type = 'button',
   className,
-  ...props
+  ...props 
 }, ref) => {
+  // Séparer les props Framer Motion des autres props
+  const { whileHover, whileTap, ...restProps } = props
+  
   return (
     <StyledButton
       ref={ref}
-      variant={variant}
-      size={size}
-      fullWidth={fullWidth}
-      isLoading={isLoading}
+      $variant={variant}
+      $size={size}
+      $fullWidth={fullWidth}
+      $isLoading={isLoading}
       disabled={disabled || isLoading}
       onClick={onClick}
       type={type}
       className={className}
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
-      {...props}
+      whileHover={whileHover || { scale: disabled ? 1 : 1.02 }}
+      whileTap={whileTap || { scale: disabled ? 1 : 0.98 }}
+      {...restProps}
     >
       {isLoading ? null : children}
     </StyledButton>
