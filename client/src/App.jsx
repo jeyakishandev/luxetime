@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import theme from './styles/theme'
 import Layout from './components/Layout'
 import ErrorBoundary from './components/ErrorBoundary'
+import ScrollToTop from './components/ScrollToTop'
 import { PageLoading } from './components/ui'
 
 // Pages principales (chargées immédiatement)
@@ -38,6 +39,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <ErrorBoundary>
+        <ScrollToTop />
         <Layout>
           <Suspense fallback={<PageLoading />}>
             <Routes>
