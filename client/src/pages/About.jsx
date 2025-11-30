@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { Card } from '../components/ui'
+import SEO from '../components/SEO'
 import { FiAward, FiUsers, FiHeart, FiShield, FiTrendingUp, FiStar, FiGlobe, FiWatch } from 'react-icons/fi'
 import { getImageUrl } from '../utils/format'
 
@@ -496,7 +497,12 @@ const About = () => {
   ]
 
   return (
-    <AboutContainer>
+    <>
+      <SEO
+        title="À propos"
+        description="Découvrez l'histoire de Luxetime, notre passion pour l'horlogerie de luxe et notre engagement envers l'excellence et l'authenticité."
+      />
+      <AboutContainer>
       {/* Hero Section */}
       <HeroSection>
         <Container>
@@ -719,6 +725,7 @@ const About = () => {
         </Container>
       </Section>
     </AboutContainer>
+    </>
   )
 }
 

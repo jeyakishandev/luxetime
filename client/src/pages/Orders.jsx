@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { Card, Button, PageLoading } from '../components/ui'
+import { Card, Button, PageLoading, OrderSkeleton } from '../components/ui'
 import { FiPackage, FiClock, FiCheckCircle, FiTruck, FiMapPin, FiCalendar, FiCreditCard, FiEye } from 'react-icons/fi'
 import { orderAPI } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
@@ -396,7 +396,7 @@ const Orders = () => {
     return (
       <OrdersContainer>
         <Container>
-          <PageLoading text="Chargement de vos commandes..." />
+          <OrderSkeleton />
         </Container>
       </OrdersContainer>
     )

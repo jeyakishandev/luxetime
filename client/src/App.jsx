@@ -4,6 +4,7 @@ import { ThemeProvider } from 'styled-components'
 
 import theme from './styles/theme'
 import Layout from './components/Layout'
+import ErrorBoundary from './components/ErrorBoundary'
 import { PageLoading } from './components/ui'
 
 // Pages principales (chargées immédiatement)
@@ -36,24 +37,25 @@ const NotFound = lazy(() => import('./pages/NotFound'))
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Layout>
-        <Suspense fallback={<PageLoading />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/:id" element={<OrderDetail />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/certificates" element={<Certificates />} />
-            <Route path="/warranties" element={<Warranties />} />
+      <ErrorBoundary>
+        <Layout>
+          <Suspense fallback={<PageLoading />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/orders/:id" element={<OrderDetail />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/certificates" element={<Certificates />} />
+              <Route path="/warranties" element={<Warranties />} />
               <Route path="/search" element={<Search />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
@@ -62,9 +64,10 @@ function App() {
               <Route path="/cookies" element={<Cookies />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </Layout>
+            </Routes>
+          </Suspense>
+        </Layout>
+      </ErrorBoundary>
     </ThemeProvider>
   )
 }

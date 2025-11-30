@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { motion } from 'framer-motion'
 import { Button, Input, Card } from '../components/ui'
+import SEO from '../components/SEO'
 import { FiMail, FiPhone, FiMapPin, FiClock, FiSend, FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 
@@ -338,7 +339,12 @@ const Contact = () => {
   }
 
   return (
-    <ContactContainer>
+    <>
+      <SEO
+        title="Contact"
+        description="Contactez notre équipe Luxetime pour toute question sur nos montres de luxe, nos services ou nos garanties. Nous sommes là pour vous accompagner."
+      />
+      <ContactContainer>
       <Container>
         <PageHeader>
           <PageTitle
@@ -559,6 +565,7 @@ const Contact = () => {
         </motion.div>
       </Container>
     </ContactContainer>
+    </>
   )
 }
 

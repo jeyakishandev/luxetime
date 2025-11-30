@@ -7,7 +7,8 @@ import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
 import { useWishlist } from '../contexts/WishlistContext'
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed'
-import { Button, Card, PageLoading } from '../components/ui'
+import { Button, Card, PageLoading, ProductDetailSkeleton } from '../components/ui'
+import SEO from '../components/SEO'
 import { formatPrice, getImageUrl } from '../utils/format'
 import { reviewAPI } from '../services/api'
 import { useQueryClient } from 'react-query'
@@ -1240,7 +1241,7 @@ const ProductDetail = () => {
     return (
       <ProductDetailContainer>
         <Container>
-          <PageLoading text="Chargement du produit..." />
+          <ProductDetailSkeleton />
         </Container>
       </ProductDetailContainer>
     )
@@ -1420,8 +1421,30 @@ const ProductDetail = () => {
 
   const details = productDetails[productData.id] || productDetails[1]
 
+  // Préparer les données produit pour SEO et Schema.org
+  const productImage = productImagesData?.[0] || getImageUrl('/assets/images/analog-watch-1845547_1280.jpg')
+  const productSEOData = {
+    nom: productData.nom,
+    description: productData.description || details?.description || `Découvrez ${productData.nom}, une montre de luxe exceptionnelle.`,
+    prix: currentPrice,
+    prixPromo: productData.prixPromo,
+    stock: productData.stock || 0,
+    marque: productData.marque,
+    noteMoyenne: combinedNoteMoyenne,
+    nombreAvis: combinedNombreAvis,
+    images: [{ url: productImage }]
+  }
+
   return (
-    <ProductDetailContainer>
+    <>
+      <SEO
+        title={productData.nom}
+        description={productData.description || details?.description || `Découvrez ${productData.nom}, une montre de luxe exceptionnelle. Prix: ${formatPrice(currentPrice)}.`}
+        image={productImage}
+        type="product"
+        product={productSEOData}
+      />
+      <ProductDetailContainer>
       <Container>
         <BackButton
           onClick={() => navigate(-1)}
@@ -2011,6 +2034,7 @@ const ProductDetail = () => {
         </ReviewsSection>
       </Container>
     </ProductDetailContainer>
+    </>
   )
 }
 

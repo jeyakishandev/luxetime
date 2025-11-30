@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/AuthContext'
-import { Button, Card, PageLoading } from '../components/ui'
+import { Button, Card, PageLoading, CartSkeleton } from '../components/ui'
 import CartItem from '../components/CartItem'
 import { formatPrice } from '../utils/format'
 import { 
@@ -406,7 +406,7 @@ const Cart = () => {
     return (
       <CartContainer>
         <Container>
-          <PageLoading text="Chargement du panier..." />
+          <CartSkeleton />
         </Container>
       </CartContainer>
     )

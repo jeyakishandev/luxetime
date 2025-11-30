@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button, Card, PageLoading } from '../components/ui'
+import { Button, Card, PageLoading, ProductsSkeleton } from '../components/ui'
+import SEO from '../components/SEO'
 import { FiShoppingCart, FiHeart, FiFilter, FiStar, FiEye, FiTrendingUp, FiAward, FiClock, FiArrowDown, FiArrowUp } from 'react-icons/fi'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -662,11 +663,17 @@ const Products = () => {
 
   if (loading) {
     return (
-      <ProductsContainer>
-        <Container>
-          <PageLoading text="Chargement des produits..." showBackendInfo={true} />
-        </Container>
-      </ProductsContainer>
+      <>
+        <SEO title="Montres" description="Découvrez notre collection complète de montres de luxe. Filtrez par catégorie, prix et marque pour trouver la montre parfaite." />
+        <ProductsContainer>
+          <Container>
+            <PageHeader>
+              <PageTitle>Notre Collection</PageTitle>
+            </PageHeader>
+            <ProductsSkeleton count={12} />
+          </Container>
+        </ProductsContainer>
+      </>
     )
   }
 

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Card, PageLoading } from '../components/ui'
+import { Button, Card, PageLoading, ProductsSkeleton } from '../components/ui'
+import SEO from '../components/SEO'
 import { FiArrowRight, FiStar, FiShield, FiTruck, FiClock, FiAward, FiTrendingUp, FiHeart, FiShoppingCart } from 'react-icons/fi'
 import axios from 'axios'
 import { useAuth } from '../contexts/AuthContext'
@@ -598,7 +599,12 @@ const Home = () => {
   }
 
   return (
-    <HomeContainer>
+    <>
+      <SEO
+        title="Accueil"
+        description="Découvrez notre collection exclusive de montres de luxe. Élégance intemporelle et précision horlogère suisse. Livraison gratuite, garantie authentique."
+      />
+      <HomeContainer>
       <HeroSection style={{
         background: `linear-gradient(
           135deg,
@@ -650,9 +656,7 @@ const Home = () => {
           </SectionSubtitle>
           
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '4rem 0', color: '#9ca3af' }}>
-              <h3>Chargement des nouveautés...</h3>
-            </div>
+            <ProductsSkeleton count={6} />
           ) : (
             <>
               <ProductsGrid
