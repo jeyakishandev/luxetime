@@ -859,6 +859,79 @@ const Header = () => {
     { path: '/contact', label: 'Contact', icon: FiMail }
   ]
 
+  // Debug logs pour le menu mobile
+  useEffect(() => {
+    console.log('🔍 [Header] Mobile Menu State:', {
+      isOpen: isMobileMenuOpen,
+      navItemsCount: navItems.length,
+      isAuthenticated,
+      wishlistCount,
+      itemCount,
+      user: user ? { name: user.prenom, role: user.role } : null
+    })
+    
+    if (isMobileMenuOpen) {
+      console.log('✅ [Header] Menu mobile est OUVERT')
+      
+      // Attendre un peu pour que le DOM soit mis à jour
+      setTimeout(() => {
+        if (mobileMenuRef.current) {
+          const panel = mobileMenuRef.current
+          const header = panel.querySelector('[data-menu-header]')
+          const content = panel.querySelector('[data-menu-content]')
+          
+          console.log('📐 [Header] Panel dimensions:', {
+            panelHeight: panel.offsetHeight,
+            panelWidth: panel.offsetWidth,
+            panelScrollHeight: panel.scrollHeight,
+            panelChildren: panel.children.length,
+            headerExists: !!header,
+            headerHeight: header?.offsetHeight,
+            contentExists: !!content,
+            contentHeight: content?.offsetHeight,
+            contentChildren: content?.children.length
+          })
+          
+          if (content) {
+            const computedStyle = window.getComputedStyle(content)
+            console.log('🎨 [Header] Content styles:', {
+              display: computedStyle.display,
+              visibility: computedStyle.visibility,
+              opacity: computedStyle.opacity,
+              height: computedStyle.height,
+              maxHeight: computedStyle.maxHeight,
+              overflow: computedStyle.overflow,
+              position: computedStyle.position,
+              zIndex: computedStyle.zIndex,
+              flex: computedStyle.flex
+            })
+            
+            // Vérifier les enfants
+            const searchContainer = content.querySelector('[data-search-container]')
+            const nav = content.querySelector('nav')
+            console.log('🔎 [Header] Content children:', {
+              searchContainerExists: !!searchContainer,
+              navExists: !!nav,
+              navChildren: nav?.children.length,
+              allChildren: Array.from(content.children).map(child => ({
+                tag: child.tagName,
+                classes: child.className,
+                visible: window.getComputedStyle(child).display !== 'none',
+                height: child.offsetHeight
+              }))
+            })
+          } else {
+            console.error('❌ [Header] Content element NOT FOUND!')
+          }
+        } else {
+          console.error('❌ [Header] Panel ref is null!')
+        }
+      }, 300) // Augmenter le délai pour laisser le temps au DOM de se mettre à jour
+    } else {
+      console.log('❌ [Header] Menu mobile est FERMÉ')
+    }
+  }, [isMobileMenuOpen, navItems.length, isAuthenticated, wishlistCount, itemCount, user])
+
   return (
     <HeaderContainer>
       <HeaderWrapper>
@@ -1021,6 +1094,7 @@ const Header = () => {
               transition={{ type: 'spring', damping: 25, stiffness: 300, mass: 0.8 }}
             >
               <MobileMenuHeader
+                data-menu-header
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
@@ -1040,9 +1114,10 @@ const Header = () => {
                 </IconButton>
               </MobileMenuHeader>
 
-              <MobileMenuContent>
+              <MobileMenuContent data-menu-content>
                 {/* Recherche Mobile */}
                 <MobileSearchContainer
+                  data-search-container
                   initial={{ y: -20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.3 }}
