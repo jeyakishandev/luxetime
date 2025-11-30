@@ -40,6 +40,7 @@ const ProductDetailContainer = styled.div`
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
   position: relative;
   overflow: hidden;
+  padding: ${props => props.theme.spacing[6]} 0;
   
   &::before {
     content: '';
@@ -53,20 +54,22 @@ const ProductDetailContainer = styled.div`
     pointer-events: none;
   }
   
-  ${props => props.theme.media.mobile} {
-    padding: ${props => props.theme.spacing[6]} 0;
+  /* Desktop */
+  @media (min-width: 768px) {
+    padding: ${props => props.theme.spacing[8]} 0;
   }
 `
 
 const Container = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 ${props => props.theme.spacing[4]};
+  padding: 0 ${props => props.theme.spacing[3]};
   position: relative;
   z-index: 1;
   
-  ${props => props.theme.media.mobile} {
-    padding: 0 ${props => props.theme.spacing[3]};
+  /* Desktop */
+  @media (min-width: 768px) {
+    padding: 0 ${props => props.theme.spacing[4]};
   }
 `
 
@@ -77,14 +80,21 @@ const BackButton = styled(motion.button)`
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: ${props => props.theme.borderRadius.full};
-  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[5]};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[4]};
   color: ${props => props.theme.colors.gray[300]};
-  font-size: ${props => props.theme.fontSizes.sm};
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
   font-weight: ${props => props.theme.fontWeights.medium};
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
-  margin-bottom: ${props => props.theme.spacing[8]};
+  margin-bottom: ${props => props.theme.spacing[6]};
+  min-height: 44px;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[5]};
+    margin-bottom: ${props => props.theme.spacing[8]};
+  }
   
   &:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -96,19 +106,21 @@ const BackButton = styled(motion.button)`
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${props => props.theme.spacing[12]};
-  margin-bottom: ${props => props.theme.spacing[16]};
+  grid-template-columns: 1fr;
+  gap: ${props => props.theme.spacing[6]};
+  margin-bottom: ${props => props.theme.spacing[12]};
   
-  ${props => props.theme.media.tablet} {
+  /* Tablet */
+  @media (min-width: 768px) {
     grid-template-columns: 1fr;
     gap: ${props => props.theme.spacing[8]};
   }
   
-  ${props => props.theme.media.mobile} {
-    grid-template-columns: 1fr;
-    gap: ${props => props.theme.spacing[6]};
-    margin-bottom: ${props => props.theme.spacing[12]};
+  /* Desktop */
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+    gap: ${props => props.theme.spacing[12]};
+    margin-bottom: ${props => props.theme.spacing[16]};
   }
 `
 
@@ -118,35 +130,47 @@ const ImageSection = styled.div`
 
 const MainImageContainer = styled(motion.div)`
   position: relative;
-  border-radius: ${props => props.theme.borderRadius['2xl']};
+  border-radius: ${props => props.theme.borderRadius.xl};
   overflow: hidden;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: ${props => props.theme.spacing[6]};
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1);
+  margin-bottom: ${props => props.theme.spacing[4]};
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(212, 175, 55, 0.1);
   backdrop-filter: blur(20px);
+  
+  /* Desktop */
+  @media (min-width: 1024px) {
+    border-radius: ${props => props.theme.borderRadius['2xl']};
+    margin-bottom: ${props => props.theme.spacing[6]};
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1);
+  }
 `
 
 const ProductImage = styled.img`
   width: 100%;
-  height: 600px;
+  height: clamp(300px, 50vh, 400px);
   object-fit: cover;
   transition: transform 0.4s ease;
   
-  ${props => props.theme.media.tablet} {
-    height: 500px;
+  /* Tablet */
+  @media (min-width: 768px) {
+    height: clamp(400px, 60vh, 500px);
   }
   
-  ${props => props.theme.media.mobile} {
-    height: 400px;
+  /* Desktop */
+  @media (min-width: 1024px) {
+    height: 600px;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
   }
   
-  &:hover {
-    transform: scale(1.05);
-  }
-  
-  ${props => props.theme.media.mobile} {
-    height: 400px;
+  /* Touch devices - pas de hover */
+  @media (hover: none) and (pointer: coarse) {
+    &:hover {
+      transform: none;
+    }
   }
 `
 
@@ -190,32 +214,42 @@ const ZoomButton = styled(motion.button)`
 
 const ThumbnailGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: ${props => props.theme.spacing[3]};
+  grid-template-columns: repeat(3, 1fr);
+  gap: ${props => props.theme.spacing[2]};
   
-  ${props => props.theme.media.tablet} {
+  /* Desktop */
+  @media (min-width: 768px) {
     grid-template-columns: repeat(4, 1fr);
-    gap: ${props => props.theme.spacing[2]};
-  }
-  
-  ${props => props.theme.media.mobile} {
-    grid-template-columns: repeat(3, 1fr);
-    gap: ${props => props.theme.spacing[2]};
+    gap: ${props => props.theme.spacing[3]};
   }
 `
 
 const ThumbnailImage = styled(motion.img)`
   width: 100%;
-  height: 80px;
+  height: clamp(60px, 10vw, 80px);
   object-fit: cover;
-  border-radius: ${props => props.theme.borderRadius.lg};
+  border-radius: ${props => props.theme.borderRadius.md};
   cursor: pointer;
   border: 2px solid ${props => props.active ? props.theme.colors.primary : 'transparent'};
   transition: all 0.3s ease;
+  min-height: 60px;
   
-  &:hover {
-    border-color: ${props => props.theme.colors.primary};
-    transform: scale(1.05);
+  /* Desktop */
+  @media (min-width: 768px) {
+    height: 80px;
+    border-radius: ${props => props.theme.borderRadius.lg};
+    
+    &:hover {
+      border-color: ${props => props.theme.colors.primary};
+      transform: scale(1.05);
+    }
+  }
+  
+  /* Touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    &:hover {
+      transform: none;
+    }
   }
 `
 
@@ -278,7 +312,7 @@ const ProductTitle = styled(motion.h1)`
 `
 
 const ProductSubtitle = styled(motion.p)`
-  font-size: ${props => props.theme.fontSizes.lg};
+  font-size: clamp(0.875rem, 2vw, 1.125rem);
   color: ${props => props.theme.colors.gray[300]};
   margin: 0;
   line-height: 1.6;
@@ -323,7 +357,13 @@ const PriceSection = styled.div`
 const PriceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[4]};
+  gap: ${props => props.theme.spacing[3]};
+  flex-wrap: wrap;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    gap: ${props => props.theme.spacing[4]};
+  }
 `
 
 const CurrentPrice = styled(motion.span)`
@@ -401,8 +441,10 @@ const QuantityControls = styled.div`
 `
 
 const QuantityButton = styled(motion.button)`
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -413,30 +455,51 @@ const QuantityButton = styled(motion.button)`
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  touch-action: manipulation;
   
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: ${props => props.theme.colors.primary};
-    color: ${props => props.theme.colors.primary};
+  /* Desktop */
+  @media (min-width: 768px) {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: ${props => props.theme.colors.primary};
+      color: ${props => props.theme.colors.primary};
+    }
   }
   
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
+  
+  &:active {
+    transform: scale(0.95);
+  }
 `
 
 const QuantityInput = styled.input`
   width: 80px;
-  height: 40px;
+  height: 44px;
+  min-height: 44px;
   text-align: center;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: ${props => props.theme.borderRadius.lg};
   color: ${props => props.theme.colors.white};
-  font-size: ${props => props.theme.fontSizes.md};
+  font-size: clamp(0.875rem, 2vw, 1rem);
   font-weight: ${props => props.theme.fontWeights.medium};
   backdrop-filter: blur(10px);
+  touch-action: manipulation;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    height: 40px;
+    min-height: 40px;
+  }
   
   &:focus {
     outline: none;
@@ -447,11 +510,14 @@ const QuantityInput = styled.input`
 
 const ActionButtons = styled.div`
   display: flex;
-  gap: ${props => props.theme.spacing[4]};
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[3]};
   margin-top: ${props => props.theme.spacing[6]};
   
-  ${props => props.theme.media.mobile} {
-    flex-direction: column;
+  /* Desktop */
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: ${props => props.theme.spacing[4]};
   }
 `
 
@@ -461,17 +527,25 @@ const AddToCartButton = styled(motion.button)`
   align-items: center;
   justify-content: center;
   gap: ${props => props.theme.spacing[2]};
-  padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[6]};
+  padding: ${props => props.theme.spacing[3]} ${props => props.theme.spacing[5]};
+  min-height: 52px;
   background: linear-gradient(135deg, ${props => props.theme.colors.primary}, #f4d03f);
   border: none;
   border-radius: ${props => props.theme.borderRadius.full};
   color: ${props => props.theme.colors.black};
   font-weight: ${props => props.theme.fontWeights.semibold};
-  font-size: ${props => props.theme.fontSizes.lg};
+  font-size: clamp(0.875rem, 2vw, 1.125rem);
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  touch-action: manipulation;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[6]};
+    font-size: ${props => props.theme.fontSizes.lg};
+  }
   
   &::before {
     content: '';
@@ -501,8 +575,10 @@ const AddToCartButton = styled(motion.button)`
 `
 
 const WishlistButton = styled(motion.button)`
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  min-height: 52px;
   border-radius: 50%;
   background: ${props => props.$isInWishlist ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.05)'};
   border: 1px solid ${props => props.$isInWishlist ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255, 255, 255, 0.1)'};
@@ -513,23 +589,38 @@ const WishlistButton = styled(motion.button)`
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  touch-action: manipulation;
   
-  &:hover {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.3);
-    color: #ef4444;
-    transform: scale(1.1);
+  /* Desktop */
+  @media (min-width: 768px) {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      transform: scale(1.1);
+    }
   }
   
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
+  
+  &:active {
+    transform: scale(0.95);
+  }
 `
 
 const ShareButton = styled(motion.button)`
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  min-height: 52px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -540,49 +631,71 @@ const ShareButton = styled(motion.button)`
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  touch-action: manipulation;
   
-  &:hover {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #3b82f6;
-    transform: scale(1.1);
+  /* Desktop */
+  @media (min-width: 768px) {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.3);
+      color: #3b82f6;
+      transform: scale(1.1);
+    }
+  }
+  
+  &:active {
+    transform: scale(0.95);
   }
 `
 
 const ProductDetails = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${props => props.theme.spacing[8]};
-  margin-top: ${props => props.theme.spacing[16]};
+  grid-template-columns: 1fr;
+  gap: ${props => props.theme.spacing[6]};
+  margin-top: ${props => props.theme.spacing[12]};
   
-  ${props => props.theme.media.tablet} {
-    grid-template-columns: 1fr;
-    gap: ${props => props.theme.spacing[6]};
-  }
-  
-  ${props => props.theme.media.mobile} {
-    grid-template-columns: 1fr;
-    gap: ${props => props.theme.spacing[6]};
-    margin-top: ${props => props.theme.spacing[12]};
+  /* Desktop */
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+    gap: ${props => props.theme.spacing[8]};
+    margin-top: ${props => props.theme.spacing[16]};
   }
 `
 
 const DetailsCard = styled(motion.div)`
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${props => props.theme.borderRadius.xl};
-  padding: ${props => props.theme.spacing[8]};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: ${props => props.theme.spacing[6]};
   backdrop-filter: blur(20px);
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    border-radius: ${props => props.theme.borderRadius.xl};
+    padding: ${props => props.theme.spacing[8]};
+  }
 `
 
 const DetailsTitle = styled.h3`
-  font-size: ${props => props.theme.fontSizes.xl};
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
   font-weight: ${props => props.theme.fontWeights.bold};
   color: ${props => props.theme.colors.white};
-  margin-bottom: ${props => props.theme.spacing[6]};
+  margin-bottom: ${props => props.theme.spacing[4]};
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing[3]};
+  gap: ${props => props.theme.spacing[2]};
+  flex-wrap: wrap;
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    margin-bottom: ${props => props.theme.spacing[6]};
+    gap: ${props => props.theme.spacing[3]};
+  }
 `
 
 const SpecsList = styled.div`
@@ -613,35 +726,43 @@ const SpecValue = styled.span`
 
 const FeaturesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: ${props => props.theme.spacing[6]};
-  margin-top: ${props => props.theme.spacing[16]};
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: ${props => props.theme.spacing[4]};
+  margin-top: ${props => props.theme.spacing[12]};
   
-  ${props => props.theme.media.tablet} {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  /* Tablet */
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: ${props => props.theme.spacing[5]};
   }
   
-  ${props => props.theme.media.mobile} {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: ${props => props.theme.spacing[4]};
-    margin-top: ${props => props.theme.spacing[12]};
+  /* Desktop */
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: ${props => props.theme.spacing[6]};
+    margin-top: ${props => props.theme.spacing[16]};
   }
 `
 
 const FeatureCard = styled(motion.div)`
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${props => props.theme.borderRadius.xl};
-  padding: ${props => props.theme.spacing[6]};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: ${props => props.theme.spacing[4]};
   text-align: center;
   backdrop-filter: blur(20px);
   transition: all 0.3s ease;
   
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(212, 175, 55, 0.3);
-    transform: translateY(-4px);
+  /* Desktop */
+  @media (min-width: 768px) {
+    border-radius: ${props => props.theme.borderRadius.xl};
+    padding: ${props => props.theme.spacing[6]};
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(212, 175, 55, 0.3);
+      transform: translateY(-4px);
+    }
   }
 `
 
@@ -673,24 +794,33 @@ const FeatureDescription = styled.p`
 `
 
 const ReviewsSection = styled(motion.div)`
-  margin-top: ${props => props.theme.spacing[16]};
+  margin-top: ${props => props.theme.spacing[12]};
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${props => props.theme.borderRadius.xl};
-  padding: ${props => props.theme.spacing[8]};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: ${props => props.theme.spacing[6]};
   backdrop-filter: blur(20px);
+  
+  /* Desktop */
+  @media (min-width: 768px) {
+    border-radius: ${props => props.theme.borderRadius.xl};
+    padding: ${props => props.theme.spacing[8]};
+    margin-top: ${props => props.theme.spacing[16]};
+  }
 `
 
 const ReviewsHeader = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[4]};
+  align-items: flex-start;
   margin-bottom: ${props => props.theme.spacing[6]};
   
-  ${props => props.theme.media.mobile} {
-    flex-direction: column;
-    gap: ${props => props.theme.spacing[4]};
-    align-items: flex-start;
+  /* Desktop */
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 `
 
