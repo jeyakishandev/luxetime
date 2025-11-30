@@ -488,21 +488,54 @@ const MobileMenuHeader = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${props => props.theme.spacing[4]};
+  padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[5]};
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  min-height: 60px;
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
+  min-height: 64px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   position: sticky;
   top: 0;
   z-index: 1;
+  
+  /* Effet de brillance en haut */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.6), transparent);
+    pointer-events: none;
+  }
+`
+
+const MobileMenuTitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing[3]};
+`
+
+const MobileMenuLogo = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(212, 175, 55, 0.3);
 `
 
 const MobileMenuTitle = styled.h3`
-  font-size: ${props => props.theme.fontSizes.lg};
-  font-weight: ${props => props.theme.fontWeights.semibold};
+  font-family: 'Playfair Display', serif;
+  font-size: ${props => props.theme.fontSizes.xl};
+  font-weight: ${props => props.theme.fontWeights.bold};
   color: ${props => props.theme.colors.white};
   margin: 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(212, 175, 55, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `
 
 const MobileMenuContent = styled.div`
@@ -963,7 +996,13 @@ const Header = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
               >
-                <MobileMenuTitle>Menu</MobileMenuTitle>
+                <MobileMenuTitleContainer>
+                  <MobileMenuLogo 
+                    src={getImageUrl("/assets/images/ChatGPT Image 2 oct. 2025, 15_35_31.png")} 
+                    alt="Luxetime Logo" 
+                  />
+                  <MobileMenuTitle>Menu</MobileMenuTitle>
+                </MobileMenuTitleContainer>
                 <IconButton
                   onClick={() => setIsMobileMenuOpen(false)}
                   aria-label="Fermer le menu"
