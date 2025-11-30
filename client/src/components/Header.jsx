@@ -462,8 +462,7 @@ const MobileMenuPanel = styled(motion.div)`
   z-index: ${props => props.theme.zIndex.modal + 1};
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   -webkit-overflow-scrolling: touch;
   
   /* Effet de brillance subtil */
@@ -541,6 +540,26 @@ const MobileMenuTitle = styled.h3`
 const MobileMenuContent = styled.div`
   flex: 1;
   padding: ${props => props.theme.spacing[4]};
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  color: ${props => props.theme.colors.white};
+  background: transparent;
+  min-height: 0; /* Permet au flex de fonctionner correctement */
+  
+  /* Scrollbar personnalisée pour le contenu */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.5);
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 `
 
 const MobileSearchContainer = styled(motion.div)`
