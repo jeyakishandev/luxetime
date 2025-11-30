@@ -490,12 +490,13 @@ const MobileMenuHeader = styled(motion.div)`
   padding: ${props => props.theme.spacing[4]} ${props => props.theme.spacing[5]};
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   min-height: 64px;
+  max-height: 64px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  position: relative;
+  flex-shrink: 0;
+  z-index: 2;
   
   /* Effet de brillance en haut */
   &::before {
@@ -545,7 +546,10 @@ const MobileMenuContent = styled.div`
   -webkit-overflow-scrolling: touch;
   color: ${props => props.theme.colors.white};
   background: transparent;
-  min-height: 0; /* Permet au flex de fonctionner correctement */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   
   /* Scrollbar personnalisée pour le contenu */
   &::-webkit-scrollbar {
