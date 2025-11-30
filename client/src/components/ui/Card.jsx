@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { motion } from 'framer-motion'
 
 const StyledCard = styled(motion.div)`
-  background: ${props => props.theme.colors.gray[800]};
-  border: 1px solid ${props => props.theme.colors.gray[700]};
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: ${props => props.theme.borderRadius.xl};
   padding: ${props => {
     switch (props.padding) {
@@ -14,10 +14,28 @@ const StyledCard = styled(motion.div)`
       default: return props.theme.spacing[6]
     }
   }};
-  box-shadow: ${props => props.theme.shadows.md};
+  box-shadow: ${props => props.theme.shadows.premium};
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   transition: all ${props => props.theme.transitions.base};
   position: relative;
   overflow: hidden;
+  
+  /* Effet de brillance subtil */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
   
   /* Variants */
   ${props => props.variant === 'elevated' && `

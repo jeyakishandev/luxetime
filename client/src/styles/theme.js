@@ -1,39 +1,55 @@
 // Thème responsive pour Luxetime
 export const theme = {
-  // Couleurs
+  // Couleurs Premium
   colors: {
     primary: '#d4af37',
     primaryLight: '#f4d03f',
     primaryDark: '#b8941f',
-    secondary: '#1a1a1a',
-    secondaryLight: '#2d2d2d',
-    secondaryDark: '#0f0f0f',
+    primaryGradient: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)',
+    secondary: '#0a0a0a',
+    secondaryLight: '#1a1a1a',
+    secondaryDark: '#050505',
     accent: '#116530',
     accentLight: '#1e7e34',
     white: '#ffffff',
     black: '#000000',
-    gray: {
-      100: '#f8f9fa',
-      200: '#e9ecef',
-      300: '#dee2e6',
-      400: '#ced4da',
-      500: '#adb5bd',
-      600: '#6c757d',
-      700: '#495057',
-      800: '#343a40',
-      900: '#212529'
+    gold: {
+      50: '#fffef9',
+      100: '#fefae6',
+      200: '#fdf4cc',
+      300: '#fceeb3',
+      400: '#fae899',
+      500: '#f4d03f',
+      600: '#d4af37',
+      700: '#b8941f',
+      800: '#9a7d0a',
+      900: '#7d6400'
     },
-    success: '#28a745',
-    warning: '#ffc107',
-    error: '#dc3545',
-    info: '#17a2b8'
+    gray: {
+      50: '#fafafa',
+      100: '#f5f5f5',
+      200: '#e5e5e5',
+      300: '#d4d4d4',
+      400: '#a3a3a3',
+      500: '#737373',
+      600: '#525252',
+      700: '#404040',
+      800: '#262626',
+      900: '#171717',
+      950: '#0a0a0a'
+    },
+    success: '#10b981',
+    warning: '#f59e0b',
+    error: '#ef4444',
+    info: '#3b82f6'
   },
 
-  // Typographie
+  // Typographie Premium
   fonts: {
-    primary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
-    heading: "'Playfair Display', serif",
-    mono: "'Fira Code', 'Monaco', 'Consolas', monospace"
+    primary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif",
+    heading: "'Playfair Display', 'Cormorant Garamond', 'EB Garamond', serif",
+    display: "'Playfair Display', 'Cormorant Garamond', serif",
+    mono: "'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace"
   },
 
   // Tailles de police responsive
@@ -118,17 +134,19 @@ export const theme = {
     portrait: `@media (orientation: portrait)`
   },
 
-  // Ombres
+  // Ombres Premium
   shadows: {
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-    base: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-    '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
-    glow: '0 0 20px rgba(212, 175, 55, 0.3)',
-    glowStrong: '0 0 30px rgba(212, 175, 55, 0.5)'
+    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.15)',
+    base: '0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15)',
+    md: '0 4px 8px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.2)',
+    lg: '0 10px 20px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.25)',
+    xl: '0 20px 40px rgba(0, 0, 0, 0.35), 0 10px 20px rgba(0, 0, 0, 0.3)',
+    '2xl': '0 30px 60px rgba(0, 0, 0, 0.4), 0 15px 30px rgba(0, 0, 0, 0.35)',
+    inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.2)',
+    glow: '0 0 30px rgba(212, 175, 55, 0.4), 0 0 60px rgba(212, 175, 55, 0.2)',
+    glowStrong: '0 0 40px rgba(212, 175, 55, 0.6), 0 0 80px rgba(212, 175, 55, 0.3)',
+    gold: '0 8px 16px rgba(212, 175, 55, 0.3), 0 4px 8px rgba(212, 175, 55, 0.2)',
+    premium: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1)'
   },
 
   // Bordures

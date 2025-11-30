@@ -14,7 +14,9 @@ import {
   FiUser, 
   FiHeart,
   FiLogOut,
-  FiShield
+  FiShield,
+  FiAward,
+  FiShield as FiShieldIcon
 } from 'react-icons/fi'
 import { formatPrice, getImageUrl } from '../utils/format'
 
@@ -23,11 +25,24 @@ const HeaderContainer = styled.header`
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(26, 26, 26, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid ${props => props.theme.colors.gray[700]};
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   z-index: ${props => props.theme.zIndex.sticky};
   transition: all ${props => props.theme.transitions.base};
+  
+  /* Effet de brillance subtil */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  }
 `
 
 const HeaderContent = styled.div`
@@ -51,17 +66,22 @@ const Logo = styled(Link)`
   gap: ${props => props.theme.spacing[2]};
   text-decoration: none;
   color: ${props => props.theme.colors.white};
-  font-family: ${props => props.theme.fonts.heading};
-  font-size: ${props => props.theme.fontSizes.xl};
-  font-weight: ${props => props.theme.fontWeights.bold};
-  transition: color ${props => props.theme.transitions.base};
+  font-family: 'Playfair Display', serif;
+  font-size: ${props => props.theme.fontSizes['2xl']};
+  font-weight: ${props => props.theme.fontWeights.extrabold};
+  letter-spacing: -0.02em;
+  transition: all ${props => props.theme.transitions.base};
   
   &:hover {
-    color: ${props => props.theme.colors.primary};
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transform: scale(1.05);
   }
   
   ${props => props.theme.media.mobile} {
-    font-size: ${props => props.theme.fontSizes.lg};
+    font-size: ${props => props.theme.fontSizes.xl};
   }
 `
 
@@ -439,6 +459,16 @@ const Header = () => {
                     
                     <UserMenuItem as={Link} to="/orders">
                       Mes commandes
+                    </UserMenuItem>
+                    
+                    <UserMenuItem as={Link} to="/certificates">
+                      <FiAward size={16} />
+                      Mes certificats
+                    </UserMenuItem>
+                    
+                    <UserMenuItem as={Link} to="/warranties">
+                      <FiShieldIcon size={16} />
+                      Mes garanties
                     </UserMenuItem>
                     
                     {user?.role === 'ADMIN' && (

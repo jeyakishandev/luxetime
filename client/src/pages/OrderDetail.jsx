@@ -18,9 +18,11 @@ import {
   FiPhone,
   FiShoppingCart,
   FiTag,
-  FiFileText
+  FiFileText,
+  FiAward,
+  FiShield
 } from 'react-icons/fi'
-import { orderAPI } from '../services/api'
+import { orderAPI, certificateAPI, warrantyAPI } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 import { formatPrice, formatDate, getImageUrl } from '../utils/format'
 import toast from 'react-hot-toast'
@@ -252,6 +254,28 @@ const ItemPrice = styled.div`
   color: ${props => props.theme.colors.primary};
 `
 
+const ItemActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing[2]};
+  
+  ${props => props.theme.media.mobile} {
+    flex-direction: row;
+    width: 100%;
+    margin-top: ${props => props.theme.spacing[3]};
+  }
+`
+
+const ItemActionButton = styled(Button)`
+  font-size: ${props => props.theme.fontSizes.xs};
+  padding: ${props => props.theme.spacing[2]} ${props => props.theme.spacing[3]};
+  white-space: nowrap;
+  
+  ${props => props.theme.media.mobile} {
+    flex: 1;
+  }
+`
+
 const OrderSummary = styled(Card)`
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -374,6 +398,49 @@ const OrderDetail = () => {
       default: return <FiClock size={18} />
     }
   }
+
+  // Gérer la création/affichage du certificat
+  const handleCertificate = async (itemId) => {
+    try {
+      // Essayer de créer le certificat (s'il existe déjà, on récupère l'erreur)
+      const response = await certificateAPI.createCertificate(itemId)
+      if (response.data.success) {
+        toast.success('Certificat d\'authenticité créé !')
+        navigate('/certificates')
+      }
+    } catch (error) {
+      if (error.response?.data?.message?.includes('existe déjà')) {
+        // Le certificat existe déjà, rediriger vers la page des certificats
+        toast.success('Redirection vers vos certificats...')
+        navigate('/certificates')
+      } else {
+        toast.error(error.response?.data?.message || 'Erreur lors de la création du certificat')
+      }
+    }
+  }
+
+  // Gérer la création/affichage de la garantie
+  const handleWarranty = async (itemId) => {
+    try {
+      // Créer une garantie fabricant par défaut
+      const response = await warrantyAPI.createWarranty(itemId, 'FABRICANT')
+      if (response.data.success) {
+        toast.success('Garantie créée !')
+        navigate('/warranties')
+      }
+    } catch (error) {
+      if (error.response?.data?.message?.includes('existe déjà')) {
+        // La garantie existe déjà, rediriger vers la page des garanties
+        toast.success('Redirection vers vos garanties...')
+        navigate('/warranties')
+      } else {
+        toast.error(error.response?.data?.message || 'Erreur lors de la création de la garantie')
+      }
+    }
+  }
+
+  // Vérifier si on peut créer certificat/garantie (commande confirmée ou livrée)
+  const canCreateDocuments = order && (order.statut === 'CONFIRMEE' || order.statut === 'LIVREE' || order.statut === 'EXPEDIEE')
 
   const getStatusText = (status) => {
     switch (status) {
@@ -531,6 +598,26 @@ const OrderDetail = () => {
                           <span>Quantité: {item.quantite}</span>
                           <span>Réf: {item.produit?.reference}</span>
                         </ItemDetails>
+                        {canCreateDocuments && (
+                          <ItemActions style={{ marginTop: '0.5rem' }}>
+                            <ItemActionButton
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleCertificate(item.id)}
+                            >
+                              <FiAward size={14} style={{ marginRight: '0.25rem' }} />
+                              Certificat
+                            </ItemActionButton>
+                            <ItemActionButton
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleWarranty(item.id)}
+                            >
+                              <FiShield size={14} style={{ marginRight: '0.25rem' }} />
+                              Garantie
+                            </ItemActionButton>
+                          </ItemActions>
+                        )}
                       </ItemInfo>
                       <ItemPrice>{formatPrice(item.prixUnitaire)}</ItemPrice>
                     </ItemCard>

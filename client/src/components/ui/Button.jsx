@@ -41,19 +41,38 @@ const StyledButton = styled(motion.button)`
   }};
   width: ${props => props.fullWidth ? '100%' : 'auto'};
   
-  /* Variants */
+  /* Variants Premium */
   ${props => props.variant === 'primary' && `
     background: linear-gradient(135deg, ${props.theme.colors.primary} 0%, ${props.theme.colors.primaryLight} 100%);
     color: ${props.theme.colors.black};
-    box-shadow: ${props.theme.shadows.md};
+    box-shadow: ${props.theme.shadows.gold};
+    font-weight: ${props.theme.fontWeights.semibold};
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
     
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: ${props.theme.shadows.lg};
+      transform: translateY(-3px);
+      box-shadow: ${props.theme.shadows.glow};
+      
+      &::before {
+        left: 100%;
+      }
     }
     
     &:active {
-      transform: translateY(0);
+      transform: translateY(-1px);
     }
   `}
   

@@ -1,4 +1,5 @@
 const { prisma } = require('../config/database');
+const EmailService = require('./emailService');
 
 class OrderService {
   // Créer une nouvelle commande
@@ -127,6 +128,11 @@ class OrderService {
       // Vider le panier
       await prisma.panierItem.deleteMany({
         where: { userId }
+      });
+
+      // Envoyer l'email de confirmation (en arrière-plan, ne pas bloquer)
+      EmailService.sendOrderConfirmation(commande, commande.client).catch(err => {
+        console.error('Erreur envoi email confirmation commande:', err);
       });
 
       return {

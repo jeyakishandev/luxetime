@@ -111,11 +111,13 @@ const ImageSection = styled.div`
 
 const MainImageContainer = styled(motion.div)`
   position: relative;
-  border-radius: ${props => props.theme.borderRadius.xl};
+  border-radius: ${props => props.theme.borderRadius['2xl']};
   overflow: hidden;
-  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: ${props => props.theme.spacing[6]};
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.1);
+  backdrop-filter: blur(20px);
 `
 
 const ProductImage = styled.img`
@@ -230,15 +232,24 @@ const ProductBrand = styled(motion.div)`
 `
 
 const ProductTitle = styled(motion.h1)`
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: ${props => props.theme.fontWeights.bold};
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: ${props => props.theme.fontWeights.extrabold};
+  font-family: 'Playfair Display', serif;
   background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
-  line-height: 1.2;
-  text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  animation: shimmer 3s linear infinite;
+  
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
 `
 
 const ProductSubtitle = styled(motion.p)`

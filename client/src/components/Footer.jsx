@@ -12,9 +12,9 @@ import {
 } from 'react-icons/fi'
 
 const FooterContainer = styled.footer`
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
-  border-top: 1px solid rgba(212, 175, 55, 0.2);
-  padding: ${props => props.theme.spacing[12]} 0 ${props => props.theme.spacing[6]};
+  background: #0a0a0a;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: ${props => props.theme.spacing[16]} 0 ${props => props.theme.spacing[8]};
   margin-top: auto;
   position: relative;
   overflow: hidden;
@@ -25,9 +25,18 @@ const FooterContainer = styled.footer`
     top: 0;
     left: 0;
     right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+    background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
     pointer-events: none;
   }
 `

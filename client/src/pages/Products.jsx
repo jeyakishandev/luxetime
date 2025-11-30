@@ -53,15 +53,23 @@ const PageHeader = styled(motion.div)`
 `
 
 const PageTitle = styled(motion.h1)`
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: ${props => props.theme.fontWeights.bold};
+  font-size: clamp(2.75rem, 7vw, 4.5rem);
+  font-weight: ${props => props.theme.fontWeights.extrabold};
+  font-family: 'Playfair Display', serif;
   background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: ${props => props.theme.spacing[6]};
-  text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-  letter-spacing: -0.02em;
+  margin-bottom: ${props => props.theme.spacing[8]};
+  letter-spacing: -0.03em;
+  animation: shimmer 3s linear infinite;
+  
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
 `
 
 const PageSubtitle = styled(motion.p)`

@@ -242,5 +242,65 @@ export const reviewAPI = {
     api.get(`/reviews/produit/${produitId}`)
 }
 
+// API des certificats d'authenticité
+export const certificateAPI = {
+  // Créer un certificat
+  createCertificate: (commandeItemId) => 
+    api.post('/certificates', { commandeItemId }),
+  
+  // Récupérer mes certificats
+  getMyCertificates: () => 
+    api.get('/certificates/user/my-certificates'),
+  
+  // Vérifier un certificat (public)
+  verifyCertificate: (numeroCertificat) => 
+    api.get(`/certificates/verify/${numeroCertificat}`),
+  
+  // Récupérer un certificat par numéro
+  getCertificateByNumber: (numeroCertificat) => 
+    api.get(`/certificates/${numeroCertificat}`)
+}
+
+// API des garanties
+export const warrantyAPI = {
+  // Créer une garantie
+  createWarranty: (commandeItemId, typeGarantie) => 
+    api.post('/warranties', { commandeItemId, typeGarantie }),
+  
+  // Récupérer mes garanties
+  getMyWarranties: (params = {}) => 
+    api.get('/warranties/user/my-warranties', { params }),
+  
+  // Récupérer une garantie par ID
+  getWarrantyById: (id) => 
+    api.get(`/warranties/${id}`)
+}
+
+// API des livraisons
+export const shippingAPI = {
+  // Récupérer mes livraisons
+  getMyShippings: () => 
+    api.get('/shipping/user/my-shippings'),
+  
+  // Suivre une livraison (public)
+  trackShipping: (numeroSuivi) => 
+    api.get(`/shipping/track/${numeroSuivi}`)
+}
+
+// API des retours
+export const returnAPI = {
+  // Créer une demande de retour
+  createReturn: (returnData) => 
+    api.post('/returns', returnData),
+  
+  // Récupérer mes retours
+  getMyReturns: (params = {}) => 
+    api.get('/returns/user/my-returns', { params }),
+  
+  // Récupérer un retour par ID
+  getReturnById: (id) => 
+    api.get(`/returns/${id}`)
+}
+
 // Export par défaut
 export default api

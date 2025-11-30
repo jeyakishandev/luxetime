@@ -15,15 +15,18 @@ const ProductCardContainer = styled(Card)`
   overflow: hidden;
   transition: all ${props => props.theme.transitions.base};
   cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: ${props => props.theme.shadows['2xl']};
+    transform: translateY(-12px);
+    box-shadow: ${props => props.theme.shadows.premium};
+    border-color: rgba(212, 175, 55, 0.3);
   }
   
   ${props => props.theme.media.mobile} {
     &:hover {
       transform: none;
+      box-shadow: ${props => props.theme.shadows.lg};
     }
   }
 `
@@ -39,14 +42,15 @@ const ProductLink = styled(Link)`
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 250px;
+  height: 300px;
   overflow: hidden;
-  border-radius: ${props => props.theme.borderRadius.lg};
-  margin-bottom: ${props => props.theme.spacing[4]};
+  border-radius: ${props => props.theme.borderRadius.xl};
+  margin-bottom: ${props => props.theme.spacing[5]};
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
   
   ${props => props.theme.media.mobile} {
-    height: 200px;
-    margin-bottom: ${props => props.theme.spacing[3]};
+    height: 220px;
+    margin-bottom: ${props => props.theme.spacing[4]};
   }
 `
 

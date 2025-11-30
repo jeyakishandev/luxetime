@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { prisma } = require('../config/database');
+const EmailService = require('./emailService');
 
 class AuthService {
   // Inscription d'un nouvel utilisateur
@@ -44,6 +45,11 @@ class AuthService {
 
       // Générer le token JWT
       const token = this.generateToken(user.id);
+
+      // Envoyer l'email de bienvenue (en arrière-plan, ne pas bloquer)
+      EmailService.sendWelcomeEmail(user).catch(err => {
+        console.error('Erreur envoi email bienvenue:', err);
+      });
 
       return {
         success: true,
@@ -243,10 +249,11 @@ class AuthService {
         }
       });
 
-      // Simuler l'envoi d'email (en production, utiliser un service comme SendGrid)
-      console.log(`📧 EMAIL SIMULATION - Reset password pour ${email}:`);
-      console.log(`🔗 Lien de réinitialisation: http://localhost:3000/reset-password?token=${resetToken}`);
-      console.log(`⏰ Expire dans 1 heure`);
+      // Envoyer l'email de réinitialisation
+      const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+      EmailService.sendPasswordReset(user, resetLink).catch(err => {
+        console.error('Erreur envoi email reset password:', err);
+      });
 
       return {
         success: true,

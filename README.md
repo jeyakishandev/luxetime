@@ -229,8 +229,10 @@ NODE_ENV=development
 
 ## 🎯 Améliorations futures
 
-- [ ] Intégration Stripe pour les paiements réels
-- [ ] Notifications email (confirmation commande, reset password)
+- [ ] Intégration Stripe pour les paiements réels (simulé actuellement - OK pour portfolio)
+- [x] ~~Notifications email~~ ✅ **IMPLÉMENTÉ** (confirmation commande, reset password, bienvenue)
+- [ ] Services backend pour certificats d'authenticité, garanties, livraisons, retours
+- [ ] Interfaces frontend pour les fonctionnalités luxe
 - [ ] Tests E2E avec Cypress
 - [ ] CI/CD avec GitHub Actions
 - [ ] Documentation API (Swagger/OpenAPI)

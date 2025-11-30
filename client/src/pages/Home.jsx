@@ -33,8 +33,9 @@ const HomeContainer = styled.div`
 
 const HeroSection = styled.section`
   position: relative;
-  height: 80vh;
-  min-height: 600px;
+  height: 90vh;
+  min-height: 700px;
+  background: linear-gradient(135deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%);
   background-size: cover;
   background-position: center;
   display: flex;
@@ -44,9 +45,37 @@ const HeroSection = styled.section`
   color: white;
   overflow: hidden;
   
+  /* Effet de particules/décorations */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    animation: pulse 8s ease-in-out infinite;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(180deg, transparent 0%, rgba(10, 10, 10, 0.3) 100%);
+    pointer-events: none;
+  }
+  
   ${props => props.theme.media.mobile} {
-    height: 70vh;
-    min-height: 500px;
+    height: 75vh;
+    min-height: 550px;
   }
 `
 
@@ -57,21 +86,37 @@ const HeroContent = styled(motion.div)`
 `
 
 const HeroTitle = styled(motion.h1)`
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  font-weight: ${props => props.theme.fontWeights.bold};
-  margin-bottom: ${props => props.theme.spacing[6]};
-  line-height: 1.2;
-  color: ${props => props.theme.colors.primary};
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: ${props => props.theme.fontWeights.extrabold};
+  margin-bottom: ${props => props.theme.spacing[8]};
+  line-height: 1.1;
+  font-family: 'Playfair Display', serif;
+  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  letter-spacing: -0.02em;
+  animation: shimmer 3s linear infinite;
+  
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
 `
 
 const HeroSubtitle = styled(motion.p)`
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  color: ${props => props.theme.colors.gray[300]};
-  margin-bottom: ${props => props.theme.spacing[8]};
-  max-width: 600px;
-  line-height: 1.6;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: clamp(1.2rem, 3.5vw, 1.75rem);
+  color: ${props => props.theme.colors.gray[200]};
+  margin-bottom: ${props => props.theme.spacing[10]};
+  max-width: 700px;
+  line-height: 1.7;
+  font-weight: ${props => props.theme.fontWeights.light};
+  letter-spacing: 0.01em;
+  margin-left: auto;
+  margin-right: auto;
 `
 
 const HeroButtons = styled(motion.div)`
@@ -87,12 +132,12 @@ const HeroButtons = styled(motion.div)`
 `
 
 const Section = styled(motion.section)`
-  padding: ${props => props.theme.spacing[16]} 0;
+  padding: ${props => props.theme.spacing[20]} 0;
   position: relative;
   z-index: 1;
   
   ${props => props.theme.media.mobile} {
-    padding: ${props => props.theme.spacing[12]} 0;
+    padding: ${props => props.theme.spacing[16]} 0;
   }
 `
 
@@ -107,9 +152,12 @@ const Container = styled.div`
 `
 
 const SectionTitle = styled(motion.h2)`
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: ${props => props.theme.fontWeights.bold};
+  font-size: clamp(2.75rem, 7vw, 4.5rem);
+  font-weight: ${props => props.theme.fontWeights.extrabold};
+  font-family: 'Playfair Display', serif;
   background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
+  background-size: 200% auto;
+  letter-spacing: -0.03em;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
