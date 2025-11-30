@@ -189,12 +189,16 @@ Application e-commerce fullstack pour la vente de montres de luxe, développée 
 
    ⚠️ **Note importante :** Lors du premier chargement ou après une période d'inactivité, le backend peut prendre 30-60 secondes à démarrer (cold start). Veuillez patienter, cela est normal pour les services serverless. Un message informatif s'affichera automatiquement.
 
-### Compte de test
+### 🔑 Compte de test
 
-```
-Email : test@luxetime.fr
-Mot de passe : Luxetime2024!
-```
+Pour tester l'application, vous pouvez utiliser le compte suivant :
+
+| Champ | Valeur |
+|-------|--------|
+| **Email** | `test@luxetime.fr` |
+| **Mot de passe** | `Luxetime2024!` |
+
+> 💡 **Note :** Ce compte est créé automatiquement lors de l'exécution du script `npm run seed` dans le dossier `server`.
 
 ## 🐳 Installation avec Docker (Alternative)
 
